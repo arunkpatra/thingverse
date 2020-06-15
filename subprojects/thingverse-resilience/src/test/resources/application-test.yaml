@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: resilience-test-app
+thingverse:
+  resilience:
+    enabled: true

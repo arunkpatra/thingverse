@@ -1,0 +1,22 @@
+=== Kubernetes Deployment
+
+This deployment uses the following components.
+
+==== Components
+
+1.  Cassandra and Cassandra UI running inside the cluster.
+2.  API running inside the cluster.
+3.  Backend running inside the cluster.
+
+==== Endpoints
+
+1.  API: http://localhost:30091/swagger-ui.html
+2.  Cassandra UI: http://localhost:30030
+
+==== Scripts to run (maintain order)
+
+1. `thingverse-dev-cluster-cassandra-plus-web-ui-k8s.yaml`
+2. `thingverse-dev-cluster-backend-app-read-k8s-api-discovery.yaml`
+3. `thingverse-dev-cluster-backend-app-write-k8s-api-discovery.yaml`
+4. `thingverse-dev-cluster-backend-service-k8s-api-discovery.yaml`
+5. `thingverse-dev-cluster-api-k8s-api.yaml`

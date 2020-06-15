@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-backend-write
+  namespace: thingverse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-backend-write
+      thingverse-backend-role: write-model
+  template:
+    metadata:
+      labels:
+        app: thingverse-backend-write
+        thingverse-backend-role: write-model
+    spec:
+      containers:
+        - name: thingverse-backend
+          image: thingverse-backend:0.0.1
+          env:
+            - name: THINGVERSE_BACKEND_OPERATION_MODE
+              value: "cluster"
+            - name: CONSUL_HOST
+              value: "consul.thingverse.svc.cluster.local"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: "off"
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "write-model"
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "tp2.local\":\"30090"

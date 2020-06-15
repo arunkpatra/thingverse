@@ -1,0 +1,18 @@
+{{- if .Values.thingverse.adminApp.needed -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-admin
+spec:
+  {{- if not .Values.thingverse.ingress.enabled }}
+  type: {{ .Values.thingverse.adminApp.service.type }}
+  {{- end }}
+  selector:
+    app: thingverse-admin
+  ports:
+    - port: 9595
+      targetPort: 9595
+      {{- if not .Values.thingverse.ingress.enabled }}
+      nodePort: 30095
+      {{- end }}
+{{- end }}

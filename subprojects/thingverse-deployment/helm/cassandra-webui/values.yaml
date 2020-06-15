@@ -1,0 +1,7 @@
+image:
+  repo: metavige/cassandra-web
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+config:
+  cluster_domain: cluster.local

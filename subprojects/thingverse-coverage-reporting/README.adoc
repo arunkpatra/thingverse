@@ -1,0 +1,14 @@
+[[thingverse-code-coverage-reporting]]
+== Thingverse Code Coverage
+
+Thingverse modules use Jacoco for code coverage reporting. A merged report can be obtained for Thingverse using the following command.
+----
+$ ./gradlew generateThingverseCoverageReport
+----
+
+[NOTE]
+====
+Gradle should be installed and available in the path.
+====
+
+This will generate a combined HTML format coverage report in the `build/reports/jacoco/generateThingverseCoverageReport/html` directory.

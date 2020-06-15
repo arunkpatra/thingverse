@@ -1,0 +1,52 @@
+{{- if .Values.thingverse.adminApp.needed -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-admin
+spec:
+  replicas: {{ .Values.thingverse.adminApp.replicaCount }}
+  selector:
+    matchLabels:
+      app: thingverse-admin
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: thingverse-admin
+    spec:
+      serviceAccountName: {{ include "thingverse.serviceAccountName" . }}
+      containers:
+        - name: thingverse-admin
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: "{{ .Values.thingverse.adminApp.image.repository }}:{{ .Values.thingverse.adminApp.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: THINGVERSE_OPERATION_MODE
+              value: "{{ .Values.thingverse.operationMode}}"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+          ports:
+            - name: http
+              containerPort: 9595
+          resources:
+{{ toYaml .Values.thingverse.adminApp.resources | indent 12 }}
+          livenessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: 9595
+              scheme: HTTP
+              path: /actuator/info
+{{/*          readinessProbe:*/}}
+{{/*            initialDelaySeconds: 120*/}}
+{{/*            periodSeconds: 15*/}}
+{{/*            timeoutSeconds: 10*/}}
+{{/*            failureThreshold: 3*/}}
+{{/*            httpGet:*/}}
+{{/*              port: 9595*/}}
+{{/*              scheme: HTTP*/}}
+{{/*              path: /actuator/health*/}}
+{{- end }}

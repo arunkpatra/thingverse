@@ -1,0 +1,41 @@
+== Kubernetes Dashboard
+
+* See https://medium.com/backbase/kubernetes-in-local-the-easy-way-f8ef2b98be68[Medium Article]
+
+* See https://github.com/kubernetes/dashboard[Official Site]
+
+=== Steps to install Kubernetes Dashboard on Docker Desktop
+
+==== Install Dashboard.
+
+----
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+----
+
+Or issue this command from the `thingverse-tools/k8s` directory
+
+----
+$ kubectl apply -f k8s-dashboard.yml
+----
+
+==== Start a local Proxy Server.
+
+    $ kubectl proxy
+
+==== Get an access token.
+
+You don't need this when skip-login capability is switched on via the `--enable-skip-login` argument to the container. The `thingverse-tools/k8sk8s-dashboard.yml` manifest has this switch enabled already. Issue the following command from a shell, not a Windows command prompt.
+
+----
+$ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | awk '/^deployment-controller-token-/{print $1}') | awk '$1=="token:"{print $2}'
+----
+
+You should get a token back like this.
+
+----
+   eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkZXBsb3ltZW50LWNvbnRyb2xsZXItdG9rZW4tZDc5dmoiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVwbG95bWVudC1jb250cm9sbGVyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMDlhMGYyOGQtOGUyMy00NGQ1LTk1OWItYTU0MWQ3NWFkNjRmIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmRlcGxveW1lbnQtY29udHJvbGxlciJ9.jntPx098oqAzXzUaLZdN9CQLIUhyt8y3xgn9I3eN7uphcGDcm3bWJLVQBS4NhGbcvq9_7_TnWuuHgMd94IY-Kc-ntwp4gZ_mi6h4avxof_ttGenQga7ZXvwLeCu9rteYdhF5GX6JeHlvwh7XTM8MVOf-Fa5moDp8CHln497Kj2oytWzQLCFGyUdvjSFBmMsyMDHsBf6PHjMQdaQGTGeTon_JlEAywNrW6UC6_YdGPZLh2_iw0n_-iPvryx0niqxzz3e7S4WgPqmp4pX3dbqOYSYFSgOAnNg0u2wXEGKRcBSDfBsLzQDMIFdtT4qNmfOG6jBShZaIL_GBRDscdvtTYQ
+----
+
+==== Access Dashboard
+
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=thingverse[Kubernetes Dashboard]

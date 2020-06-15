@@ -1,0 +1,16 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: thingverse-pv
+  labels:
+    type: local
+spec:
+  storageClassName: {{ .Values.persistence.storageClass }}
+  capacity:
+    storage: 200Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+{{- end }}

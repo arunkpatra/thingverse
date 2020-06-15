@@ -1,0 +1,52 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+jar {
+    enabled = true
+}
+bootJar {
+    archiveClassifier.set('boot')
+}
+test {
+    useJUnitPlatform()
+}
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+    implementation project(':thingverse-logging')
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.codehaus.janino:janino'
+    implementation('org.springframework.cloud:spring-cloud-starter-consul-discovery') {
+        exclude group: 'com.ecwid.consul', module: 'consul-api'
+    }
+    implementation 'com.ecwid.consul:consul-api'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+}
+publishing {
+    publications {
+        thingverseZuulProxy(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            artifact bootJar
+            pom {
+                name = 'Thingverse Zuul Proxy'
+                description = 'Thingverse Zuul Proxy'
+            }
+        }
+    }
+}

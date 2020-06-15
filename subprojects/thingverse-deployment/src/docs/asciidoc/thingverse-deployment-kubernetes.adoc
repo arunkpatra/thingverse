@@ -1,0 +1,43 @@
+[[thingverse-deploymnet-kubernetes]]
+== Running Thingverse on Kubernetes
+
+Kubernetes provides one of the most successful approaches to application deployment, scaling and management of resources. We recommend Kubernetes based deployments for production workloads.
+
+[[thingverse-deploymnet-kubernetes-supplied-scripts-summary]]
+=== Supplied Scripts Summary
+
+Out of the box, Thingverse ships with a handful of deployment scripts that are meant for specific use cases. Please see table below.
+
+|===
+|Deployment Script |Purpose |Remarks
+
+|`thingverse_standalone.yaml`
+|Deploys a single Pod that contains an API and a Backend container. API is unsecured, and backend has both `read-model` and `write-model` CQRS roles. The backend runs embedded Cassandra.
+|This is suitable for developer testing. http://localhost:30001/swagger-ui.html[Access API Swagger here].
+
+|`thingverse_dev_cluster.yaml`
+a|Deploys a single Pod that contains the following:
+
+* One Zuul Proxy
+* Two API nodes
+* Two Backend nodes. One `write-model` and one `read-model` role.
+* One Cassandra node
+* One Consul node
+|This is suitable for developer testing. http://localhost:30001/swagger-ui.html[Access API Swagger here].
+
+|`consul.yaml`
+|Deploys a single node Consul.
+|http://localhost:30085/[Access Consul UI here].
+
+|`cassandra.yaml`
+|Deploys a single Cassandra node, and a web UI.
+|http://localhost:30030/[Access Cassandra Web UI here].
+|===
+
+=== Deployment Scripts
+[[thingverse-deploymnet-kubernetes-supplied-deployment-scripts]]
+
+This chapter describes in detail, each script that ships with Thingverse.
+
+include::k8s-dep-thingverse-standalone.adoc[]
+include::k8s-dep-thingverse-dev-cluster.adoc[]

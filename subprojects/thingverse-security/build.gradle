@@ -1,0 +1,16 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+
+
+dependencies {
+    api platform(project(':thingverse-bom'))
+    api 'javax.annotation:javax.annotation-api'
+    implementation project(':thingverse-logging')
+    implementation "io.grpc:grpc-netty-shaded"
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

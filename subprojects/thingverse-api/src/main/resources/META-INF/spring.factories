@@ -1,0 +1,3 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.thingverse.api.environment.postprocessor.ApiOperationModeConfigurer,\
+com.thingverse.api.environment.postprocessor.ApiEnvChecker

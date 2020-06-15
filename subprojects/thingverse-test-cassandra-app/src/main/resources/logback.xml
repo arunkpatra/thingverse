@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>thingverse-test-cassandra-app</contextName>
+    <property name="LOG_FILE" value="logs/thingverse-test-cassandra-app-${PID}.log"/>
+
+    <include resource="com/thingverse/logging/thingverse-logging-defaults.xml"/>
+
+    <if condition='!isDefined("ENV")'>
+        <then>
+            <logger name="com.thingverse.cassandra" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+                <appender-ref ref="FILE"/>
+            </logger>
+
+            <logger name="akka" level="WARN" additivity="false">
+                <appender-ref ref="ASYNC"/>
+                <appender-ref ref="FILE"/>
+            </logger>
+
+            <root level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+                <appender-ref ref="FILE"/>
+            </root>
+        </then>
+    </if>
+    <if condition='isDefined("ENV")'>
+        <then>
+            <include resource="${ENV}-logback.xml"/>
+        </then>
+    </if>
+
+</configuration>

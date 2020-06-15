@@ -1,0 +1,126 @@
+[[thingverse-running-clustered]]
+== Thingverse Cluster Operation
+
+You would have to provision the necessary hardware and software components before you can run a production ready cluster.
+The next section helps you decide whether you need to run Thingverse in clustered mode and the aspects you need to consider before moving forward with setting up a cluster.
+
+[[cluster-considerations]]
+=== Considerations
+
+TODO: Specify the considerations, when you need a cluster, the cost implications, monitoring, logging, security
+
+[[clustered-pre-requisites]]
+=== Pre-requisites
+
+The following must be properly provisioned and running before you can run Thingverse in clustered mode.
+
+[[pre-req-cassandra]]
+==== Cassandra
+
+You can start Cassandra any way you like, but if you wish (maybe for testing your cluster quickly), you can issue the following commands.
+
+----
+cd thingverse-test-cassandra-app/target
+java -jar thingverse-test-cassandra-app.jar
+----
+
+[TIP]
+====
+If you want to bind Cassandra to specific addresses, maybe to access it from another machine in the network then you should provide a bind address like `-Dthingverse.storage.backend.cassandra.address=tp1.local`.
+If you don't do this, the Cassandra instance will be bound to the loopback address `127.0.0.1`.
+====
+
+[NOTE]
+====
+For actual Production deployment, you must provision a highly available Cassandra cluster and satisfy all security requirements you need to.
+See <<production-cassandra, Using Cassandra in Production>> for more details.
+====
+
+[[pre-req-consul]]
+==== Consul
+
+To run Consul in dev mode (standalone), issue the following command.
+Consul must be installed in the machine where you are trying to run the node.
+
+----
+./consul agent -dev -node machine -log-level info
+----
+
+[NOTE]
+====
+For actual Production deployment, you must provision a highly available Consul cluster supporting discovery over LAN and/or WAN and satisfy all security requirements you need to.
+See <<production-consul, Using Consul in Production>> for more details.
+====
+
+[[pre-zuul-proxy]]
+==== Run Zuul Proxy
+
+Issue the following commands in a terminal window.
+
+----
+cd thingverse-zuul-proxy/target
+java -jar thingverse-zuul-proxy.jar
+----
+
+[NOTE]
+====
+For actual Production deployment, you must provision a highly available Zuul cluster, front it with a Load Balancer and satisfy all security requirements you need to.
+See <<production-zuul-proxy, Using Zuul Proxy in Production>> for more details.
+====
+
+=== Run Thingverse API
+
+Issue the following commands in a terminal window.
+
+----
+cd thingverse-api/target
+java -Dspring.cloud.consul.enabled=true -Dthingverse.grpc.client.discovery-mechanism=consul -Dserver.port=0 -jar thingverse-api.jar
+----
+
+[TIP]
+====
+To run more instances of the API, just repeat the above commands in a new terminal window.
+====
+
+[NOTE]
+====
+The above command starts a Thingverse API instance on a random port.
+You need not know the port number (but you can see) it in the logs if you wish.
+This API instance registers with Consul and Zuul Proxy would be able to locate this instance via Service Discovery.
+====
+
+=== Run Thingverse Node
+
+Issue the following commands in a terminal window to start a backend node with the `read-model` role.
+
+----
+cd thingverse-backend/target
+
+java -Dthingverse.backend.backend-operation-mode=clustered -Dconfig.resource=application-discovery.conf -Dthingverse.backend.roles=read-model -Dthingverse.backend.akka-remote-port=0 -Dthingverse.backend.grpc-server-port=0 -Dthingverse.backend.akka-management-http-port=0 -Dthingverse.consul.registration.enabled=true -Dthingverse.storage.backend.cassandra.embedded=false -jar thingverse-backend.jar
+----
+
+And the following commands to start a node with the `write-model` role.
+
+----
+cd thingverse-backend/target
+
+java -Dthingverse.backend.backend-operation-mode=clustered -Dconfig.resource=application-discovery.conf -Dthingverse.backend.roles=write-model -Dthingverse.backend.akka-remote-port=0 -Dthingverse.backend.grpc-server-port=0 -Dthingverse.backend.akka-management-http-port=0 -Dthingverse.consul.registration.enabled=true -Dthingverse.storage.backend.cassandra.embedded=false  -jar thingverse-backend.jar
+----
+
+[TIP]
+====
+To run more instances of the backend nodes, just repeat the above commands in a new terminal window.
+Note the `role` in which you want these nodes to run in.
+You can specify more than one role on the same node as comma separated values, e.g. `-Dthingverse.backend.roles=read-model,write-mode`.
+This is however not recommended in production since it defeats the whole purpose of CQRS.
+If you want to use a Cassandra instance which is running on a different machine, then you need to pass this additional property: `-Dthingverse.backend.cassandra-contact-points=tp1.local\":\"9043`.
+Note the way in which the `:` character is provided.
+====
+
+[NOTE]
+====
+Multiple backend nodes will automatically join each other and form a cluster.
+The above commands start the Thingverse backend node instance on random network ports.
+You need not know the port numbers being used, but can pick these up from the logs if you wish.
+The backend node instances register with Consul and the Thingverse APIs will be able to locate available nodes in the Backend Cluster via Service Discovery.
+====

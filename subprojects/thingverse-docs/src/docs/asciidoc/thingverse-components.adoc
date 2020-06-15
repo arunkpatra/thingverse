@@ -1,0 +1,74 @@
+[[thingverse-components]]
+== Thingverse Components
+
+Thingverse depends on multiple technologies to support high availability, scalability and resiliency features.
+The platform exposes multiple components with each having a specific purpose.
+We discuss these components in the following sections but let's first have a look at Thingverse architecture.
+
+[[thingverse-architecture]]
+=== Thingverse Architecture
+
+image::../images/thingverse_architecture_v1.png[Thingverse Architecture]
+
+The core components are described in the following sections.
+
+[[thingverse-api]]
+=== Thingverse API
+
+The Thingverse API application exposes REST over HTTP(S) endpoints for interacting with the backend (Akka cluster).
+MQTT support is coming in the 2.X release train.
+The APIs are secured using JWT tokens and the caller is expected to authenticate an acquire a short lived token.
+Support for other authentication mechanisms are coming in future releases.
+
+The API application ships with HA support and can be deployed across Data centers or public cloud zones (multi-cloud included).
+The API application instances are discovered using Consul Service Discovery, and are eventually load balanced by Zuul Proxy.
+
+[[thingverse-backend]]
+=== Thingverse Backend
+
+The Thingverse backend exposes one or more(in clustered mode, see <<operation-modes, Modes of Operation>>) Akka Actor systems that host Akka Actors.
+An Akka Actor is a light weight process that models a single physical thing.
+Each actor has a mailbox of its own which can receive messages.
+Akka actors can receive and send messages to any other actors.
+
+[[thingverse-cassandra]]
+=== Cassandra
+
+TODO
+
+[[thingverse-zuul]]
+=== Zuul Proxy
+
+TODO
+
+[[thingverse-consul]]
+=== Consul
+
+Consul is an excellent Discovery Service that is multi-dc and multi cloud-zone aware. It supports discovery over both
+LAN and WAN.
+
+However, Consul is a rather complex system which requires very careful consideration for running successfully in a
+production configuration. You can however run it in `dev` mode which is easy and sufficient for testing purposes.
+
+[[thingverse-consul-dev]]
+==== Running Consul in Dev Mode
+Once Consul is running you can start it using the following commands.
+
+[[thingverse-consul-dev-macOS]]
+===== Windows
+TODO
+
+===== macOS
+If you have installed Consul using `Homebrew`, you can start Consul using:
+----
+brew services start consul
+----
+
+===== Linux
+TODO
+
+[[thingverse-consul-ui]]
+==== Consul UI
+Once Consul is running, you can access the UI at http://localhost:8500/ui/dc1/services. You should see a UI as shown below.
+
+image::../images/Consul.png[Consul UI]

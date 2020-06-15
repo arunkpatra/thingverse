@@ -1,0 +1,46 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+dependencies {
+    api platform(project(':thingverse-bom'))
+    implementation project(':thingverse-logging')
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-web'
+}
+publishing {
+    publications {
+        thingverseMonitoring(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Monitoring'
+                description = 'Thingverse Monitoring Infrastructure'
+            }
+        }
+    }
+}

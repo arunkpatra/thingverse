@@ -1,0 +1,50 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    api platform(project(':thingverse-bom'))
+
+    implementation project(':thingverse-logging')
+    implementation project(':thingverse-common')
+    implementation 'commons-lang:commons-lang'
+    implementation 'com.ecwid.consul:consul-api'
+    implementation("com.pszymczyk.consul:embedded-consul") {
+        exclude group: 'commons-lang', module: 'commons-lang'
+    }
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.cloud:spring-cloud-commons'
+    implementation 'javax.annotation:javax.annotation-api'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        thingverseConsulAutoConfig(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+        }
+    }
+}

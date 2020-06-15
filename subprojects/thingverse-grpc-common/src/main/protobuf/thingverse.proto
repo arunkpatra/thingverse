@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package com.thingverse.backend.v1;
+
+option java_multiple_files = true;
+//option java_package = "com.thingverse.protobuf";
+//option java_outer_classname = "ThingverseProto";
+
+import "struct.proto";
+
+////////////////////////////////////// The thingverse-grpc-service definition.
+service ThingverseGrpcService {
+    rpc CreateThing (CreateThingGrpcRequest) returns (CreateThingGrpcResponse) {
+    }
+    rpc GetThing (GetThingGrpcRequest) returns (GetThingGrpcResponse) {
+    }
+    rpc StreamAllThingIDs (StreamAllThingIDsGrpcRequest) returns (stream StreamAllThingIDsGrpcResponse) {
+    }
+    rpc StopThing (StopThingGrpcRequest) returns (StopThingGrpcResponse) {
+    }
+    rpc ClearThing (ClearThingGrpcRequest) returns (ClearThingGrpcResponse) {
+    }
+    rpc UpdateThing (UpdateThingGrpcRequest) returns (UpdateThingGrpcResponse) {
+    }
+    rpc GetMetrics (GetMetricsGrpcRequest) returns (GetMetricsGrpcResponse) {
+    }
+    rpc GetBackendClusterStatus (GetBackendClusterStatusGrpcRequest) returns (GetBackendClusterStatusGrpcResponse) {
+    }
+}
+
+message CreateThingGrpcRequest {
+    map<string, google.protobuf.Value> attributes = 1;
+}
+message CreateThingGrpcResponse {
+    string thingID = 1;
+    string message = 2;
+    string errormessage = 3;
+}
+
+message GetThingGrpcRequest {
+    string thingID = 1;
+}
+message GetThingGrpcResponse {
+    string thingID = 1;
+    map<string, google.protobuf.Value> attributes = 2;
+    string errormessage = 3;
+}
+
+message StreamAllThingIDsGrpcRequest {
+    int64 maxidstoreturn = 1;
+}
+message StreamAllThingIDsGrpcResponse {
+    string thingID = 1;
+    string errormessage = 2;
+}
+
+message StopThingGrpcRequest {
+    string thingID = 1;
+}
+message StopThingGrpcResponse {
+    string message = 1;
+    string errormessage = 2;
+}
+
+message ClearThingGrpcRequest {
+    string thingID = 1;
+}
+message ClearThingGrpcResponse {
+    string message = 1;
+    string errormessage = 2;
+}
+
+message UpdateThingGrpcRequest {
+    string thingID = 1;
+    map<string, google.protobuf.Value> attributes = 2;
+}
+message UpdateThingGrpcResponse {
+    string message = 1;
+    string errormessage = 2;
+}
+
+message GetMetricsGrpcRequest {
+}
+message GetMetricsGrpcResponse {
+    int64 count = 1;
+    int64 totalmessagesreceived = 2;
+    string errormessage = 3;
+    int64 averagemessageage = 4;
+}
+message GetBackendClusterStatusGrpcRequest {
+}
+message GetBackendClusterStatusGrpcResponse {
+    bool allmembershealthy = 1;
+    int64 readnodecount = 2;
+    int64 writenodecount = 3;
+    int64 totalnodecount = 4;
+    string errormessage = 5;
+}
+message Empty {
+}

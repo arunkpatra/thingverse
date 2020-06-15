@@ -1,0 +1,30 @@
+<included>
+
+    <include resource="com/thingverse/logging/thingverse-production-logging-defaults.xml"/>
+
+    <logger name="akka" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="io.jaegertracing.internal" level="WARN" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="thingverse" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.thingverse" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+</included>

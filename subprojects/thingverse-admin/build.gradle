@@ -1,0 +1,97 @@
+import com.bmuschko.gradle.docker.tasks.DockerVersion
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'com.bmuschko.docker-remote-api' version '6.4.0'
+    id 'com.gorylenko.gradle-git-properties' version '2.2.2'
+}
+jar {
+    enabled = true
+}
+bootJar {
+    archiveClassifier.set('boot')
+}
+gitProperties {
+    failOnNoGitDirectory = false
+}
+springBoot  {
+    buildInfo()
+}
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+    implementation project(':thingverse-logging')
+    implementation 'de.codecentric:spring-boot-admin-starter-server'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+publishing {
+    publications {
+        thingverseAdmin(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            artifact bootJar
+            pom {
+                name = 'Thingverse Admin App'
+                description = 'Thingverse Admin App'
+            }
+        }
+    }
+}
+
+String getDockerRegistryUrl()  {
+    String url = System.getenv('DOCKER_REGISTRY')
+    return null != url ? url : project.properties.getOrDefault('docker.registry', "")
+}
+
+task checkIfDockerRegistrySpecified(type: DefaultTask) {
+    doFirst {
+        if (getDockerRegistryUrl().length() != 0) {
+            project.ext["docker.registry"] = getDockerRegistryUrl()
+        } else {
+            println "WARNING:Could not locate docker registry. You can provide either the DOCKER_REGISTRY " +
+                    "environment variable or the docker.registry system property, e.g -Ddocker.registry=localhost:5000. " +
+                    "The gradle.properties file of the root project may also be used."
+        }
+    }
+}
+
+task checkIfDockerIsRunning(type: DockerVersion) {
+    dependsOn checkIfDockerRegistrySpecified
+    onError { exception ->
+        project.ext['docker.not.running'] = true
+        println "WARNING: Docker is not running. Can't perform any Docker related tasks."
+    }
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+    dependsOn checkIfDockerIsRunning, assemble, bootJar
+    onlyIf { !project.hasProperty('docker.not.running') && project.hasProperty('docker.registry')}
+    inputDir.set(file('.'))
+    images.addAll("${project.name}:${project.version}",
+            "${getDockerRegistryUrl()}/${project.name}:${project.version}")
+    onError {  e -> println("Can't build image. Error is: ${e.message}")}
+}
+
+task pushDockerImage(type: DockerPushImage) {
+    dependsOn buildDockerImage
+    onlyIf { !project.hasProperty('docker.not.running') && project.hasProperty('docker.registry') }
+    images.addAll("${getDockerRegistryUrl()}/${project.name}:${project.version}")
+    onError { exception ->
+        println("Can't push image. Error is: " + exception.message)
+    }
+}
+
+docker {
+    registryCredentials {
+        url.set("http://${getDockerRegistryUrl()}/v2/")
+    }
+}

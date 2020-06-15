@@ -1,0 +1,15 @@
+apiVersion: v1
+name: cassandra-webui
+version: 0.1.0
+appVersion: 0.4.0
+description: A simple Web UI for Cassandra
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Cassandra_logo.svg/330px-Cassandra_logo.svg.png
+keywords:
+- cassandra
+- database
+- nosql
+home: http://cassandra.apache.org
+maintainers:
+- name: arunkpatra
+  email: arunkpatra@gmail.com
+engine: gotpl

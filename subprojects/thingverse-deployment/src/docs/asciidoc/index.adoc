@@ -1,0 +1,55 @@
+= Thingverse Deployment Guide
+Arun Patra <https://twitter.com/arunkpatra[@arunkpatra]>
+:revnumber: {project-version}
+:toc: left
+:toclevels: 3
+:doctype: book
+:sectanchors:
+:sectlinks:
+:sectnums:
+:icons: font
+:icon-set: fa
+:hide-uri-scheme:
+:last-update-label!:
+:tabsize: 2
+:pdf-version: 1.7
+
+[[thingverse-deployment-intro]]
+== Introduction
+This deployment guide contains information on how Thingverse can bu built, managed, deployed and monitored in production.
+
+[[thingverse-deployment-target-audience]]
+=== Target Audience
+This document is for developers, system administrators and operations staff responsible form managing a Thingverse deployment.
+
+[[thingverse-deployment-main]]
+=== What is Thingverse?
+
+Thingverse is a comprehensive, highly available, practically infinitely scalable and production ready platform to manage virtualized models of physical things.
+Such virtualized models are accessible over TCP networks.
+
+[[thingverse-deployment-modes]]
+=== Running Thingverse
+
+Based on your needs, you would need to choose from a variety of methods to deploy and run Thingverse. From the simplest of needs like developer testing, to complex production deployments that include monitoring, we provide all the tools to do the job. The supported deployment modes to choose from are listed below.
+
+|===
+|Deployment Mode |Capabilities |Intended Purpose
+
+|*Build from Source*
+|Flexibility to tweak configurable properties and produce custom binaries. Run each binary as native processes on host machine.
+|Developer testing.
+
+|*Pre-built Binaries*
+|Download the Thingverse binary packages and use the supplied scripts to launch the various applications that are included in the pre-built package.
+|System testing on a single machine.
+
+|*Kubernetes*
+|The shipped scripts allow you to deploy Thingverse into your own Kubernetes Cluster. In this mode, you have access to detailed monitoring capabilities for your Kubernetes cluster and relevant characteristics of the Thingverse platform.
+|Production, UAT, Performance Test.
+|===
+
+include::thingverse-deployment-build-from-source.adoc[]
+include::thingverse-deployment-pre-packaged-binaries.adoc[]
+include::thingverse-deployment-kubernetes.adoc[]
+include::kubernetes-tips-and-tricks.adoc[]

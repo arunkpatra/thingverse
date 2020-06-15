@@ -1,0 +1,79 @@
+== Google Cloud Platform
+
+This document provides helpful information on GCP.
+
+=== Google Cloud SDK
+
+1. https://cloud.google.com/sdk/[Google Cloud SDK Installation]
+
+2. https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl[Configuring Cluster Access for `kubectl`]
+
+
+3. https://cloud.google.com/container-registry/docs/pushing-and-pulling[Pushing image to Google Docker Repository]
+
+4. https://kubernetes.io/docs/tutorials/stateful-application/cassandra/[Deploying Cassandra on GKE]
+
+5. http://docs.shippable.com/deploy/tutorial/deploy-to-gcp-gke-helm/[Deploy Kubernetes Application to GKE using Helm Charts]
+
+=== How to ssh into a running container in GKE
+
+1.  First list your pods, then attach.
+
+    $ kubectl get pods -n thingverse
+    # Output
+    # ------------------------------
+    NAME                                    READY   STATUS    RESTARTS   AGE
+    cassandra-deployment-6d4b987cf5-82dqm   2/2     Running   2          92m
+    thingverse-api-5cf97b87bb-g96mr         1/1     Running   0          35m
+    thingverse-api-5cf97b87bb-gb8xd         1/1     Running   0          35m
+
+
+2.  Attach to the container's shell.
+
+    $ kubectl exec -n thingverse thingverse-api-5cf97b87bb-g96mr -c thingverse-api -i -t -- bash -il
+    # Output
+    # ------------------------------
+    root@thingverse-api-5cf97b87bb-g96mr:/#
+
+3.  Follow a container's logs.
+
+    $ kubectl logs -n thingverse --follow thingverse-api-5cf97b87bb-g96mr
+    # Output
+    # ------------------------------
+    .   ____          _            __ _ _
+    /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+    ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+    \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+    '  |____| .__|_| |_|_| |_\__, | / / / /
+    =========|_|==============|___/=/_/_/_/
+    :: Spring Boot ::        (v2.3.0.RELEASE)
+    2020-05-03 11:16:53.949  INFO 6 --- [           main] c.t.api.ThingverseAPIApplication         : No active profile set, falling back to default profiles: default
+
+=== Google Cloud SDK and K8s Commands
+
+
+|===
+|Command |Description
+
+|`gcloud config set compute/zone us-east1-b`
+|Change default region
+
+|`gcloud config set compute/region us-east1`
+|Change default region
+
+|`gcloud config`
+|Individually set your project ID, zone, and region.
+
+|`gcloud auth list`
+|Shows currently active account
+
+|`kubectl config current-context`
+|View the current context for `kubectl`
+
+|`kubectl config view`
+|The command returns a list of all clusters for which kubeconfig entries have been generated.
+
+|`gcloud container clusters get-credentials <cluster-name>`
+|To run `kubectl` commands against a cluster created in Cloud Console, from another computer, or by another member of the project, you need to generate a `kubeconfig` entry in your environment. This command generates a `kubeconfig` entry.
+
+|===

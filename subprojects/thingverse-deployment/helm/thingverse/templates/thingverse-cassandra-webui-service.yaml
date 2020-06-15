@@ -1,0 +1,16 @@
+{{- if .Values.thingverse.cassandra.webUIAppNeeded -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra-web
+spec:
+  type: {{ .Values.thingverse.cassandra.webUI.service.type }}
+  selector:
+    app: cassandra
+  ports:
+    - port: 3000
+      targetPort: 3000
+      {{- if (eq "NodePort" .Values.thingverse.cassandra.webUI.service.type ) }}
+      nodePort: 30030
+      {{- end }}
+{{- end }}

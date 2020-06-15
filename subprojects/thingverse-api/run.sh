@@ -1,0 +1,106 @@
+#!/bin/sh
+
+set -e
+
+THINGVERSE_OPTS=
+
+if [ -n "${THINGVERSE_ENV}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse-env=${THINGVERSE_ENV}"
+else
+  THINGVERSE_ENV="dev"
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse-env=${THINGVERSE_ENV}"
+fi
+
+if [ -n "${THINGVERSE_SPRING_PROFILES}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dspring.profiles.active=${THINGVERSE_SPRING_PROFILES},${THINGVERSE_ENV}"
+else
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dspring.profiles.active=${THINGVERSE_ENV}"
+fi
+
+if [ -n "${THINGVERSE_OPERATION_MODE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Doperation-mode=${THINGVERSE_OPERATION_MODE}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_ENABLED}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.enabled=${THINGVERSE_TRACING_ENABLED}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_SERVICE_NAME}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.service-name=${THINGVERSE_TRACING_SERVICE_NAME}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_HOST_NAME}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-agent-host=${THINGVERSE_TRACING_HOST_NAME}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_PORT}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-agent-port=${THINGVERSE_TRACING_PORT}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_ENDPOINT}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-endpoint=${THINGVERSE_TRACING_ENDPOINT}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_SAMPLER_TYPE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-sampler-type=${THINGVERSE_TRACING_SAMPLER_TYPE}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_SAMPLER_PARAM}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-sampler-param=${THINGVERSE_TRACING_SAMPLER_PARAM}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_PROPAGATION}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-propagation-formats=${THINGVERSE_TRACING_PROPAGATION}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_TRANSMIT_SPAN}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.transmit-span=${THINGVERSE_TRACING_TRANSMIT_SPAN}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_REPORTER_LOG_SPANS}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-reporter-log-spans=${THINGVERSE_TRACING_REPORTER_LOG_SPANS}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-reporter-max-queue-size=${THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE}"
+fi
+
+if [ -n "${THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.tracing.jaeger-reporter-flush-interval=${THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL}"
+fi
+
+if [ -n "${RUNTIME_ENVIRONMENT}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Druntime-env=${RUNTIME_ENVIRONMENT}"
+fi
+
+if [ -n "${CONSUL_HOST}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dspring.cloud.consul.host=${CONSUL_HOST}"
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dakka.discovery.akka-consul.consul-host=${CONSUL_HOST}"
+fi
+
+if [ -n "${THINGVERSE_API_SECURED}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.api.secured=${THINGVERSE_API_SECURED}"
+fi
+
+if [ -n "${THINGVERSE_SERVICE_LOOKUP_NAMESPACE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.kubernetes.service-lookup-namespace=${THINGVERSE_SERVICE_LOOKUP_NAMESPACE}"
+fi
+
+if [ -n "${ADMIN_SERVER_ENABLED}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dspring.boot.admin.client.enabled=${ADMIN_SERVER_ENABLED}"
+fi
+
+if [ -n "${ADMIN_SERVER_URL}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dspring.boot.admin.client.url=${ADMIN_SERVER_URL}"
+fi
+
+if [ -n "${THINGVERSE_LOG_FILE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dlogging.file.name=${THINGVERSE_LOG_FILE}"
+fi
+
+if [ -n "${THINGVERSE_LOG_TO_CONTAINER_CONSOLE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.log.to.container.console=${THINGVERSE_LOG_TO_CONTAINER_CONSOLE}"
+fi
+
+echo THINGVERSE_OPTS : "$THINGVERSE_OPTS"
+java $THINGVERSE_OPTS -jar /app.jar

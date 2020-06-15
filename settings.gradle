@@ -1,0 +1,39 @@
+buildCache {
+    local {
+        directory = new File(rootDir, 'build-cache')
+        removeUnusedEntriesAfterDays = 30
+    }
+}
+
+rootProject.name = 'thingverse'
+include 'thingverse-consul-autoconfig'
+include 'thingverse-common'
+include 'thingverse-logging'
+include 'thingverse-monitoring'
+include 'thingverse-grpc-common'
+include 'thingverse-grpc-client'
+include 'thingverse-api'
+include 'thingverse-backend-api'
+include 'thingverse-cassandra-backend'
+include 'thingverse-backend'
+include 'thingverse-zuul-proxy'
+include 'thingverse-stress-tests'
+include 'thingverse-test-cassandra-app'
+include 'thingverse-coverage-reporting'
+include 'thingverse-docs'
+include 'thingverse-assembly'
+include 'thingverse-bom'
+include 'thingverse-scripts'
+include 'thingverse-wrapper'
+include 'thingverse-cli'
+include 'thingverse-launcher'
+include 'thingverse-deployment'
+include 'thingverse-kubernetes'
+include 'thingverse-admin'
+include 'thingverse-resilience'
+include 'thingverse-security'
+include 'thingverse-tracing'
+
+
+rootProject.children.forEach { p -> p.projectDir = file("subprojects/$p.name")}
+

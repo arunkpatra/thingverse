@@ -1,0 +1,18 @@
+[[operation-modes]]
+== Operation Modes
+
+Thingverse is a complex system with multiple moving parts.
+To facilitate easy setup and testing non-production environments, different modes of operation are provided.
+Thingverse can run in a `standalone` mode or in a `clustered`
+mode.
+
+[[standalone-mode]]
+=== Standalone Mode
+
+TODO:
+
+[[clustered-mode]]
+=== Clustered Mode
+
+TODO
+

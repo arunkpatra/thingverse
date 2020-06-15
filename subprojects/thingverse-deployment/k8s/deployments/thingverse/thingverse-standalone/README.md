@@ -1,0 +1,78 @@
+### Deployment Notes
+
+The following notes are applicable to a _**standalone deployment**_ of thingverse components into a K8s cluster for developer testing.
+
+#### Script File
+`thingverse-standalone.yaml`
+
+#### Components Included
+
+| Component | Host Port(s) | Container Port(s) | Dependencies | User testing endpoint |
+| -------- | -------- | --------- | --------- | --------- |
+| [Thingverse API](../../../../../thingverse-api/README.MD) | 30001 | 9090 | Backend | [Swagger UI](http://localhost:30001/swagger-ui.html) |
+| [Thingverse Backend](../../../../../thingverse-backend/README.MD) | None | 8080 | N/A | N/A |
+
+#### Deployment Steps
+
+1. Ensure that you have **Docker CE** or **Docker Desktop** installed on your machine. You also need to have a **K8s cluster** running locally. Docker Desktop provides you to provision a locally running single node cluster as well.
+2. Build the images if needed.
+   ```
+   # Build API Image
+   $ cd {PROJECT_ROOT}/subprojects/thingverse-api
+   $ gradle assemble
+   $ docker build --tag thingverse-api:0.0.1 . 
+   
+   # Build Backend image
+   $ cd {PROJECT_ROOT}/subprojects/thingverse-backend
+   $ gradle assemble
+   $ docker build --tag thingverse-backend:0.0.1 . 
+   ```
+3. Run Deployment
+   ``` 
+   $ cd {PROJECT_ROOT}/subprojects/thingverse-k8s/k8s/deployments/thingverse/thingverse-standalone
+   
+   # Create the `thingverse` namespace if needed.
+   $ kubectl apply -f ../thingverse-namespace.yaml
+   $ kubectl apply -f thingverse-standalone.yaml
+   ```
+3. Verify Deployment
+   *  Check namespace creation using the `kubectl get namespaces` command. You should see the `thingverse` namespace listed in the output.
+   *  Check Deployment status using `kubectl get deployments -n thingverse`. You should see a similar output when deployment finishes.
+       ``` 
+       NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+       thingverse-standalone-deployment   1/1     1            1           22s
+       ```   
+   *  Check Services using the `kubectl get services -n thingverse`. You should see a similar output when deployment finishes.
+      ``` 
+       NAME                 TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+       thingverse-api       NodePort   10.109.246.170   <none>        9090:30001/TCP   2m35s
+       thingverse-backend   NodePort   10.98.62.104     <none>        8080:30405/TCP   2m35s
+      ```
+   *  Check API Swagger UI. See link above. Swagger UI should be accessible.
+
+4. Check the container logs
+   ``` 
+   # First get the container IDs
+   $ docker container ls
+   
+   # See logs produced till now
+   $ docker container logs  <container_id>
+   
+   # Follow logs (this does not quit, hit CTRL + C to quit)
+   $ docker container logs --follow <container_id>
+   
+   # Tail logs (this does not quit, hit CTRL + C to quit). Shows the last 50 lines in this example
+   $ docker container logs --tail 50 <container_id>
+   
+   ```   
+4. Tear down Deployment
+    
+    You can delete cleanup everything created by the above deployment and its recommended too. If you don't delete the deployment, then the containers will start whenever your K8s cluster starts. Note that, it's ok to leave the `namespace` intact. But if you indeed need to, you can do it via the `kubectl delete -f thingverse-namespace.yaml` command.
+   ``` 
+   $ cd {PROJECT_ROOT}/subprojects/thingverse-k8s/deployments/thingverse-standalone
+   $ kubectl delete -f thingverse-standalone.yaml
+   ```
+
+#### Deployment Steps
+
+For K8s tips and troubleshooting, see [this](../../../KUBERNETES.md)

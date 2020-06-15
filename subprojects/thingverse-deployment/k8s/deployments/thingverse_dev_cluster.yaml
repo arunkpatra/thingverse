@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-standalone-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      thingverse: standalone
+  template:
+    metadata:
+      labels:
+        thingverse: standalone
+    spec:
+      containers:
+        - name: consul
+          image: library/consul:1.7.2
+        - name: cassandra
+          image: library/cassandra:3.11.6
+        - name: thingverse-api
+          image: thingverse-api:0.0.1
+        - name: thingverse-backend
+          image: thingverse-backend:0.0.1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-backend
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    thingverse: standalone
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-api
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    thingverse: standalone
+  ports:
+    - port: 9090
+      targetPort: 9090
+      nodePort: 30001

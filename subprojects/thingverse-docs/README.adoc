@@ -1,0 +1,21 @@
+[[thingverse-generating-docs]]
+== Thingverse Document Generation
+
+Thingverse documentation can be generated using the following command.
+
+----
+$ cd thingverse-docs
+$ gradle asciidoctor <1>
+$ gradle asciidoctorPdf <2>
+$ gradle generateThingverseDocs <3>
+----
+<1> Creates `html` format documentation in the `build/docs/asciidoc` directory.
+<2> Creates a `pdf` format documentation in the `build/docs/asciidocPdf` directory.
+<3> Creates both `html` and `pdf` format documentation in the `build/thingverse/docs` directory.
+
+[NOTE]
+====
+Gradle should be installed and available in the path.
+====
+
+This will generate documentation in HTML and PDF format in the `build/thingverse/docs` directory.

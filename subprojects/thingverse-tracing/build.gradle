@@ -1,0 +1,24 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+    implementation project(':thingverse-logging')
+    implementation project(':thingverse-common')
+
+    api 'io.jaegertracing:jaeger-client:1.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    implementation("com.lightbend.akka.grpc:akka-grpc-runtime_2.12") {
+        exclude group: 'com.typesafe.akka', module: 'akka-stream_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "com.typesafe.akka:akka-discovery_2.12"
+    implementation "com.typesafe.akka:akka-stream_2.12"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

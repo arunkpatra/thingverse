@@ -1,0 +1,232 @@
+[[stress-testing]]
+== Stress Testing
+
+Thingverse was subjected to a specific load profile and the results of these stress tests have been compiled in this chapter.
+
+[[stress-test-goals]]
+=== Stress Test Goals
+
+TODO: Describe what aspects we are wanting to test through this stress test.
+
+[[stress-test-load-profile]]
+=== Load Profile
+
+TODO: Describe open and closed model, why we choose a closed mode and what it entails.
+
+[[stress-test-setup]]
+=== Stress Test Setup
+
+We will use the following resources in the stress test.
+
+==== Resources
+
+|===
+|Resource |Specifications |Hostname
+
+|Physical Machine (TP1)
+|*2 Cores, 20 GB RAM*, Intel core i7, Windows 10
+|`tp1.local`
+
+|Physical Machine (TP2)
+|*2 Cores, 16 GB RAM*, Intel core i5, Linux/Ubuntu
+|`tp2.local`
+
+|Physical Machine (MBP13)
+|*2 Cores, 8 GB RAM*, Intel core i5, macOS 10.15
+|`mbp13.local`
+
+|Physical Machine (MBP16)
+|*6 Cores, 16 GB RAM*, Intel core i7, macOS 10.15
+|`mbp16.local`
+
+|Network
+|150 Mbps LAN
+|NA
+|===
+
+[NOTE]
+====
+Total Cores: *12* +
+Total RAM: *60 GB*
+====
+
+==== What runs where
+
+For the stress test, we will run resources on individual servers as listed below.
+
+|===
+|Server |Processes Hosted
+
+|`tp1.local` [2 Cores, 20 GB RAM]
+|1 *API* Node +
+1 *Backend* node with `read-model` role +
+1 *Backend* node with `write-model` role +
+*Zuul* Proxy +
+*Consul* Agent
+
+|`tp2.local` [2 Cores, 16 GB RAM]
+| *Cassandra* +
+1 *API* Node +
+1 *Backend* node with `read-model` role +
+1 *Backend* node with `write-model` role +
+*Consul* Agent
+
+|`mbp16.local` [6 Cores, 16 GB RAM]
+|2 *Backend* nodes with `read-model` role +
+2 *Backend* nodes with `write-model` role +
+*Prometheus* +
+*Consul* Agent
+
+|`mbp13.local` [2 Cores, 8 GB RAM]
+|*Grafana* +
+*Load Generator* (Gatling)
+|===
+
+[[stress-test-getting-ready]]
+=== Getting Ready
+
+A number of steps have to be followed as mentioned below.
+
+==== Pre-requisites
+
+Ensure that you supply `hostfile` entries on all <<stress-test-setup, nodes>> so that all the machines are accessible from each other in the LAN.
+
+==== Log Files
+
+Log files generated from the individual processes run during the test will be captured.
+The location of log files is mentioned in each subsection below.
+
+==== Cassandra
+Cassandra is the storage backend for the Akka Persistence component.
+Cassandra will persist Akka actor state.
+The supplied Embedded Cassandra app is not meant for stress testing.
+Instead a highly available Cassandra instance in a clustered configuration should be used.
+Setting up such a cluster, is beyond the scope of this study.
+However, for the <<stress-test-load-profile, stress test load profile>>  being used, the supplied embedded Cassandra instance should be fine.
+
+We will run Cassandra on the <<stress-test-setup, TP2>> node.
+Logon to `tp2.local` and run the following commands.
+
+----
+$ nohup java -Xss512M -Dthingverse.storage.backend.cassandra.address=tp2.local -jar thingverse-test-cassandra-app.jar > tp2.local.embedded-cassandra.log &
+----
+
+Cassandra will start with an initial JVM heap memory of 512 MB. A log file will be generated at
+`logs/thingverse-test-cassandra-app-${PID}.log` relative to the current working directory.
+Also all `sysout` and `syserr` will be routed to embedded-cassandra.log.
+The embedded cassandra server starts in a forked process, and you should look up the `PID` if needed using `ps aux | grep -i java`
+
+[NOTE]
+====
+Each run of the supplied test Cassandra app, produces a `target\cassandra-db` directory that contains data and logs produced by Cassandra.
+You *must* delete this directory before running the supplied Embedded Cassandra app so that you start with a clean installation.
+====
+
+==== Consul
+
+Consul must run on each node where any service instance that intends to register with Consul exists.
+All Consul instances will form a cluster and will know about service instances hosted on each node via gossip.
+Take the following steps on each node.
+
+1. On each node, install Consul.
+2. In the installation directory, create a file named `connect_consul.json` with the following contents.
+
+    {
+      "connect": {
+        "enabled" : true
+      }
+    }
+
+3. Acquire the IP address (issued by the DHCP server) of the machine.
+Decide, if you want to run the Consul *Leader* node on this machine.
+You must start with exactly one leader node.
+Other Consul nodes will join this leader.
+You can run Consul as leader by issuing the following command.
+Replace `<leader_ip_address>` with the actual IP address obtained earlier.
+Replace `<leader_node_name>` with any name you wish to identify this Consul node by, e.g. `tp1.local`.
+
+    nohup ./consul agent -server -ui -rejoin -bootstrap -advertise <leader_ip_address> -data-dir consul-data -node <leader_node_name> -config-file connect_consul.json > tp1.consul.log &
+
+4. Now log on to the next machine(lets say `tp2.local`) - this will *not* bea leader node to start with, but may automatically assume a leader role if so decided by Consul later.
+Acquire the IP address (issued by the DHCP server) of the machine.
+Start Consul by issuing the following command.
+
+    nohup ./consul agent -server -ui -rejoin -advertise <node_ip_address> -data-dir consul-data -node tp2.local -retry-join <leader_ip_address> -config-file connect_consul.json >  tp2.consul.log &
+
+==== Thingverse Backend
+Run the backend on desired nodes as follows.
+We assume that Cassandra is running on `tp2.local`.
+Also, since we want to achieve maximum load on the system, we will instruct to backend not to _passivate_ any actors after the default timeout has elapsed.
+This is done using the `-Dthingverse.things.remote-thing.thing-timeout-duration=off` switch.
+
+----
+$ nohup java -Doperation-mode=cluster -Dthingverse.things.remote-thing.thing-timeout-duration=off -Dthingverse.backend.cassandra-contact-points=tp2.local\":\"9043  -Dthingverse.backend.roles=read-model -jar thingverse-backend.jar > tp1.local.backend.read.log & <1>
+
+$ nohup java -Doperation-mode=cluster -Dthingverse.things.remote-thing.thing-timeout-duration=off -Dthingverse.backend.cassandra-contact-points=tp2.local\":\"9043  -Dthingverse.backend.roles=write-model -jar thingverse-backend.jar > tp1.local.backend.write.log & <2>
+
+$ nohup java -Doperation-mode=cluster -Dthingverse.things.remote-thing.thing-timeout-duration=off -Dthingverse.backend.cassandra-contact-points=tp2.local\":\"9043  -Dthingverse.backend.roles=read-model -jar thingverse-backend.jar > tp2.local.backend.read.log & <3>
+
+$ nohup java -Doperation-mode=cluster -Dthingverse.things.remote-thing.thing-timeout-duration=off -Dthingverse.backend.cassandra-contact-points=tp2.local\":\"9043  -Dthingverse.backend.roles=write-model -jar thingverse-backend.jar > tp2.local.backend.write.log & <4>
+----
+<1> Start a backend node on `TP1` with `read-model` CQRS role.
+<2> Start a backend node on `TP1` with `write-model` CQRS role.
+<3> Start a backend node on `TP2` with `read-model` CQRS role.
+<4> Start a backend node on `TP2` with `write-model` CQRS role.
+
+[NOTE]
+====
+All the above processes will run as background processes.
+You can find them using `ps aux | grep -i thingverse-backend` so that you can kill them when needed.
+These processes register themselves with the locally running Consul agent.
+====
+
+==== Thingverse API
+
+Run the API on desired nodes.
+
+----
+$ nohup java -Doperation-mode=cluster -jar thingverse-api.jar > tp1.local.api.log & <1>
+
+$ nohup java -Doperation-mode=cluster -jar thingverse-api.jar > tp2.local.api.log & <2>
+----
+<1>  Start API on node `TP1`.
+<2>  Start API on node  `TP2`.
+
+[NOTE]
+====
+All the above processes will run as background processes.
+You can find them using `ps aux | grep -i thingverse-api` so that you can kill them when needed.
+These processes register themselves with the locally running Consul agent at `127.0.0.1:8500`.
+====
+
+==== Zuul Proxy
+
+For this stress test, we will run Zuul Proxy on a single node (let's say on `tp1.local`).
+That's because, we don't want another load balancer in front of Zuul proxy for the stress test.
+
+----
+$ nohup java -jar thingverse-zuul-proxy.jar > tp1.zuul.proxy.log & <1>
+----
+<1>  Run Zuul Proxy on `tp1.local`
+
+[[stress-test-pre-flight-checks]]
+=== Stress Test Pre Flight Checks
+
+* [ ] Ping test successful on each <<stress-test-setup, node>> from other nodes.
+* [ ] Cassandra `UP` on TP2 node.
+* [ ] Consul `UP` on each node.
+Local Consul UI on each node, lists Leader and other Consul nodes correctly.
+* [ ] Zuul Proxy `UP`
+* [ ] API Cluster `UP`
+* [ ] Backend Cluster `UP`
+* [ ] Review Gatling Stress Test Scenario - *final check*.
+
+[[stress-test-execution]]
+=== Stress Test Execution
+
+TODO: For how long the test was run? and other information...
+
+[[stress-test-results]]
+=== Stress Test Results
+
+TODO: Compile results

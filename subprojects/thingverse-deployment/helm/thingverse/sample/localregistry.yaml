@@ -1,0 +1,11 @@
+thingverse:
+  env: "dev"
+  apiApp:
+    image:
+      repository: "localhost:5000/thingverse-api"
+  backendApp:
+    image:
+      repository: "localhost:5000/thingverse-backend"
+  adminApp:
+    image:
+      repository: "localhost:5000/thingverse-admin"

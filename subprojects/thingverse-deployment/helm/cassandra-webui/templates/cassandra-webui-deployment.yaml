@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra-webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra-webui
+  template:
+    metadata:
+      labels:
+        app: cassandra-webui
+    spec:
+      containers:
+        - name: cassandra-web-ui
+          image: {{ .Values.image.repo }}
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: CASSANDRA_HOST
+              value: "cassandra-0.cassandra.{{ .Release.Namespace }}.svc.{{ .Values.config.cluster_domain }}"
+            - name: CASSANDRA_USER
+              value: "cassandra"
+            - name: CASSANDRA_PASSWORD
+              value: "cassandra"

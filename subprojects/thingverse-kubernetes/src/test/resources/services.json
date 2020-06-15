@@ -1,0 +1,98 @@
+{
+  "kind": "ServiceList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/namespaces/thingverse/services",
+    "resourceVersion": "58853"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "cassandra",
+        "namespace": "thingverse",
+        "selfLink": "/api/v1/namespaces/thingverse/services/cassandra",
+        "uid": "4f95ec0a-82f2-4233-a9e6-55c1e4fee1a8",
+        "resourceVersion": "38934",
+        "creationTimestamp": "2020-05-22T14:07:53Z",
+        "labels": {
+          "app": "cassandra",
+          "app.kubernetes.io/managed-by": "Helm",
+          "chart": "cassandra-0.15.0",
+          "heritage": "Helm",
+          "release": "cassandra"
+        },
+        "annotations": {
+          "meta.helm.sh/release-name": "cassandra",
+          "meta.helm.sh/release-namespace": "thingverse"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "intra",
+            "protocol": "TCP",
+            "port": 7000,
+            "targetPort": 7000
+          },
+          {
+            "name": "tls",
+            "protocol": "TCP",
+            "port": 7001,
+            "targetPort": 7001
+          }
+        ],
+        "selector": {
+          "app": "cassandra",
+          "release": "cassandra"
+        },
+        "clusterIP": "None",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {
+
+        }
+      }
+    },
+    {
+      "metadata": {
+        "name": "thingverse-backend",
+        "namespace": "thingverse",
+        "selfLink": "/api/v1/namespaces/thingverse/services/thingverse-backend",
+        "uid": "ff7039e7-dee0-4330-a3d4-b948f47ab548",
+        "resourceVersion": "58148",
+        "creationTimestamp": "2020-05-22T17:04:23Z",
+        "labels": {
+          "app": "thingverse-backend",
+          "app.kubernetes.io/managed-by": "Helm"
+        },
+        "annotations": {
+          "meta.helm.sh/release-name": "thingverse",
+          "meta.helm.sh/release-namespace": "thingverse"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "name": "http",
+            "protocol": "TCP",
+            "port": 8080,
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "app": "thingverse-backend"
+        },
+        "clusterIP": "10.105.215.34",
+        "type": "ClusterIP",
+        "sessionAffinity": "None"
+      },
+      "status": {
+        "loadBalancer": {
+
+        }
+      }
+    }
+  ]
+}

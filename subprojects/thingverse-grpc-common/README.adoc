@@ -1,0 +1,73 @@
+=== gRPC Tools
+
+1. grpcurl - https://github.com/fullstorydev/grpcurl
+
+2. protobuf - http://google.github.io/proto-lens/installing-protoc.html
+
+3. Using grpcurl - https://sadique.io/blog/2018/04/04/command-line-clients-for-grpc-grpcurl/
+
+==== Steps to generate protoset file
+
+----
+$ pwd
+
+/Users/arunkpatra/codebase/thingverse/subprojects/thingverse-grpc-common/src/main/protobuf
+
+$ protoc  --descriptor_set_out=thingverse-backend.protoset --include_imports ./thingverse.proto
+
+$ protoc  --descriptor_set_out=thingverse-backend-health-check.protoset --include_imports ./health_check.proto
+
+----
+
+==== Using grpcurl
+
+----
+$ grpcurl -protoset ./thingverse-backend.protoset list
+
+com.thingverse.backend.v1.ThingverseGrpcService
+
+$ grpcurl -protoset ./thingverse-backend.protoset list com.thingverse.backend.v1.ThingverseGrpcService
+
+com.thingverse.backend.v1.ThingverseGrpcService.ClearThing
+com.thingverse.backend.v1.ThingverseGrpcService.CreateThing
+com.thingverse.backend.v1.ThingverseGrpcService.GetBackendClusterStatus
+com.thingverse.backend.v1.ThingverseGrpcService.GetMetrics
+com.thingverse.backend.v1.ThingverseGrpcService.GetThing
+com.thingverse.backend.v1.ThingverseGrpcService.StopThing
+com.thingverse.backend.v1.ThingverseGrpcService.StreamAllThingIDs
+com.thingverse.backend.v1.ThingverseGrpcService.UpdateThing
+
+$ grpcurl -protoset ./thingverse-backend.protoset describe com.thingverse.backend.v1.ThingverseGrpcService
+
+com.thingverse.backend.v1.ThingverseGrpcService is a service:
+service ThingverseGrpcService {
+  rpc ClearThing ( .thingverse.ClearThingGrpcRequest ) returns ( .thingverse.ClearThingGrpcResponse );
+  rpc CreateThing ( .thingverse.CreateThingGrpcRequest ) returns ( .thingverse.CreateThingGrpcResponse );
+  rpc GetBackendClusterStatus ( .thingverse.GetBackendClusterStatusGrpcRequest ) returns ( .thingverse.GetBackendClusterStatusGrpcResponse );
+  rpc GetMetrics ( .thingverse.GetMetricsGrpcRequest ) returns ( .thingverse.GetMetricsGrpcResponse );
+  rpc GetThing ( .thingverse.GetThingGrpcRequest ) returns ( .thingverse.GetThingGrpcResponse );
+  rpc StopThing ( .thingverse.StopThingGrpcRequest ) returns ( .thingverse.StopThingGrpcResponse );
+  rpc StreamAllThingIDs ( .thingverse.StreamAllThingIDsGrpcRequest ) returns ( stream .thingverse.StreamAllThingIDsGrpcResponse );
+  rpc UpdateThing ( .thingverse.UpdateThingGrpcRequest ) returns ( .thingverse.UpdateThingGrpcResponse );
+}
+
+$ grpcurl -protoset ./thingverse-backend-health-check.protoset list
+$ grpcurl -protoset ./thingverse-backend-health-check.protoset list grpc.health.v1.Health
+$ grpcurl -plaintext -protoset ./thingverse-backend-health-check.protoset localhost:8080 grpc.health.v1.Health/Check
+
+{
+  "status": "SERVING"
+}
+a
+
+$ grpcurl -plaintext -protoset ./thingverse-backend.protoset localhost:8080 com.thingverse.backend.v1.ThingverseGrpcService.GetBackendClusterStatus
+
+{
+  "allmembershealthy": true,
+  "readnodecount": "1",
+  "writenodecount": "1",
+  "totalnodecount": "1"
+}
+
+
+----

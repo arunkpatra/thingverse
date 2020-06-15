@@ -1,0 +1,16 @@
+after_script:
+  - date
+
+variables:
+  THINGVERSE_VERSION: "0.0.1"
+  RAILS_ENV: "test"
+  NODE_ENV: "test"
+  SIMPLECOV: "true"
+  GIT_DEPTH: "20"
+  GIT_SUBMODULE_STRATEGY: "none"
+  GET_SOURCES_ATTEMPTS: "3"
+
+include:
+  - local: skinny.thingverse.gitlab-ci.yml
+
+

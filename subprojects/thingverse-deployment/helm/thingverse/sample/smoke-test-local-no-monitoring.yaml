@@ -1,0 +1,28 @@
+thingverse:
+  env: "dev"
+  logging:
+    rootLoggerLevel: "INFO"
+    logToContainerConsole: "true"
+  apiApp:
+    tracing:
+      enabled: true
+    replicaCount: 1
+    image:
+      repository: "localhost:5000/thingverse-api"
+  backendApp:
+    tracing:
+      enabled: true
+    readReplicaCount: 2
+    writeReplicaCount: 2
+    image:
+      repository: "localhost:5000/thingverse-backend"
+  adminApp:
+    needed: true
+    image:
+      repository: "localhost:5000/thingverse-admin"
+  monitoring:
+    enabled: false
+  cassandra:
+    contactPoints: "cassandra-0.cassandra.thingverse.svc.cluster.local\\\":\\\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\\\":\\\"9042"
+    needed: false
+    webUIAppNeeded: false

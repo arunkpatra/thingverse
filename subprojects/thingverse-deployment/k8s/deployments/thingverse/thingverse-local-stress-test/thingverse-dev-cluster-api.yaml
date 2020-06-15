@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-api
+  namespace: thingverse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-api
+  template:
+    metadata:
+      labels:
+        app: thingverse-api
+    spec:
+      containers:
+        - name: thingverse-api
+          image: thingverse-api:0.0.1
+          ports:
+            - containerPort: 9191
+          env:
+            - name: THINGVERSE_API_OPERATION_MODE
+              value: "cluster"
+            - name: CONSUL_HOST
+              value: "consul.thingverse.svc.cluster.local"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-api
+  namespace: thingverse
+spec:
+  selector:
+    app: thingverse-api
+  ports:
+    - protocol: TCP
+      port: 9191
+      targetPort: 9191
+  type: LoadBalancer

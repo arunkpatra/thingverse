@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+        - name: cassandra
+          image: library/cassandra:3.11.6
+        - name: cassandra-web
+          image: metavige/cassandra-web
+          env:
+            - name: CASSANDRA_HOST
+              value: "127.0.0.1"
+            - name: CASSANDRA_USER
+              value: "cassandra"
+            - name: CASSANDRA_PASSWORD
+              value: "cassandra"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: cassandra
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30030

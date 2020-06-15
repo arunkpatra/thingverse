@@ -1,0 +1,88 @@
+= Thingverse Reference Guide
+Arun Patra <https://twitter.com/arunkpatra[@arunkpatra]>
+:revnumber: {project-version}
+:toc: left
+:toclevels: 3
+:doctype: book
+:sectanchors:
+:sectlinks:
+:sectnums:
+:icons: font
+:icon-set: fa
+:hide-uri-scheme:
+:last-update-label!:
+:tabsize: 2
+:pdf-version: 1.7
+
+[[thingverse-what-it-is]]
+== What is Thingverse?
+
+Thingverse is a comprehensive, highly available, practically infinitely scalable and production ready platform to manage virtualized models of physical things.
+Such virtualized models are accessible over TCP networks.
+
+[[thingverse-motivation]]
+=== Motivation
+
+The need to proxy a large number physical/real things or devices via virtualized and network hosted models is a real necessity in the hyper-connected world.
+The Internet of Things is driving the development of platforms and networks that can support a large amount of traffic from an equally large number of devices distributed globally.
+
+[[thingverse-design-goals]]
+=== Design Goals
+
+Thingverse was developed with these goals in mind:
+
+1. Support virtualization of a large number of physical things and support full duplex communication between the
+`real-thing`, `virtual-thing` and any `client-system`.
+The `client-system` is any arbitrary application or software system that wishes to interact with physical things in a bi-directional way.
+2. Support flexibility to implement arbitrary computation logic at the virtual thing level.
+Everything else, is provided by the Thingverse platform, while the user supplies business logic.
+3. The user supplied business logic could be anything from sensor data acquisition, storage, routing, actuation, simulation etc.
+4. Support automatic and practically infinite horizontal scalability limited only by current networking and hardware technology constraints.
+5. Support high availability and autonomous healing of virtualized things.
+Support multi-dc and multi-zone resiliency for cloud hosted deployments.
+6. Provide a set of tools to simulate large amounts of load and study behaviour of components under study.
+An example of this would be, stress testing a system that manages telemetry from millions of vehicles and observing latency of actuation commands reaching to physical things while the processing system is itself under load.
+
+Thingverse does not compete with other commercial public Cloud service providers offering comparable capabilities.
+See
+<<thingverse-audience, Who is it for?>> to see if Thingverse is the right technology for you.
+
+[[thingverse-audience]]
+=== Who is it for?
+
+Thingverse is a general purpose platform with certain scalability and availability guarantees.
+That's where it shines.
+It also allows you to plugin arbitrary computational capability at the virtualized thing layer.
+Thingverse makes a compelling case for your business in the following scenarios.
+
+1. You have a business case that *requires virtualizing physical things*, e.g. cars, windmills, people, shopping carts, manufacturing machinery, mobile devices etc.
+2. Your business case *requires extremely business specific behaviour* at the virtualized thing layer.
+An example would be the need for the virtual thing to behave akin to a real thing with its own hardware/network/software/provisioning needs.
+This is a stark departure from popular public cloud offerings which limit virtualized things to collect data and provide simple pub/sub event driven interaction mechanisms.
+While some public cloud offerings are better than others at managing extreme scale, Thingverse is designed ground up with practically infinite horizontal scalability and self healing features in mind.
+3. Your information technology investments are limited to pay as you go *cloud hosted infrastructure* not platform services.
+4. You want to *build a product* for commercial re-selling and want a production ready platform to build on top of.
+
+[[thingverse-use-cases]]
+=== What can I use it for?
+
+The supported use cases for Thingverse are practically all of those that make a business case for the Internet of Things technologies.
+Whatever your business domain maybe, from automotive, manufacturing, travel, insurance or health, there probably are valid and high return business cases that will benefit from Thingverse technology.
+
+[[thingverse-technology]]
+=== Technology
+
+Thingverse contains implementations of various Lightbend Akka related technologies.
+It provides production-ready examples of Akka features like persistence, remoting, cluster sharding, monitoring, load balancing, service discovery, monitoring and network partition detection.
+See <<thingverse-architecture, Thingverse Architecture>> for more details.
+
+include::thingverse-getting-started.adoc[]
+include::thingverse-components.adoc[]
+include::thingverse-modes-of-operation.adoc[]
+include::thingverse-clustered.adoc[]
+include::thingverse-running-in-production.adoc[]
+include::thingverse-running-in-production-kubernetes.adoc[]
+include::thingverse-monitoring.adoc[]
+include::thingverse-logging.adoc[]
+include::thingverse-production-alerts.adoc[]
+include::thingverse-stress-testing.adoc[]

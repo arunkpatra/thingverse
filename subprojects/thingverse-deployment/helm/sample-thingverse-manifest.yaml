@@ -1,0 +1,368 @@
+# Source: thingverse/templates/thingverse-service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: thingverse-svc-account
+---
+# Source: thingverse/templates/thingverse-backend-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: thingverse-backend-pod-reader
+rules:
+  - apiGroups: [""]  # "" indicates the core API group
+    resources:
+      - pods
+    verbs: ["get", "list", "watch"]
+---
+# Source: thingverse/templates/thingverse-backend-clusterrole-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-thingverse-backend-pods
+subjects:
+  - kind: ServiceAccount
+    name: thingverse-svc-account
+    namespace: thingverse
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: thingverse-backend-pod-reader
+---
+# Source: thingverse/templates/thingverse-admin-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-admin
+spec:
+  type: NodePort
+  selector:
+    app: thingverse-admin
+  ports:
+    - port: 9595
+      targetPort: 9595
+      nodePort: 30095
+---
+# Source: thingverse/templates/thingverse-api-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-api
+spec:
+  type: NodePort
+  selector:
+    app: thingverse-api
+  ports:
+    - port: 9191
+      targetPort: 9191
+      nodePort: 30091
+---
+# Source: thingverse/templates/thingverse-backend-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-backend
+  labels:
+    app: thingverse-backend
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: thingverse-backend
+---
+# Source: thingverse/templates/thingverse-admin-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-admin
+  template:
+    metadata:
+      annotations:
+        rollme: "A1kRd"
+      labels:
+        app: thingverse-admin
+    spec:
+      serviceAccountName: thingverse-svc-account
+      containers:
+        - name: thingverse-admin
+          imagePullPolicy: "Always"
+          image: "localhost:5000/thingverse-admin:0.0.1"
+          env:
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+          ports:
+            - name: http
+              containerPort: 9595
+          resources:
+            {}
+          livenessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: 9595
+              scheme: HTTP
+              path: /actuator/info
+          readinessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: 9595
+              scheme: HTTP
+              path: /actuator/health
+---
+# Source: thingverse/templates/thingverse-api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thingverse-api
+  template:
+    metadata:
+      annotations:
+        rollme: "fx5oF"
+      labels:
+        app: thingverse-api
+    spec:
+      serviceAccountName: thingverse-svc-account
+      containers:
+        - name: thingverse-api
+          imagePullPolicy: "Always"
+          image: "localhost:5000/thingverse-api:0.0.1"
+          ports:
+            - containerPort: 9191
+              name: http
+          env:
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: "INFO"
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-api-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_API_SECURED
+              value: "false"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse.svc.cluster.local:9595"
+          resources:
+            {}
+          livenessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9191
+              scheme: HTTP
+              path: /actuator/info
+          readinessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9191
+              scheme: HTTP
+              path: /actuator/health
+---
+# Source: thingverse/templates/thingverse-backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thingverse-backend
+  name: thingverse-backend-read
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-backend
+      thingverse-backend-role: read-model
+  template:
+    metadata:
+      annotations:
+        rollme: "XX8jb"
+      namespace: thingverse
+      labels:
+        app: thingverse-backend
+        thingverse-backend-role: read-model
+    spec:
+      serviceAccountName: thingverse-svc-account
+      containers:
+        - name: thingverse-backend
+          imagePullPolicy: "Always"
+          image: "localhost:5000/thingverse-backend:0.0.1"
+          ports:
+            - name: remoting
+              containerPort: 2551
+              protocol: TCP
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: actuator
+              containerPort: 9095
+              protocol: TCP
+          env:
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: "INFO"
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-backend-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: "15m"
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "read-model"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_NAMESPACE
+              value: "thingverse"
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "cassandra-0.cassandra.thingverse.svc.cluster.local\":\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\":\"9042"
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse.svc.cluster.local:9595"
+          resources:
+            {}
+          livenessProbe:
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/info
+          readinessProbe:
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/health
+---
+# Source: thingverse/templates/thingverse-backend-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thingverse-backend
+  name: thingverse-backend-write
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thingverse-backend
+      thingverse-backend-role: write-model
+  template:
+    metadata:
+      annotations:
+        rollme: "q7pu0"
+      namespace: thingverse
+      labels:
+        app: thingverse-backend
+        thingverse-backend-role: write-model
+    spec:
+      serviceAccountName: thingverse-svc-account
+      containers:
+        - name: thingverse-backend
+          imagePullPolicy: "Always"
+          image: "localhost:5000/thingverse-backend:0.0.1"
+          ports:
+            - name: remoting
+              containerPort: 2551
+              protocol: TCP
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: actuator
+              containerPort: 9095
+              protocol: TCP
+          env:
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: "INFO"
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-backend-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: "15m"
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "write-model"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_NAMESPACE
+              value: "thingverse"
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "cassandra-0.cassandra.thingverse.svc.cluster.local\":\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\":\"9042"
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse.svc.cluster.local:9595"
+          resources:
+            {}
+          livenessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/info
+          readinessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/health

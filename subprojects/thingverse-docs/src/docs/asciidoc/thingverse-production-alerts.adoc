@@ -1,0 +1,31 @@
+[[production-monitoring-alerts]]
+== Production Monitoring Alerts
+
+While your automated production monitoring system will do everything to gather, process, visualize and generate alerts, it would probably stop at that level and will give you the necessary hooks to integrate your alert delivery tools.
+
+This is something that you would do yourself, but *Thingverse Enterprise Support* can help you with integrating multiple alert delivery channels.
+
+[[monitoring-alerts-architecture]]
+=== Monitoring Alerts Architecture
+
+TODO
+
+[[alerts-email-channel]]
+=== Email Channel
+
+TODO
+
+[[alerts-sms-channel]]
+=== SMS Channel
+
+TODO
+
+[[alerts-voice-channel]]
+=== Voice Channel
+
+TODO
+
+[[alerts-pager-duty-channel]]
+=== Pager Duty Channel
+
+TODO

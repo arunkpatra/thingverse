@@ -1,0 +1,64 @@
+management.endpoint.logfile.enabled: true
+
+management:
+  endpoint:
+    restart:
+      enabled: true
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+    web:
+      exposure:
+        include: "*"
+server:
+  port: 9095
+spring:
+  application:
+    name: thingverse-backend
+  boot:
+    admin:
+      client:
+        auto-deregistration: true
+        auto-registration: true
+        enabled: true
+        instance:
+          metadata:
+            tags:
+              environment: localhost
+          name: ${spring.application.name}
+          prefer-ip: true
+        url: http://localhost:9595
+  jmx:
+    enabled: true
+thingverse:
+  tracing:
+    enabled: false
+    service-name: ${spring.application.name}
+    jaeger-sampler-type: const
+    jaeger-sampler-param: 1
+    transmit-span: true
+    jaeger-propagation-formats: b3
+  backend:
+    actor-system-name: ${spring.application.name}
+    https-server-enabled: false
+    key-store-file-name: localhost.p12
+    key-store-password: otUycsKx3i
+    insecure-mode: false
+  consul:
+    registration:
+      embedded: false
+      enabled: false
+      service-id: ${thingverse.consul.registration.service-name}-${random.value}
+      service-initial-status: passing
+      service-name: ${thingverse.backend.actor-system-name}
+  storage:
+    backend:
+      cassandra:
+        background: true
+        config-file: thingverse-embedded-cassandra.yaml
+        embedded: true
+        enabled: true
+        path: build/cassandra-db
+        port: 9043
+        start-clean: true

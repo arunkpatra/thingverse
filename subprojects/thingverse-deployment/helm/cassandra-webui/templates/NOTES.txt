@@ -1,0 +1,4 @@
+Thank you for deploying Cassandra Web UI
+
+    To access the Web UI, point your browser to:
+    http://localhost:30030

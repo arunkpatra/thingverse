@@ -1,0 +1,9 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.thingverse.common.postprocessor.SampleAppOpsModeConfigurer,\
+com.thingverse.common.postprocessor.SampleAppEnvHealthChecker,\
+com.thingverse.common.postprocessor.SomeInvalidPostProcessor
+
+
+
+
+

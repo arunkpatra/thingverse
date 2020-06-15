@@ -1,0 +1,3 @@
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.thingverse.backend.environment.postprocessor.BackendOperationModeConfigurer,\
+com.thingverse.backend.environment.postprocessor.BackendEnvironmentChecker

@@ -1,0 +1,839 @@
+{
+   "swagger":"2.0",
+   "info":{
+      "description":"REST APIs for Thingverse. These APIs expose capability to interact with things in Thingverse.",
+      "version":"0.0.1",
+      "title":"Thingverse REST API Documentation",
+      "termsOfService":"Terms of service",
+      "contact":{
+         "name":"Thingverse",
+         "url":"www.thingverse.app",
+         "email":"info@thingverse.app"
+      },
+      "license":{
+         "name":"License of API",
+         "url":"API license URL"
+      }
+   },
+   "host":"localhost:9090",
+   "basePath":"/",
+   "tags":[
+      {
+         "name":"Authentication",
+         "description":"Jwt Authentication Controller"
+      },
+      {
+         "name":"Backend Cluster",
+         "description":"Backend Cluster Controller Impl"
+      },
+      {
+         "name":"Thing",
+         "description":"Thing Controller Impl"
+      },
+      {
+         "name":"User",
+         "description":"Userinfo Controller"
+      }
+   ],
+   "paths":{
+      "/api/cluster/state":{
+         "get":{
+            "tags":[
+               "Backend Cluster"
+            ],
+            "summary":"Get Backend cluster status",
+            "description":"Get Backend cluster status",
+            "operationId":"clusterStateUsingGET",
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Cluster state was retrieved",
+                  "schema":{
+                     "$ref":"#/definitions/GetBackendClusterStatusResponse"
+                  }
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/GetBackendClusterStatusResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/GetBackendClusterStatusResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/me":{
+         "get":{
+            "tags":[
+               "User"
+            ],
+            "summary":"Get user information",
+            "description":"Get information of the currently logged on user",
+            "operationId":"getLoggedOnUerInfoUsingGET",
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"User information was extracted.",
+                  "schema":{
+                     "$ref":"#/definitions/UserInfoResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+                     "global"
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing":{
+         "post":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Create Thing",
+            "description":"Create a Thing",
+            "operationId":"createThingUsingPOST",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "in":"body",
+                  "name":"CreateThingRequest",
+                  "description":"request",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/CreateThingRequest"
+                  }
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"OK",
+                  "schema":{
+                     "$ref":"#/definitions/CreateThingResponse"
+                  }
+               },
+               "201":{
+                  "description":"The Thing was created",
+                  "schema":{
+                     "$ref":"#/definitions/CreateThingResponse"
+                  }
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/CreateThingResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/CreateThingResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing/clear/{thingID}":{
+         "put":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Clear Thing",
+            "description":"Clear a Thing",
+            "operationId":"clearThingUsingPUT",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"thingID",
+                  "in":"path",
+                  "description":"thingID",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"Thing was cleared",
+                  "schema":{
+                     "$ref":"#/definitions/ClearThingResponse"
+                  }
+               },
+               "201":{
+                  "description":"Created"
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/ClearThingResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Thing was not found",
+                  "schema":{
+                     "$ref":"#/definitions/ClearThingResponse"
+                  }
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/ClearThingResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing/ids":{
+         "get":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Get Thing IDs",
+            "description":"Get IDs of known things",
+            "operationId":"getAllThingIDsUsingGET",
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"maxIDsToReturn",
+                  "in":"query",
+                  "description":"maxIDsToReturn",
+                  "required":false,
+                  "type":"integer",
+                  "default":10,
+                  "format":"int64"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"Thing Ids were retrieved",
+                  "schema":{
+                     "$ref":"#/definitions/GetAllThingIDsResponse"
+                  }
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/GetAllThingIDsResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/GetAllThingIDsResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing/metrics":{
+         "get":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Get Metrics",
+            "description":"Get Actor Metrics ",
+            "operationId":"getActorMetricsUsingGET",
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "responses":{
+               "200":{
+                  "description":"Metrics were retrieved",
+                  "schema":{
+                     "$ref":"#/definitions/GetActorMetricsResponse"
+                  }
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/GetActorMetricsResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/GetActorMetricsResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing/stop/{thingID}":{
+         "put":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Stop Thing",
+            "description":"Stop a Thing",
+            "operationId":"stopThingUsingPUT",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"thingID",
+                  "in":"path",
+                  "description":"thingID",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"Thing was stopped",
+                  "schema":{
+                     "$ref":"#/definitions/StopThingResponse"
+                  }
+               },
+               "201":{
+                  "description":"Created"
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/StopThingResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Thing was not found",
+                  "schema":{
+                     "$ref":"#/definitions/StopThingResponse"
+                  }
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/StopThingResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/api/thing/{thingID}":{
+         "get":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Get Thing",
+            "description":"Get details of a Thing",
+            "operationId":"getThingUsingGET",
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"thingID",
+                  "in":"path",
+                  "description":"thingID",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"The Thing was retrieved",
+                  "schema":{
+                     "$ref":"#/definitions/GetThingResponse"
+                  }
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/GetThingResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Bad requested. The thing was not found.",
+                  "schema":{
+                     "$ref":"#/definitions/GetThingResponse"
+                  }
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/GetThingResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         },
+         "put":{
+            "tags":[
+               "Thing"
+            ],
+            "summary":"Update Thing",
+            "description":"Update a Thing",
+            "operationId":"updateThingUsingPUT",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "*/*",
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "in":"body",
+                  "name":"UpdateThingRequest",
+                  "description":"request",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/UpdateThingRequest"
+                  }
+               },
+               {
+                  "name":"thingID",
+                  "in":"path",
+                  "description":"thingID",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"The Thing was updated",
+                  "schema":{
+                     "$ref":"#/definitions/UpdateThingResponse"
+                  }
+               },
+               "201":{
+                  "description":"Created"
+               },
+               "400":{
+                  "description":"Bad requested. The server rejected your request.",
+                  "schema":{
+                     "$ref":"#/definitions/UpdateThingResponse"
+                  }
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Thing not found.",
+                  "schema":{
+                     "$ref":"#/definitions/UpdateThingResponse"
+                  }
+               },
+               "500":{
+                  "description":"An internal error occurred.",
+                  "schema":{
+                     "$ref":"#/definitions/UpdateThingResponse"
+                  }
+               }
+            },
+            "security":[
+               {
+                  "Access Token":[
+
+                  ]
+               }
+            ],
+            "deprecated":false
+         }
+      },
+      "/auth/login":{
+         "post":{
+            "tags":[
+               "Authentication"
+            ],
+            "summary":"login",
+            "operationId":"loginUsingPOST",
+            "consumes":[
+               "application/json"
+            ],
+            "produces":[
+               "*/*"
+            ],
+            "parameters":[
+               {
+                  "in":"body",
+                  "name":"data",
+                  "description":"data",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/AuthenticationRequest"
+                  }
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"OK",
+                  "schema":{
+                     "$ref":"#/definitions/AuthenticationResponse"
+                  }
+               },
+               "201":{
+                  "description":"Created"
+               },
+               "401":{
+                  "description":"Unauthorized"
+               },
+               "403":{
+                  "description":"Forbidden"
+               },
+               "404":{
+                  "description":"Not Found"
+               }
+            },
+            "deprecated":false
+         }
+      }
+   },
+   "securityDefinitions":{
+      "Access Token":{
+         "type":"apiKey",
+         "name":"Authorization",
+         "in":"header"
+      }
+   },
+   "definitions":{
+      "AuthenticationRequest":{
+         "type":"object",
+         "properties":{
+            "username":{
+               "type":"string",
+               "description":"User name"
+            },
+            "password":{
+               "type":"string",
+               "description":"Password"
+            }
+         },
+         "title":"AuthenticationRequest",
+         "description":"The Authentication request"
+      },
+      "AuthenticationResponse":{
+         "type":"object",
+         "properties":{
+            "username":{
+               "type":"string",
+               "description":"User name"
+            },
+            "token":{
+               "type":"string",
+               "description":"Authentication Token"
+            }
+         },
+         "title":"AuthenticationResponse",
+         "description":"The Authentication response"
+      },
+      "ClearThingResponse":{
+         "type":"object",
+         "properties":{
+            "message":{
+               "type":"string",
+               "description":"A message from the backend"
+            }
+         },
+         "title":"ClearThingResponse",
+         "description":"Result of thing cleanup"
+      },
+      "CreateThingRequest":{
+         "type":"object",
+         "properties":{
+            "attributes":{
+               "type":"object",
+               "description":"The attribute map to be set"
+            }
+         },
+         "title":"CreateThingRequest",
+         "description":"Thing creation request."
+      },
+      "CreateThingResponse":{
+         "type":"object",
+         "properties":{
+            "message":{
+               "type":"string",
+               "description":"Any accompanying message from the backend"
+            },
+            "thingID":{
+               "type":"string",
+               "description":"ID of the created Thing"
+            }
+         },
+         "title":"CreateThingResponse",
+         "description":"Thing creation response."
+      },
+      "GetActorMetricsResponse":{
+         "type":"object",
+         "properties":{
+            "activeThingCount":{
+               "type":"integer",
+               "format":"int64",
+               "description":"Total number of active things in the Akka cluster."
+            },
+            "averageMessageAge":{
+               "type":"integer",
+               "format":"int64",
+               "description":"Average message age in micro seconds."
+            },
+            "totalMessagesReceived":{
+               "type":"integer",
+               "format":"int64",
+               "description":"Total messages received by the Akka cluster."
+            }
+         },
+         "title":"GetActorMetricsResponse",
+         "description":"Actor metrics response"
+      },
+      "GetAllThingIDsResponse":{
+         "type":"object",
+         "properties":{
+            "thingIDs":{
+               "type":"array",
+               "description":"The list of IDs of all known Things",
+               "items":{
+                  "type":"string"
+               }
+            }
+         },
+         "title":"GetAllThingIDsResponse",
+         "description":"Get all thing IDs"
+      },
+      "GetBackendClusterStatusResponse":{
+         "type":"object",
+         "properties":{
+            "allMembersUp":{
+               "type":"boolean",
+               "description":"Indicates if all cluster members are up"
+            },
+            "readNodeCount":{
+               "type":"integer",
+               "format":"int64",
+               "description":"Total number of nodes with read-model role."
+            },
+            "totalNodeCount":{
+               "type":"integer",
+               "format":"int32",
+               "description":"Total number of nodes in the backend cluster."
+            },
+            "writeNodeCount":{
+               "type":"integer",
+               "format":"int64",
+               "description":"Total number of nodes with read-model role."
+            }
+         },
+         "title":"GetBackendClusterStatusResponse",
+         "description":"Backend Cluster state response"
+      },
+      "GetThingResponse":{
+         "type":"object",
+         "properties":{
+            "attributes":{
+               "type":"object",
+               "description":"The current attribute map"
+            },
+            "thingID":{
+               "type":"string",
+               "description":"The Thing ID"
+            }
+         },
+         "title":"GetThingResponse",
+         "description":"Thing details."
+      },
+      "StopThingResponse":{
+         "type":"object",
+         "properties":{
+            "message":{
+               "type":"string",
+               "description":"A message from the backend"
+            }
+         },
+         "title":"StopThingResponse",
+         "description":"Result of thing stoppage"
+      },
+      "UpdateThingRequest":{
+         "type":"object",
+         "properties":{
+            "attributes":{
+               "type":"object",
+               "description":"The attribute map to be updated. Existing attributes are not erased."
+            }
+         },
+         "title":"UpdateThingRequest",
+         "description":"Thing updation request."
+      },
+      "UpdateThingResponse":{
+         "type":"object",
+         "properties":{
+            "message":{
+               "type":"string",
+               "description":"A message from the backend"
+            }
+         },
+         "title":"UpdateThingResponse",
+         "description":"Thing updation response."
+      },
+      "UserInfoResponse":{
+         "type":"object",
+         "properties":{
+            "roles":{
+               "type":"array",
+               "items":{
+                  "type":"string"
+               }
+            },
+            "username":{
+               "type":"string"
+            }
+         },
+         "title":"UserInfoResponse"
+      }
+   }
+}

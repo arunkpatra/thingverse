@@ -1,0 +1,65 @@
+[[production-monitoring]]
+== Production Monitoring
+
+A production deployment requires careful evaluation of all aspects related to the availability goals of your services and the SLAs related to return to service following a failure.
+Efficient monitoring is a necessity for production deployments and can help you quickly determine the root cause of a failure and in many cases can alert you (and take action) before a catastrophic failure occurs.
+
+Setting up production monitoring and alerting is a non-trivial task and *Thingverse Enterprise Support* can help you with this.
+
+[[monitoring-architecture]]
+=== Monitoring Architecture
+
+TODO
+
+[[monitoring-instrumentation]]
+=== Metrics Instrumentation
+
+TODO
+
+[[monitoring-ts-data]]
+=== Metrics Time Series Data Collection
+You need to provision Prometheus first. Once you are ready, launch Prometheus using the following command.
+----
+./prometheus --config.file=prometheus.yml
+----
+The `prometheus.yml` file must have the following configs. This sets up service discovery for Prometheus to discover
+Thingverse API nodes and pull metrics from the backend cluster. You can replace `localhost:8500` with the actual
+endpoint of your Consul server. If Consul server itself is running in distributed mode, Prometheus would be able to
+scrape from all nodes of the cluster across multiple data centers and zones.
+
+----
+scrape_configs:
+  # Thingverse scrape
+  - job_name: 'thingverse'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    consul_sd_configs:
+    - server: 'localhost:8500'
+      services: ['thingverse-api']
+----
+[NOTE]
+====
+If you are using Consul for discovering your API endpoints, you must start Consul first.
+See <<thingverse-consul, Starting Consul>> for more details.
+====
+Once Prometheus is running, you can access the Prometheus UI to verify arrival of your metrics. The UI is available
+at http://localhost:9090/graph.
+
+image::../images/Prometheus.png[Prometheus UI]
+
+
+[[monitoring-dashboards]]
+=== Metrics Dashboards
+Once your monitoring data has been aggregated in time series format by Prometheus, you are ready to visualize the data
+using Grafana. Once Grafana is installed, you can start it as follows.
+
+[[monitoring-dashboard-graphana]]
+==== macOS
+
+----
+brew services start grafana
+----
+
+Grafana dashboard will be available at http://localhost:3000/. You should see a UI as shown below.
+
+image::../images/Grafana.png[Grafana Dashboard]

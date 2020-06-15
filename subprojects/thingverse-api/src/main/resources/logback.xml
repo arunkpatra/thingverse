@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>thingverse-api</contextName>
+    <jmxConfigurator/>
+
+    <if condition='!isDefined("THINGVERSE_ENV")'>
+        <then>
+            <include resource="com/thingverse/logging/thingverse-logging-defaults.xml"/>
+
+            <logger name="com.thingverse.common.env.postprocessor" level="DEBUG" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="thingverse.discovery.consul.health" level="DEBUG" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="com.thingverse.api.controllers" level="WARN" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="io.jaegertracing.internal" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="thingverse.tracing" level="TRACE" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="com.thingverse.api" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <root level="INFO">
+                <appender-ref ref="ASYNC"/>
+            </root>
+        </then>
+    </if>
+    <if condition='isDefined("THINGVERSE_ENV")'>
+        <then>
+            <include resource="${THINGVERSE_ENV}-logback.xml"/>
+        </then>
+    </if>
+
+</configuration>

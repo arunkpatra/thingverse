@@ -1,0 +1,233 @@
+// See https://docs.gradle.org/current/userguide/distribution_plugin.html
+plugins {
+    id 'distribution'
+    id 'maven-publish'
+}
+distZip {
+    archiveClassifier.set('dist')
+}
+
+tasks.withType(Tar) {
+    enabled = false
+}
+
+//distTar {
+//    archiveClassifier.set('dist')
+//}
+/*
+ * Returns a copySpec
+ */
+
+def getCopySpec(String projectName, String artifactType) {
+    def p = project(':'.concat(projectName))
+    switch (artifactType) {
+        case "bootLib":
+            return copySpec {
+                from(p.files('build/libs'))
+                include(p.name + '-' + p.version + '-boot.jar')
+                into('lib/')
+                rename '(.+)-boot(.+)', '$1$2'
+            }
+            break
+
+        case "lib":
+            return copySpec {
+                from(p.files('build/libs'))
+                include(p.name + '-' + p.version + '.jar')
+                into('lib/')
+            }
+            break
+
+        case "bin":
+            return copySpec {
+                from(p.files('scripts'))
+                into('bin/')
+            }
+            break
+
+        case "javadoc":
+            return copySpec {
+                from(p.files('build/libs'))
+                include(p.name + '-' + p.version + '-javadoc.jar')
+                into('docs/javadoc')
+            }
+            break
+
+        case "htmldocs":
+            return copySpec {
+                from(p.files('build/docs/asciidoc')) {
+                    rename 'index.html', "${rootProject.name}-${rootProject.version}.html"
+                }
+                into('docs/html')
+            }
+            break
+
+        case "pdfdocs":
+            return copySpec {
+                from(p.files('build/docs/asciidocPdf')) {
+                    rename 'index.pdf', "${rootProject.name}-${project.version}.pdf"
+                }
+                into('docs/pdf')
+            }
+            break
+
+        case "src":
+            return copySpec {
+                from(p.files('build/libs'))
+                include(p.name + '-' + p.version + '-sources.jar')
+                into('src/')
+            }
+            break
+
+        case "gatling":
+            return copySpec {
+                from(p.files('build/libs')) {
+                    include(p.name + '-' + p.version + '-gatling.jar')
+                }
+                from(p.files('build/docs/asciidoc'))
+                from(p.files('build/docs/asciidocPdf'))
+                into('gatling/')
+            }
+            break
+
+        default:
+            throw new GradleException('User requested an invalid artifactType: '.concat(artifactType))
+    }
+}
+
+def getAppCopySpecs = {
+    return copySpec().with(
+        // apps
+        getCopySpec('thingverse-api', 'bootLib'),
+        getCopySpec('thingverse-backend', 'bootLib'),
+        getCopySpec('thingverse-zuul-proxy', 'bootLib'),
+        getCopySpec('thingverse-test-cassandra-app', 'bootLib')
+    )
+}
+def getUserGuidesCopySpecs = {
+    return copySpec().with(
+            // user guides
+            getCopySpec('thingverse-docs', 'htmldocs'),
+            getCopySpec('thingverse-docs', 'pdfdocs')
+    )
+}
+def getSourcesCopySpecs = {
+    return copySpec().with(
+// Sources TODO: This does not work for the assemble/build task at the project root
+//
+//                    getCopySpec('thingverse-api', 'src'),
+//                    getCopySpec('thingverse-backend', 'src'),
+//                    getCopySpec('thingverse-zuul-proxy', 'src'),
+//                    getCopySpec('thingverse-test-cassandra-app', 'src')
+    )
+}
+def getJavaDocsCopySpecs = {
+    return copySpec().with(
+            // javadoc
+            getCopySpec('thingverse-api', 'javadoc'),
+            getCopySpec('thingverse-backend', 'javadoc'),
+            getCopySpec('thingverse-zuul-proxy', 'javadoc'),
+            getCopySpec('thingverse-test-cassandra-app', 'javadoc')
+    )
+}
+def getBinCopySpecs = {
+    return copySpec().with(
+            // scripts
+            getCopySpec('thingverse-scripts', 'bin')
+    )
+}
+
+distributions {
+    thingverseAll {
+        distributionBaseName.set('thingverse-all')
+        contents {
+            with(
+                    // apps
+                    getCopySpec('thingverse-api', 'bootLib'),
+                    getCopySpec('thingverse-backend', 'bootLib'),
+                    getCopySpec('thingverse-zuul-proxy', 'bootLib'),
+                    getCopySpec('thingverse-test-cassandra-app', 'bootLib'),
+                    // scripts
+                    getCopySpec('thingverse-scripts', 'bin'),
+                    // user guides
+                    getCopySpec('thingverse-docs', 'htmldocs'),
+                    getCopySpec('thingverse-docs', 'pdfdocs'),
+                    // javadoc
+                    getCopySpec('thingverse-api', 'javadoc'),
+                    getCopySpec('thingverse-backend', 'javadoc'),
+                    getCopySpec('thingverse-zuul-proxy', 'javadoc'),
+                    getCopySpec('thingverse-test-cassandra-app', 'javadoc'),
+                    // stress tests
+                    getCopySpec('thingverse-stress-tests', 'gatling')
+
+// Sources TODO: This does not work for the assemble/build task at the project root
+//
+//                    getCopySpec('thingverse-api', 'src'),
+//                    getCopySpec('thingverse-backend', 'src'),
+//                    getCopySpec('thingverse-zuul-proxy', 'src'),
+//                    getCopySpec('thingverse-test-cassandra-app', 'src'),
+            )
+        }
+    }
+    thingverseBin {
+        distributionBaseName.set('thingverse-bin')
+        contents {
+            with(
+                    // apps
+                    getCopySpec('thingverse-api', 'bootLib'),
+                    getCopySpec('thingverse-backend', 'bootLib'),
+                    getCopySpec('thingverse-zuul-proxy', 'bootLib'),
+                    getCopySpec('thingverse-test-cassandra-app', 'bootLib'),
+                    // scripts
+                    getCopySpec('thingverse-scripts', 'bin')
+
+            )
+        }
+    }
+    thingverseDocs {
+        distributionBaseName.set('thingverse-docs')
+        contents {
+            with(
+                    //javadoc
+                    getCopySpec('thingverse-api', 'javadoc'),
+                    getCopySpec('thingverse-backend', 'javadoc'),
+                    getCopySpec('thingverse-zuul-proxy', 'javadoc'),
+                    getCopySpec('thingverse-test-cassandra-app', 'javadoc'),
+                    // user guides
+                    getCopySpec('thingverse-docs', 'htmldocs'),
+                    getCopySpec('thingverse-docs', 'pdfdocs')
+
+            )
+        }
+    }
+    thingverseSrc {
+        distributionBaseName.set('thingverse-sources')
+        contents {
+            with(
+                    getCopySpec('thingverse-api', 'src'),
+                    getCopySpec('thingverse-backend', 'src'),
+                    getCopySpec('thingverse-zuul-proxy', 'src'),
+                    getCopySpec('thingverse-test-cassandra-app', 'src')
+            )
+        }
+    }
+    thingverseGatling {
+        distributionBaseName.set('thingverse-gatling')
+        contents {
+            with(
+                    getCopySpec('thingverse-stress-tests', 'gatling')
+            )
+        }
+    }
+}
+//tasks.build.dependsOn(dependentProjects.build)
+//tasks.build.dependsOn(tasks.thingverseDistZip)
+// The following will create the tar file also
+//tasks.build.dependsOn(tasks.assembleThingverseDist)
+
+tasks.forEach{ t ->
+    if (t.name.startsWith('thingverse')) {
+        t.outputs.cacheIf { true }
+        //println 'Made task: '.concat(t.name).concat(' cacheable.')
+    }
+}

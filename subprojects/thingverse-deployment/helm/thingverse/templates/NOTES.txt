@@ -1,0 +1,44 @@
+---------------------------------------------
+Thank you for installing {{ .Chart.Name }}. Your release is named {{ .Release.Name }}.
+
+    To learn more about the release, try:
+    -------------------------------------
+    $ helm status {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+    $ helm get all {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+    To check if the release was successful, try:
+    --------------------------------------------
+    $ helm test {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+    To rollback to a prior version of this release, try:
+    -------------------------------------------------------
+    $ helm history {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+    $ helm rollback {{ .Release.Name }} <release_version> --namespace {{ .Release.Namespace }}
+
+    To upgrade to a new version of this release, try:
+    -------------------------------------------------------
+    $ cd thingverse                           // CWD to project root
+    $ gradle assemble                         // build binary deployables
+    $ gradle pushDockerImage                  // build, tag and push images to specified repository. Control the registry name via DOCKER_REGISTRY env variable, eg. DOCKER_REGISTRY=localhost:5000
+    $
+    $ helm upgrade -f <override.yaml> --install {{ .Release.Name }} ./thingverse --namespace thingverse --force  // Upgrade to new version
+    $ helm history {{ .Release.Name }} --namespace {{ .Release.Namespace }}  // verify upgrade history
+
+    To uninstall this release altogether, try:
+    ------------------------------------------
+    $ helm uninstall {{ .Release.Name }} --namespace {{ .Release.Namespace }}
+
+    To install a fresh release again after deleting it, try:
+    --------------------------------------
+    helm install -f <override.yaml> {{ .Release.Name }} ./thingverse --namespace {{ .Release.Namespace }} --create-namespace
+
+    To list the resources created by this release, try:
+    -------------------------------------
+    $ helm get manifest {{ .Release.Name }} --namespace {{ .Release.Namespace }} | kubectl get --namespace {{ .Release.Namespace }} -f -
+
+    If you have started Thingverse in secured mode, the default credentials are:
+    ---------------------------------------------------------------------------
+    User: thingverse
+    Password: thingverse
+
+To access the API, point your browser to http://<hostname>:30091/swagger-ui.html

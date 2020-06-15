@@ -1,0 +1,28 @@
+[[production-deployment-kubernetes]]
+== Kubernetes Deployment
+
+While you can run Thingverse on your own cluster and manage instances by hand, you would probably like to have all of that done automatically for you, with you only supplying the hardware.
+Kubernetes is a great platform to run a Production Thingverse Cluster and is the recommended approach too.
+Out of the box, Thingverse ships with everything you need to run a completely self-managed cluster in Kubernetes which is extremely easy to scale, self-heal, manage and monitor.
+*Thingverse Enterprise Support* can help you with this.
+
+[[production-deployment-toplogy-kubernetes]]
+=== Kubernetes Production Deployment Topology
+
+TODO
+
+[[production-kubernetes-sizing]]
+=== Kubernetes Sizing
+
+TODO
+
+[[production-kubernetes-capacity-planning]]
+=== Kubernetes Capacity Planning
+
+TODO
+
+[[prod-docker-kubernetes-ref]]
+=== Appendices
+
+*  Docker Desktop for Mac: https://docs.docker.com/docker-for-mac/kubernetes/
+*  Kubernetes Dashboard for Mac: https://forums.docker.com/t/docker-for-mac-kubernetes-dashboard/44116/6

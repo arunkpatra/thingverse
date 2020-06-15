@@ -1,0 +1,40 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  creationTimestamp: null
+  name: thingverse-backend.thingverse.svc.cluster.local
+  namespace: thingverse
+spec:
+  routes:
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/CreateThing
+    name: CreateThing
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/GetThing
+    name: GetThing
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/StreamAllThingIDs
+    name: StreamAllThingIDs
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/StopThing
+    name: StopThing
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/ClearThing
+    name: ClearThing
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/UpdateThing
+    name: UpdateThing
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/GetMetrics
+    name: GetMetrics
+  - condition:
+      method: POST
+      pathRegex: /com\.thingverse\.backend\.v1\.ThingverseGrpcService/GetBackendClusterStatus
+    name: GetBackendClusterStatus

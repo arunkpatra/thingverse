@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+THINGVERSE_OPTS=
+if [ -n "${THINGVERSE_OPERATION_MODE}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Doperation-mode=${THINGVERSE_OPERATION_MODE}"
+fi
+
+if [ -n "${RUNTIME_ENVIRONMENT}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Druntime-env=${RUNTIME_ENVIRONMENT}"
+fi
+
+if [ -n "${SECURED}" ]; then
+  THINGVERSE_OPTS="$THINGVERSE_OPTS -Dthingverse.api.secured=${SECURED}"
+fi
+
+echo THINGVERSE_OPTS : "$THINGVERSE_OPTS"
+java $THINGVERSE_OPTS -jar /app.jar
+
+
+

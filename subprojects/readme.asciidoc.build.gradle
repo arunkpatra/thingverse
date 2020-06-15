@@ -1,0 +1,56 @@
+repositories {
+    jcenter()
+    ruby.gems()
+}
+
+dependencies {
+    asciidoctorGems 'rubygems:rouge:3.18.0'
+}
+
+asciidoctorPdf {
+    dependsOn asciidoctorGemsPrepare
+    baseDirIsRootProjectDir()
+    sourceDir  file('.')
+    sources {
+        include 'README.adoc'
+    }
+    asciidoctorj {
+        requires 'rouge'
+        attributes 'build-gradle': file('build.gradle'),
+                'project-version': project.version,
+                'sourcedir': project.sourceSets.main.java.srcDirs[0],
+                'endpoint-url': 'http://example.org',
+                'source-highlighter': 'rouge',
+                'imagesdir': './images',
+//                'toc': 'left',
+                'icons': 'font',
+                'idprefix': '',
+                'idseparator': '-'
+    }
+}
+
+asciidoctor {
+    baseDirIsRootProjectDir()
+    sourceDir  file('.')
+    sources {
+        include 'README.adoc'
+    }
+    attributes = [
+            'project-version'   : project.version,
+            'source-highlighter': 'coderay',
+            'build-gradle'      : file('build.gradle'),
+            'sourcedir'         : project.sourceSets.main.java.srcDirs[0],
+            'endpoint-url'      : 'http://example.org',
+            'imagesdir'         : 'images',
+            'toc'               : 'left',
+            'icons'             : 'font',
+            'setanchors'        : '',
+            'idprefix'          : '',
+            'idseparator'       : '-',
+            'docinfo'           : 'shared']
+}
+
+task generateReadmeDocs(type: DefaultTask) {
+    dependsOn 'asciidoctorPdf', 'asciidoctor'
+}
+//tasks.build.finalizedBy(tasks.generateReadmeDocs)

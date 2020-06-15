@@ -1,0 +1,69 @@
+== Local Kubernetes Cluster Deployment.
+
+[NOTE]
+====
+On `Docker Desktop`, you must have CoreDNS and RBAC available. Just list the pods and verify using `kubectl get pods --all-namespaces`. Also ensure that the `thingverse-backend-rbac.yaml` deployment is done.
+
+Similarly, on `microk8s` you should have the `dns` and `rbac` addons are enabled.
+====
+
+[CAUTION]
+====
+
+====
+There's an issue with Docker Desktop's RBAC. https://github.com/docker/for-mac/issues/3694[See this for a workaround.]
+
+=== Build Images
+
+==== API
+----
+$ cd subprojects/thingverse-api
+$ gradle assemble
+$ docker build --tag thingverse-api:0.0.1 .
+----
+
+==== Backend
+----
+$ cd subprojects/thingverse-backend
+$ gradle assemble
+$ docker build --tag thingverse-backend:0.0.1 .
+----
+
+=== Deploy Resources
+
+[cols="5%,35%,60%"]
+|===
+|Sl# |File |Description
+
+|1
+|`thingverse-namespace.yaml`
+|`Namespace` definition for Thingverse.
+
+|2
+|`thingverse-service-account.yaml`
+|`ServiceAccount` for Thingverse.
+
+|3
+|`thingverse-backend-rbac.yaml`
+|`ClusterRole` and `ClusterRoleBinding` for Thingverse service account.
+
+|4
+|`thingverse-cassandra.yaml`
+|Single node Cassandra(`Pod` and `NodePort`) and Cassandra UI(`Pod` and `NodePort`).
+
+|5
+|`thingverse-api.yaml`
+|Thingverse API. `Pod` and `NodePort`.
+
+|6
+|`thingverse-backend-read.yaml`
+|Thingverse backend `Pod`(s) with `read-model` CQRS role.
+
+|7
+|`thingverse-backend-write.yaml`
+|Thingverse backend `Pod`(s) with `write-model` CQRS role.
+
+|8
+|`thingverse-backend-service.yaml`
+|Thingverse backend `ClusterIP` service.
+|===

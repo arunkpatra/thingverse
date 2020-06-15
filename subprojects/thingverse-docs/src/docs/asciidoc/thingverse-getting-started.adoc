@@ -1,0 +1,83 @@
+[[getting-started]]
+== Getting started
+
+This guide helps you to get started quickly with Thingverse.
+You will be able build Thingverse from source and run all components needed for a fully functional system.
+
+[[pre-requisites]]
+=== Pre-requisites
+
+You need the following:
+
+1. Hardware: Either physical or Virtual machines with minimum 4 GB RAM and 2 CPU Cores _(8 GB RAM, 4 CPU Cores if you want to run cluster)_
+2. Operating System: Windows(version 10+), macOS(version 10.15+), Linux (CentOS, RHEL, Ubuntu)
+3. Java - JDK 8
+4. Build Tool - Maven 3.6 or above _(Optional)_
+5. Consul _(Optional)_
+6. Cassandra _(Optional)_
+
+[[thingverse-software-components]]
+=== Let's get started
+
+Thingverse has two main components that need to be started.
+One if these is the API which exposes REST endpoints over HTTP. These endpoints allow to interact with the Thingverse backend.
+Due to availability and scalability reasons, these two components run in different runtime environments.
+Both of these components can run either as a single node in
+`standalone` mode(this is the default) or as part of a multi-node cluster in `clustered` mode.
+Later chapters provide more details on these modes.
+
+[[build-thingverse]]
+=== Build Thingverse from Source
+
+Checkout the Thingverse project from SCM. Thingverse uses `maven` as its build system.
+Build it using the following command at the root of the `thingverse` directory.
+This will build the project and create the binaries needed.
+The build produces `jar` files which are standard Spring Boot applications.
+
+----
+mvn clean install
+----
+
+[[run-backend-node]]
+=== Run Thingverse Backend
+
+You must have already built Thingverse to execute this step.
+Issue the following command from the root of the
+`thingverse` directory to run the backend application.
+
+----
+java -jar thingverse-backend/target/thingverse-backend.jar
+----
+
+[NOTE]
+====
+This above command starts the Thingverse backend in `standalone` mode with default settings.
+Also, note that, when
+`things` are created in the system, they get passivated after a default timeout of 180 seconds elapse without the thing seeing any interaction with it.
+Once this timeout occurs, the `thing` is passivated and all resources allocated to it are released.
+If you want to switch of this behavior, then pass the
+`-Dthingverse.things.remote-thing.thing-timeout-duration=off` environmental variable while starting the backend.
+It is important to note that, even if a thing has been passivated, if a new message arrives for it, the thing is automatically resurrected an its last known state is correctly restored.
+
+TODO: Document the defaults.
+====
+
+[[run-rest-api]]
+=== Run Thingverse REST API
+
+You must have already built Thingverse to execute this step.
+Issue the following command from the root of the
+`thingverse` directory to run the backend application.
+
+----
+java -jar thingverse-api/target/thingverse-api.jar
+----
+
+[NOTE]
+====
+This above command starts the Thingverse REST API in `standalone` mode with default settings.
+In this mode, API security is turned `off` by default.
+To secure the `/api/**` endpoints, pass the `-Dthingverse.api.secured=true` JVM startup property.
+
+TODO: Document the defaults.
+====

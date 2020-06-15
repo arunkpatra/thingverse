@@ -1,0 +1,16 @@
+{{- if .Values.thingverse.monitoring.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+spec:
+  type: {{ .Values.thingverse.monitoring.grafana.service.type }}
+  selector:
+    k8s-app: grafana
+  ports:
+    - port: 3012
+      targetPort: 3000
+      {{- if (eq "NodePort" .Values.thingverse.monitoring.grafana.service.type )}}
+      nodePort: 30012
+     {{- end }}
+{{- end }}

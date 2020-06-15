@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>thingverse-zuul-proxy</contextName>
+
+    <property name="LOG_FILE" value="target/logs/thingverse-zuul-proxy-${PID}.log"/>
+
+    <include resource="com/thingverse/logging/thingverse-logging-defaults.xml"/>
+
+    <if condition='!isDefined("ENV")'>
+        <then>
+            <logger name="com.thingverse.zuul" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="com.netflix.discovery.shared.resolver" level="WARN" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <root level="INFO">
+                <appender-ref ref="ASYNC"/>
+            </root>
+        </then>
+    </if>
+    <if condition='isDefined("ENV")'>
+        <then>
+            <include resource="${ENV}-logback.xml"/>
+        </then>
+    </if>
+
+</configuration>

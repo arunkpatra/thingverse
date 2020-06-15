@@ -1,0 +1,155 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'com.bmuschko.docker-remote-api' version '6.4.0'
+    id 'com.gorylenko.gradle-git-properties' version '2.2.2'
+}
+import com.bmuschko.gradle.docker.tasks.image.*
+import com.bmuschko.gradle.docker.tasks.*
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+jar {
+    enabled = true
+}
+bootJar {
+    archiveClassifier.set('boot')
+}
+test {
+    useJUnitPlatform()
+}
+gitProperties {
+    failOnNoGitDirectory = false
+}
+springBoot  {
+    buildInfo()
+}
+
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+
+    implementation project(':thingverse-consul-autoconfig')
+    implementation project(':thingverse-kubernetes')
+    implementation project(':thingverse-common')
+    implementation project(':thingverse-monitoring')
+    implementation project(':thingverse-logging')
+    implementation project(':thingverse-grpc-client')
+    implementation project(':thingverse-grpc-common')
+    implementation project(':thingverse-kubernetes')
+    implementation project(':thingverse-tracing')
+
+    implementation("com.lightbend.akka.discovery:akka-discovery-kubernetes-api_2.12") {
+        exclude group: 'com.typesafe.akka', module: 'akka-actor_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'
+    }
+    implementation "com.typesafe.akka:akka-actor_2.12"
+    implementation "com.typesafe.akka:akka-actor-typed_2.12"
+    implementation "com.typesafe.akka:akka-stream_2.12"
+    implementation "com.typesafe.akka:akka-discovery_2.12"
+    implementation('org.springframework.cloud:spring-cloud-starter-consul-discovery') {
+        exclude group: 'com.ecwid.consul', module: 'consul-api'
+    }
+    implementation("com.lightbend.akka.grpc:akka-grpc-runtime_2.12") {
+        exclude group: 'com.typesafe.akka', module: 'akka-stream_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'
+    }
+
+    implementation "io.grpc:grpc-netty-shaded"
+
+    implementation "com.ecwid.consul:consul-api"
+    implementation "io.springfox:springfox-swagger2"
+    implementation "io.springfox:springfox-swagger-ui"
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    implementation "io.jsonwebtoken:jjwt"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2'
+    implementation 'io.github.resilience4j:resilience4j-all'
+    implementation 'io.github.resilience4j:resilience4j-reactor'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'de.codecentric:chaos-monkey-spring-boot'
+    implementation 'io.vavr:vavr-jackson'
+    implementation 'mysql:mysql-connector-java'
+    implementation 'org.apache.derby:derby'
+    implementation 'org.codehaus.janino:janino'
+    implementation 'de.codecentric:spring-boot-admin-starter-client'
+    implementation 'org.jolokia:jolokia-core'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+publishing {
+    publications {
+        thingverseApi(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            artifact bootJar
+            pom {
+                name = 'Thingverse REST API'
+                description = 'Thingverse REST API'
+            }
+        }
+    }
+}
+
+String getDockerRegistryUrl()  {
+    String url = System.getenv('DOCKER_REGISTRY')
+    return null != url ? url : project.properties.getOrDefault('docker.registry', "")
+}
+
+task checkIfDockerRegistrySpecified(type: DefaultTask) {
+    doFirst {
+        if (getDockerRegistryUrl().length() != 0) {
+            project.ext["docker.registry"] = getDockerRegistryUrl()
+        } else {
+            println "WARNING:Could not locate docker registry. You can provide either the DOCKER_REGISTRY " +
+                    "environment variable or the docker.registry system property, e.g -Ddocker.registry=localhost:5000. " +
+                    "The gradle.properties file of the root project may also be used."
+        }
+    }
+}
+
+task checkIfDockerIsRunning(type: DockerVersion) {
+    dependsOn checkIfDockerRegistrySpecified
+    onError { exception ->
+        project.ext['docker.not.running'] = true
+        println "WARNING: Docker is not running. Can't perform any Docker related tasks."
+    }
+}
+
+task buildDockerImage(type: DockerBuildImage) {
+    dependsOn checkIfDockerIsRunning, bootJar
+    onlyIf { !project.hasProperty('docker.not.running') && project.hasProperty('docker.registry')}
+    inputDir.set(file('.'))
+    images.addAll("${project.name}:${project.version}",
+            "${getDockerRegistryUrl()}/${project.name}:${project.version}")
+    onError {  e -> println("Can't build image. Error is: ${e.message}")}
+}
+
+task pushDockerImage(type: DockerPushImage) {
+    dependsOn buildDockerImage
+    onlyIf { !project.hasProperty('docker.not.running') && project.hasProperty('docker.registry') }
+    images.addAll("${getDockerRegistryUrl()}/${project.name}:${project.version}")
+    onError { exception ->
+        println("Can't push image. Error is: " + exception.message)
+    }
+}
+
+docker {
+    registryCredentials {
+        url.set("http://${getDockerRegistryUrl()}/v2/")
+    }
+}

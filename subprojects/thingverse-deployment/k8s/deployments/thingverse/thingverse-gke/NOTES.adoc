@@ -1,0 +1,64 @@
+== GKE Deployment.
+
+=== Build and Push images to GCR
+
+Reference: https://cloud.google.com/container-registry/docs/pushing-and-pulling
+
+==== API
+----
+$ cd subprojects/thingverse-api
+$ gradle assemble
+$ docker build --tag thingverse-api:0.0.1 .
+
+$ docker tag thingverse-api:0.0.1 gcr.io/erudite-realm-266710/thingverse-api:0.0.1
+$ docker push gcr.io/erudite-realm-266710/thingverse-api:0.0.1
+----
+
+==== Backend
+----
+$ cd subprojects/thingverse-backend
+$ gradle assemble
+$ docker build --tag thingverse-backend:0.0.1 .
+
+$ docker tag thingverse-backend:0.0.1 gcr.io/erudite-realm-266710/thingverse-backend:0.0.1
+$ docker push gcr.io/erudite-realm-266710/thingverse-backend:0.0.1
+----
+
+=== Deploy Resources
+
+[cols="5%,35%,60%"]
+|===
+|Sl# |File |Description
+
+|1
+|`thingverse-namespace.yaml`
+|`Namespace` definition for Thingverse.
+
+|2
+|`thingverse-service-account.yaml`
+|`ServiceAccount` for Thingverse.
+
+|3
+|`thingverse-backend-rbac.yaml`
+|`ClusterRole` and `ClusterRoleBinding` for Thingverse service account.
+
+|4
+|`thingverse-cassandra.yaml`
+|Single node Cassandra(`Pod` and `NodePort`) and Cassandra UI(`Pod` and `LoadBalancer`).
+
+|5
+|`thingverse-api.yaml`
+|Thingverse API. `Pod` and `LoadBalancer`.
+
+|6
+|`thingverse-backend-read.yaml`
+|Thingverse backend `Pod`(s) with `read-model` CQRS role.
+
+|7
+|`thingverse-backend-write.yaml`
+|Thingverse backend `Pod`(s) with `write-model` CQRS role.
+
+|8
+|`thingverse-backend-service.yaml`
+|Thingverse backend `ClusterIP` service.
+|===

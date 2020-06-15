@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>thingverse</contextName>
+    <property name="LOG_FILE" value="build/logs/thingverse-test-logging-app-${PID}.log"/>
+
+    <include resource="com/thingverse/logging/thingverse-logging-defaults.xml"/>
+
+    <logger name="com.thingverse.logging" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

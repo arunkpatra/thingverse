@@ -1,0 +1,85 @@
+plugins {
+    id 'java-library'
+    id 'scala'
+    id "com.github.lkishalmi.gatling" version "3.3.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id 'org.asciidoctor.jvm.convert' version '3.2.0'
+    id 'org.asciidoctor.jvm.pdf' version '3.2.0'
+    id 'org.asciidoctor.jvm.gems' version '3.2.0'
+}
+apply from: '../readme.asciidoc.build.gradle'
+
+java {
+    withSourcesJar()
+}
+gatling {
+    jvmArgs = ['-server', '-Xmx1G',
+               '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=30',
+               '-XX:G1HeapRegionSize=16m',
+               '-XX:InitiatingHeapOccupancyPercent=75',
+               '-XX:+ParallelRefProcEnabled',
+               '-XX:+PerfDisableSharedMem',
+               '-XX:+AggressiveOpts',
+               '-XX:+OptimizeStringConcat',
+               '-XX:+HeapDumpOnOutOfMemoryError']
+    simulations = {include "**/*Simulation.scala"}
+}
+sourceSets {
+    gatling {
+        scala.srcDirs = ["src/main/scala"]
+        resources.srcDirs = ["src/main/resources"]
+    }
+}
+gatlingRun {
+    simulations { include "**/BasicUnsecuredStandaloneSimulation.scala" }
+    jvmArgs = ['-server', '-Xms512M', '-Xmx2G',
+              '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=30',
+              '-XX:G1HeapRegionSize=16m',
+              '-XX:InitiatingHeapOccupancyPercent=75',
+              '-XX:+ParallelRefProcEnabled',
+              '-XX:+PerfDisableSharedMem',
+              '-XX:+AggressiveOpts',
+              '-XX:+OptimizeStringConcat',
+              '-XX:+HeapDumpOnOutOfMemoryError']
+}
+tasks.build.dependsOn tasks.shadowJar
+shadowJar {
+    classifier 'gatling'
+    project.configurations.implementation.canBeResolved = true
+    configurations = [project.configurations.implementation]
+//    configurations = [project.configurations.compile]
+}
+dependencies {
+    //api enforcedPlatform(project(':thingverse-bom'))
+    implementation "gradle.plugin.com.github.lkishalmi.gatling:gradle-gatling-plugin:3.3.0"
+    implementation "org.scala-lang:scala-library:2.12.10"
+    implementation "io.gatling.highcharts:gatling-charts-highcharts:3.3.1"
+}
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Main-Class': 'io.gatling.app.Gatling')
+    }
+}
+publishing {
+    publications {
+        thingverseGatling(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            artifact shadowJar
+            pom {
+                name = 'Thingverse Stress Tests'
+                description = 'Thingverse Gatling Simulations'
+            }
+        }
+    }
+}
+assemble.dependsOn shadowJar

@@ -1,0 +1,146 @@
+# See https://gitlab.com/gitlab-org/gitlab-ci-yml/commit/58ff8bb20dfcb3133932882d7d264fabced2a248
+image: gradle:6.4.1-jdk11
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  paths:
+    - gradle/wrapper
+    - .gradle
+    - build-cache
+#    - subprojects/thingverse-assembly/build/
+#    - subprojects/thingverse-api/build/
+#    - subprojects/thingverse-backend/build/
+#    - subprojects/thingverse-zuul-proxy/build/
+#    - subprojects/thingverse-test-cassandra-app/build/
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+stages:
+  - build
+  - test
+  - release
+  - deploy
+
+build:
+  stage: build
+  script:
+#    - ./gradlew assemble --console=plain --info
+    - ./gradlew check --console=plain --info --no-parallel
+    - ./gradlew generateThingverseCoverageReport --console=plain --info --no-parallel
+#    - ./gradlew generateReadmeDocs generateThingverseDocs --console=plain --info
+#    - ./gradlew thingverseAllDistZip thingverseBinDistZip thingverseDocsDistZip thingverseGatlingDistZip thingverseSrcDistZip --console=plain --info
+  artifacts:
+    reports:
+      junit:
+        - subprojects/thingverse-api/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-backend/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-grpc-common/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-grpc-client/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-cassandra-backend/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-common/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-consul-autoconfig/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-monitoring/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-tracing/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-resilience/build/test-results/test/TEST-*.xml
+        - subprojects/thingverse-logging/build/test-results/test/TEST-*.xml
+  after_script:
+    - cat subprojects/thingverse-coverage-reporting/build/reports/jacoco/generateThingverseCoverageReport/html/index.html | grep -o '<tfoot>.*</tfoot>'
+
+.publish_thingverse_distributable: &publish_job_definition
+  stage: release
+  script:
+    - echo Publishing ${DIST_TYPE} artifacts
+    - cd subprojects/thingverse-assembly/build/distributions/
+    - ls -al
+  artifacts:
+    name: Thingverse-${DIST_TYPE}
+    paths:
+      - subprojects/thingverse-assembly/build/distributions/thingverse-${DIST_TYPE}-*.zip
+
+.publish_docs:
+  <<: *publish_job_definition
+  variables:
+    DIST_TYPE: "docs"
+
+.publish_sources:
+  <<: *publish_job_definition
+  variables:
+    DIST_TYPE: "sources"
+
+.publish_bin:
+  <<: *publish_job_definition
+  variables:
+    DIST_TYPE: "bin"
+
+.publish_gatling:
+  <<: *publish_job_definition
+  variables:
+    DIST_TYPE: "gatling"
+
+.publish_all:
+  <<: *publish_job_definition
+  variables:
+    DIST_TYPE: "all"
+
+
+.image_build_job_template: &docker_img_job_definition
+  image: docker:19.03.2
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: "/certs"
+
+  services:
+    - docker:dind
+
+  before_script:
+    - cd subprojects/${BUILD_TARGET}
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+  script:
+    - export
+    - docker info
+    - docker pull $CI_REGISTRY_IMAGE/${BUILD_TARGET}:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE/${BUILD_TARGET}:latest --tag $CI_REGISTRY_IMAGE/${BUILD_TARGET}:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE/${BUILD_TARGET}:latest --tag $CI_REGISTRY_IMAGE/${BUILD_TARGET}:$THINGVERSE_VERSION .
+    - docker push $CI_REGISTRY_IMAGE/${BUILD_TARGET}:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/${BUILD_TARGET}:$THINGVERSE_VERSION
+    - docker push $CI_REGISTRY_IMAGE/${BUILD_TARGET}:latest
+
+.build_api_image:
+  <<: *docker_img_job_definition
+  stage: release
+  variables:
+    BUILD_TARGET: "thingverse-api"
+
+.build_backend_image:
+  <<: *docker_img_job_definition
+  stage: release
+  variables:
+    BUILD_TARGET: "thingverse-backend"
+
+.build_zuul_proxy_image:
+  <<: *docker_img_job_definition
+  stage: release
+  variables:
+    BUILD_TARGET: "thingverse-zuul-proxy"
+
+.build_test_cassandra_app_image:
+  <<: *docker_img_job_definition
+  stage: release
+  variables:
+    BUILD_TARGET: "thingverse-test-cassandra-app"
+
+.deploy_staging:
+  stage: deploy
+  script:
+    - echo Deploying to staging environment
+
+.deploy_live:
+  stage: deploy
+  when: manual
+  only:
+    - master
+  script:
+    - echo in deploy stage

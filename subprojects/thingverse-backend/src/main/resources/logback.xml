@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>thingverse-backend</contextName>
+    <jmxConfigurator/>
+
+    <if condition='!isDefined("THINGVERSE_ENV")'>
+        <then>
+            <include resource="com/thingverse/logging/thingverse-logging-defaults.xml"/>
+
+            <logger name="io.jaegertracing.internal" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="thingverse.tracing" level="TRACE" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="com.thingverse.backend" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="akka.actor" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="akka" level="INFO" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <logger name="akka.cluster.sharding.DDataShard" level="WARN" additivity="false">
+                <appender-ref ref="ASYNC"/>
+            </logger>
+
+            <root level="INFO">
+                <appender-ref ref="ASYNC"/>
+            </root>
+
+        </then>
+    </if>
+    <if condition='isDefined("THINGVERSE_ENV")'>
+        <then>
+            <include resource="${THINGVERSE_ENV}-logback.xml"/>
+        </then>
+    </if>
+
+</configuration>

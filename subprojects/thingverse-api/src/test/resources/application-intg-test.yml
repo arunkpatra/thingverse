@@ -1,0 +1,21 @@
+server:
+  port: 0
+spring:
+  boot:
+    admin:
+      client:
+        enabled: false
+  cloud:
+    consul:
+      enabled: false
+      port: 8613
+thingverse:
+  tracing:
+    enabled: true
+    transmit-span: false
+  api:
+    secured: true
+  consul:
+    registration:
+      embedded: false
+      port: 8613

@@ -1,0 +1,7 @@
+thingverse:
+  monitoring:
+    enabled: false
+  cassandra:
+    contactPoints: "cassandra-0.cassandra.thingverse.svc.cluster.local\\\":\\\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\\\":\\\"9042"
+    needed: false
+    webUIAppNeeded: false

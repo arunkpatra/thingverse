@@ -1,0 +1,96 @@
+import java.util.stream.Collectors
+
+// Jacoco - https://docs.gradle.org/current/userguide/jacoco_plugin.html
+// https://gist.github.com/aalmiray/e6f54aa4b3803be0bcac
+plugins {
+    id 'base'
+    id 'java'
+    id 'jacoco'
+}
+
+def jacocoProjects = rootProject.subprojects.stream().filter {p -> p.plugins.hasPlugin('jacoco')}.collect(Collectors.toSet())
+
+check.dependsOn jacocoTestCoverageVerification
+
+jacocoTestCoverageVerification {
+    dependsOn 'generateThingverseCoverageReport'
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 1.0
+            }
+        }
+//        rule {
+//            limit {
+//                minimum = 0.9
+//            }
+//        }
+//        rule {
+//            enabled = false
+//            element = 'BUNDLE'
+////            includes = ['org.gradle.*']
+//
+//            limit {
+//                counter = 'INSTRUCTION'
+//                value = 'COVEREDRATIO'
+//                minimum = 0.9
+//            }
+//        }
+    }
+}
+
+//def printProjectDetails = { Project p ->
+//    println 'Details for Project: ' + p.name
+//    println '----------------------------------------------------------'
+//    p.plugins.collect().forEach { plg ->
+//        println '             Plugin: ' + plg.toString()
+//    }
+//}
+task generateThingverseCoverageReport(type: JacocoReport) {
+    dependsOn = jacocoProjects.test
+
+//    println 'Printing All Sub-Projects'
+//    println '-------------------------'
+//    jacocoProjects.forEach {p -> printProjectDetails(p)}
+//    jacocoProjects.forEach {p -> println p.name }
+
+    executionData.from = files(jacocoProjects.jacocoTestReport.executionData).filter { f -> f.exists() }
+    additionalSourceDirs.from = files(jacocoProjects.sourceSets.main.allSource.srcDirs).filter { f -> f.exists() }
+    sourceDirectories.from = files(jacocoProjects.sourceSets.main.allSource.srcDirs).filter { f -> f.exists() }
+    classDirectories.from = files(jacocoProjects.sourceSets.main.output).filter { f -> f.exists() }.files.collect {
+        fileTree(
+                dir: it,
+                exclude: [
+                        '**/com/thingverse/zuul/**/*',
+                        '**/com/thingverse/admin/**/*',
+                        '**/com/thingverse/api/security/config/**/*',
+                        '**/com/thingverse/ribbon/**/*',
+                        '**/com/thingverse/wrapper/**/*',
+                        '**/thingverse/discovery/kubernetes/svc/**/*',
+                        '**/com/thingverse/cli/**/*',
+                        '**/com/thingverse/backend/v1/**/*',
+                        '**/com/thingverse/kubernetes/env/health/**/*',
+                        '**/com/thingverse/backend/downing/**/*',
+                        '**/com/thingverse/backend/metrics/collector/**/*',
+                        '**/com/thingverse/backend/metrics/listener/**/*',
+                        '**/com/thingverse/backend/environment/postprocessor/**/*',
+                        '**/com/thingverse/api/environment/postprocessor/**/*',
+                        '**/com/thingverse/api/exceptions/**/*',
+                        '**/com/thingverse/common/exception/**/*',
+                        '**/com/google/protobuf/**/*',
+                        '**/com/thingverse/protobuf/**/*',
+                        '**/grpc/health/v1/**/*',
+                        '**/com/thingverse/ribbon/rule/**/*',
+                        '**/com/thingverse/cassandra/**/*'
+                ]
+        )
+    }
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.enabled true
+    }
+}
+//tasks.build.dependsOn(tasks.generateThingverseCoverageReport)

@@ -1,0 +1,30 @@
+spring:
+  boot:
+    admin:
+      client:
+        enabled: false
+thingverse:
+  tracing:
+    enabled: true
+    transmit-span: false
+  backend:
+    print-initial-actor-system-tree: true
+    roles: read-model, write-model, junk-model
+  consul:
+    registration:
+      embedded: true
+      enabled: true
+      port: 8599
+  grpc:
+    client:
+      enabled: true
+  storage:
+    backend:
+      cassandra:
+        background: true
+        config-file: mini-test-thingverse-embedded-cassandra.yaml
+        embedded: true
+        enabled: true
+        path: build/b2/cassandra-db
+        port: 9043
+        start-clean: true

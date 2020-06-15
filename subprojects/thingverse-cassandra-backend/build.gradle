@@ -1,0 +1,60 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'scala'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    api platform(project(':thingverse-bom'))
+
+    api project(':thingverse-backend-api')
+    implementation project(':thingverse-common')
+
+    api "com.typesafe.akka:akka-cluster-sharding-typed_2.12"
+    api "com.typesafe.akka:akka-persistence-typed_2.12"
+    api "com.typesafe.akka:akka-persistence-query_2.12"
+    api "com.typesafe.akka:akka-persistence_2.12"
+    api "com.typesafe.akka:akka-serialization-jackson_2.12"
+    api "com.typesafe.akka:akka-cluster-tools_2.12"
+    api "com.typesafe.akka:akka-http_2.12"
+    api "com.typesafe.akka:akka-http-jackson_2.12"
+    api("com.typesafe.akka:akka-persistence-cassandra_2.12") {
+        exclude group: 'com.typesafe.akka', module: 'akka-persistence_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-persistence-query_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-cluster-tools_2.12'
+    }
+    api "com.typesafe.akka:akka-persistence-cassandra-launcher_2.12"
+
+    implementation "org.springframework.boot:spring-boot"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+publishing {
+    publications {
+        thingverseCassandraBackend(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Cassandra Backend'
+                description = 'Thingverse Cassandra Backend'
+            }
+        }
+    }
+}

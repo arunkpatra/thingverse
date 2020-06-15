@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'io.github.resilience4j:resilience4j-all'
+    implementation 'io.github.resilience4j:resilience4j-reactor'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'de.codecentric:chaos-monkey-spring-boot'
+    implementation 'io.vavr:vavr-jackson'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE"
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}

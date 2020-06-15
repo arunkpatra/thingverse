@@ -1,0 +1,24 @@
+### ServiceProfile for thingverse-api.thingverse ###
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: thingverse-api.thingverse.svc.cluster.local
+  namespace: thingverse
+spec:
+  routes:
+  - name: 'GET /api/cluster/state'
+    condition:
+      pathRegex: '/api/cluster/state'
+      method: GET
+    isRetryable: true
+    responseClasses:
+    - condition:
+        status:
+          min: 500
+          max: 599
+      isFailure: true
+    timeout: 5s
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s

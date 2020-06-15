@@ -1,0 +1,80 @@
+[[k8s-kubernetes-refrence]]
+== Kubernetes Reference
+
+These are some helpful material to help you become more productive with Kubernetes.
+
+[[k8s-refrences]]
+=== Kubernetes References
+1.  https://medium.com/flant-com/running-cassandra-in-kubernetes-challenges-and-solutions-9082045a7d93[Running Cassandra on K8s]. Details out steps on running Cassandra in a K8s Cluster.
+
+2. https://docs.docker.com/get-started/kube-deploy/[Docker K8s General Info]. general information on Docker
+3. https://managedkube.com/kubernetes/k8sbot/troubleshooting/imagepullbackoff/2019/02/23/imagepullbackoff.html[K8s Troubleshooting]. Kubernetes troubleshooting tips and tricks.
+
+4. https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-networking-guide-beginners.html[K8s Networking]. Kubernetes networking for beginners.
+
+5. https://linchpiner.github.io/k8s-multi-container-pods.html[K8s Multi-container Pods]. Running multiple containers in a single Pod.
+
+6. https://medium.com/htc-research-engineering-blog/monitoring-kubernetes-clusters-with-grafana-e2a413febefd[K8s Monitoring Using Grafana]. How to monitor a Kubernetes cluster using Prometheus and Grafana.
+
+7. https://linuxacademy.com/blog/kubernetes/running-prometheus-on-kubernetes/[Running Prometheus on K8s]. How to run Prometheus on Kubernetes.
+
+[[k8s-useful-command]]
+=== Kubernetes Useful Commands
+
+==== Namespace
+
+----
+# List
+kubectl get namespaces
+
+# Create
+kubectl apply -f thingverse_ns.yaml
+
+# Delete
+kubectl delete -f thingverse_ns.yaml
+----
+
+==== Deployments
+
+----
+# Create
+kubectl apply -f thingverse_standalone.yaml
+
+# List deployments
+kubectl get deployments --namespace=thingverse-ns
+
+# List Services
+kubectl get services --namespace=thingverse-ns
+
+# Tear down
+kubectl delete -f thingverse_standalone.yaml
+----
+
+[[k8s-tips-and-tricks]]
+=== Kubernetes Tips
+
+1. I want to connect from a container to a service on the host.
+
+    The host has a changing IP address (or none if you have no network access). From 18.03 onwards our recommendation is to connect to the special DNS name `host.docker.internal`, which resolves to the internal IP address used by the host. This is for development purpose and will not work in a production environment outside of Docker Desktop for Windows. The gateway is also reachable as `gateway.docker.internal`.
+
+2.  Check IP address.
+
+    # This launches a shell
+    kubectl run curl --image=radial/busyboxplus:curl -i --tty
+    # If you have already deployed once, just drop into its shell
+    #
+    # Now check IP
+
+    $ nslookup consul.thingverse.svc.cluster.local
+    [ root@curl-6bf6db5c4f-rwxp4:/ ]$ nslookup consul.thingverse.svc.cluster.local
+    Server:    10.96.0.10
+    Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+    Name:      consul.thingverse.svc.cluster.local
+    Address 1: 10.108.36.164 consul.thingverse.svc.cluster.local
+
+    [ root@curl-6bf6db5c4f-rwxp4:/ ]$ nslookup cassandra.thingverse.svc.cluster.local
+    Server:    10.96.0.10
+    Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+    Name:      cassandra.thingverse.svc.cluster.local
+    Address 1: 10.99.166.218 cassandra.thingverse.svc.cluster.local

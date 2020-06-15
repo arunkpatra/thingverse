@@ -1,0 +1,42 @@
+[[thingverse-distribution-generation]]
+== Thingverse Distribution
+
+The Thingverse Distribution contains the pre-compiled binaries, scripts, source and documentation.
+
+=== Creating Distribution Artifacts
+
+You first need to create all the artifacts that go into a distribution. Execute the following commands.
+----
+$ gradle build <1>
+$ gradle generateThingverseDocs <2>
+$ gradle generateReadmeDocs <3>
+----
+<1> Triggers the `build` task on all sub-projects and create binaries, javadoc jars and source jars as needed.
+<2> Creates the `html` and `pdf` user guides.
+<3> Creates the `html` and `pdf` format README files wherever available.
+
+=== Creating A Distribution
+The distribution can be created using the following commands.
+----
+$ cd thingverse-assembly
+$ gradle thingverseBinDistZip <1>
+$ gradle thingverseBinDistTar <2>
+$ gradle assembleThingverseBinDist <3>
+$ gradle thingverseSrcDistZip <4>
+$ gradle thingverseSrcDistTar <5>
+$ gradle assembleThingverseSrcDist <6>
+$ gradle thingverseGatlingDistZip <7>
+$ gradle thingverseGatlingDistTar <8>
+$ gradle assembleThingverseGatlingDist <9>
+$ gradle thingverseAllDistZip <10>
+$ gradle thingverseAllDistTar <11>
+$ gradle assembleThingverseAllDist <12>
+----
+<1> Creates a `zip` archive in the `build\distributions` directory.
+<2> Creates a `tar` archive in the `build\distributions` directory.
+<3> Creates both the `zip` and `tar` archives in the `build\distributions` directory.
+
+[CAUTION]
+====
+The tasks above create a compressed binary containing executables, documentation, sources and stress testing tools. You would need to run the necessary tasks which create these artifacts before you assemble the distribution. See the previous section.
+====

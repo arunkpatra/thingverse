@@ -1,0 +1,65 @@
+# Default values for thingverse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  pullPolicy: Always
+
+thingverse:
+  env: "prod"
+  monitoring:
+    enabled: true
+    grafana:
+      service:
+        type: "LoadBalancer"
+  cassandra:
+    contactPoints: "cassandra-0.cassandra.thingverse.svc.cluster.local\\\":\\\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\\\":\\\"9042,cassandra-2.cassandra.thingverse.svc.cluster.local\\\":\\\"9042"
+    needed: false
+    webUIAppNeeded: false
+    webUI:
+      service:
+        type: "LoadBalancer"
+  apiApp:
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+    service:
+      type: "LoadBalancer"
+    http:
+      port: 9191
+    replicaCount: 3
+  backendApp:
+    readModelBackendApp:
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+        requests:
+          cpu: 1000m
+          memory: 1Gi
+    writeModelBackendApp:
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+        requests:
+          cpu: 1000m
+          memory: 1Gi
+    readReplicaCount: 6
+    writeReplicaCount: 6
+  adminApp:
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+    service:
+      type: "LoadBalancer"
+    needed: true
+    serverurl: "http://thingverse-admin.thingverse.svc.cluster.local:9595"

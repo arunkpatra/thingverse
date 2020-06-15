@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.2.0'
+    id 'org.asciidoctor.jvm.pdf' version '3.2.0'
+    id 'org.asciidoctor.jvm.gems' version '3.2.0'
+//    id 'com.gorylenko.gradle-git-properties' version '2.2.2'
+}
+
+repositories {
+    jcenter()
+    ruby.gems()
+}
+dependencies {
+    asciidoctorGems 'rubygems:rouge:3.18.0'
+}
+//gitProperties {
+//    dateFormat = "yyyy-MM-dd', 'HH:mm:ss"
+//    dateFormatTimeZone = "PST"
+//    failOnNoGitDirectory = false
+//}
+//Properties gitProperties = new Properties()
+//def gitCommitTimeKey = 'git.commit.time'
+//def gitCommitIdKey = 'git.commit.id.abbrev'
+
+asciidoctorPdf {
+    dependsOn asciidoctorGemsPrepare
+    baseDirFollowsSourceFile()
+    sources {
+        include 'index.adoc'
+    }
+    asciidoctorj {
+        requires 'rouge'
+        attributes 'build-gradle': file('build.gradle'),
+                'project-version': project.version,
+                'sourcedir': project.sourceSets.main.java.srcDirs[0],
+                'endpoint-url': 'http://example.org',
+                'source-highlighter': 'rouge',
+                'imagesdir': './images',
+                'toc': 'left',
+                'icons': 'font',
+                'idprefix': '',
+                'idseparator': '-'
+    }
+}
+
+asciidoctor {
+    baseDirFollowsSourceFile()
+    sources {
+        include 'index.adoc'
+    }
+    attributes = [
+            'project-version'   : project.version,
+            'source-highlighter': 'coderay',
+            'build-gradle'      : file('build.gradle'),
+            'sourcedir'         : project.sourceSets.main.java.srcDirs[0],
+            'endpoint-url'      : 'http://example.org',
+            'imagesdir'         : 'images',
+            'toc'               : 'left',
+            'icons'             : 'font',
+            'setanchors'        : '',
+            'idprefix'          : '',
+            'idseparator'       : '-',
+            'docinfo'           : 'shared']
+
+}
+
+task copyDocs(type: Sync) {
+    from('build/docs/asciidoc') {
+        rename 'index.html', "${rootProject.name}-${project.version}.html"
+    }
+    into 'build/thingverse/docs'
+    from('build/docs/asciidocPdf') {
+        rename 'index.pdf', "${rootProject.name}-${project.version}.pdf"
+    }
+    into 'build/thingverse/docs'
+}
+//task loadGitInfoProps(type: DefaultTask) {
+//    dependsOn 'generateGitProperties'
+//    //println "Hello"
+//    File gitPropertiesFile = project.file('build/resources/main/git.properties')
+//    if (gitPropertiesFile.exists()) {
+//        gitPropertiesFile.withInputStream {
+//            gitProperties.load(it)
+//        }
+//        println gitProperties."git.commit.time"
+//        println gitProperties."git.commit.id.abbrev"
+//    }
+//}
+task generateThingverseDocs(type: DefaultTask) {
+    dependsOn 'asciidoctorPdf', 'asciidoctor', 'copyDocs'
+}
+//tasks.asciidoctorPdf.dependsOn 'loadGitInfoProps'
+//tasks.loadGitInfoProps.dependsOn 'generateGitProperties'
+
+//tasks.build.dependsOn tasks.generateThingverseDocs
+
+//tasks.generateGitProperties.finalizedBy {
+//    gitPropertiesFile.withInputStream {
+//        gitProperties.load(it)
+//    }
+//    println gitProperties."git.commit.id.abbrev"
+//}

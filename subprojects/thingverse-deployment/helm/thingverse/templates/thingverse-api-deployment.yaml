@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-api
+spec:
+  replicas: {{ .Values.thingverse.apiApp.replicaCount }}
+  selector:
+    matchLabels:
+      app: thingverse-api
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+{{/*        config.linkerd.io/trace-collector: "jaeger.tracing:14268"*/}}
+        config.linkerd.io/proxy-log-level: INFO
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: thingverse-api
+    spec:
+      serviceAccountName: {{ include "thingverse.serviceAccountName" . }}
+      containers:
+        - name: thingverse-api
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: "{{ .Values.thingverse.apiApp.image.repository }}:{{ .Values.thingverse.apiApp.image.tag | default .Chart.AppVersion }}"
+          ports:
+            - containerPort: 9191
+              name: http
+          env:
+            - name: THINGVERSE_TRACING_ENDPOINT
+              value: "http://jaeger.tracing:14268/api/traces"
+            - name: THINGVERSE_TRACING_PROPAGATION
+              value: "jaeger,b3"
+            - name: THINGVERSE_TRACING_SAMPLER_TYPE
+              value: "const"
+            - name: THINGVERSE_TRACING_SAMPLER_PARAM
+              value: "1"
+            - name: THINGVERSE_TRACING_SERVICE_NAME
+              value: "thingverse-api"
+            - name: THINGVERSE_TRACING_TRANSMIT_SPAN
+              value: "{{ .Values.thingverse.apiApp.tracing.transmitSpan}}"
+            - name: THINGVERSE_TRACING_REPORTER_LOG_SPANS
+              value: "{{ .Values.thingverse.apiApp.tracing.reporterLogSpans}}"
+            - name: THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE
+              value: "{{ .Values.thingverse.apiApp.tracing.maxQueueSize}}"
+            - name: THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL
+              value: "{{ .Values.thingverse.apiApp.tracing.flushInterval}}"
+            - name: THINGVERSE_TRACING_ENABLED
+              value: "{{ .Values.thingverse.apiApp.tracing.enabled}}"
+            - name: THINGVERSE_ENV
+              value: {{ .Values.thingverse.env }}
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: "{{ .Values.thingverse.logging.rootLoggerLevel }}"
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "{{ .Values.thingverse.logging.logToContainerConsole }}"
+            - name: THINGVERSE_LOG_PATH
+              value: "{{ .Values.thingverse.logging.logPath }}"
+            - name: THINGVERSE_LOG_FILE
+              value: "{{ .Values.thingverse.logging.logPath }}/thingverse-api-{{ .Values.thingverse.env }}.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "{{ .Values.thingverse.operationMode }}"
+            - name: THINGVERSE_API_SECURED
+              value: "{{ .Values.thingverse.apiApp.secured }}"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: ADMIN_SERVER_ENABLED
+              value: "{{ .Values.thingverse.adminApp.needed }}"
+            - name: ADMIN_SERVER_URL
+              value: "{{ .Values.thingverse.adminApp.serverurl }}"
+          resources:
+{{ toYaml .Values.thingverse.apiApp.resources | indent 12 }}
+          livenessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9191
+              scheme: HTTP
+              path: /actuator/info
+{{/*          readinessProbe:*/}}
+{{/*            initialDelaySeconds: 300*/}}
+{{/*            periodSeconds: 20*/}}
+{{/*            timeoutSeconds: 15*/}}
+{{/*            failureThreshold: 3*/}}
+{{/*            httpGet:*/}}
+{{/*              port: 9191*/}}
+{{/*              scheme: HTTP*/}}
+{{/*              path: /actuator/health*/}}

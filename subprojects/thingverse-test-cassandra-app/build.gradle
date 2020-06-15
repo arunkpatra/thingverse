@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+jar {
+    enabled = true
+}
+bootJar {
+    archiveClassifier.set('boot')
+}
+test {
+    useJUnitPlatform()
+}
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+    implementation project(':thingverse-logging')
+    implementation 'org.springframework.boot:spring-boot'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation(project(':thingverse-cassandra-backend')) {
+        exclude group: 'io.dropwizard.metrics', module: 'metrics-core'
+        exclude group: 'io.netty', module: 'netty-handler'
+    }
+    implementation 'io.dropwizard.metrics:metrics-core'
+    implementation 'io.netty:netty-handler'
+    implementation 'org.codehaus.janino:janino'
+}
+publishing {
+    publications {
+        thingverseTestcassandraApp(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            artifact bootJar
+            pom {
+                name = 'Thingverse Cassandra Test App'
+                description = 'Thingverse Cassandra Test App'
+            }
+        }
+    }
+}

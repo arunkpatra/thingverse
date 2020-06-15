@@ -1,0 +1,30 @@
+{{- if .Values.thingverse.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: thingverse-ingress
+  namespace: thingverse
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+{{/*    kubernetes.io/ingress.class: "nginx"*/}}
+{{/*    nginx.ingress.kubernetes.io/configuration-snippet: |*/}}
+{{/*      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;*/}}
+{{/*      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;*/}}
+spec:
+  rules:
+  - host: mbp16.local
+    http:
+      paths:
+      - path: /api(/|$)(.*)
+        backend:
+          serviceName: thingverse-api
+          servicePort: 9191
+      - path: /sba(/|$)(.*)
+        backend:
+          serviceName: thingverse-admin
+          servicePort: 9595
+{{/*          - path: /thingverse/jaeger*/}}
+{{/*            backend:*/}}
+{{/*              serviceName: jaeger*/}}
+{{/*              servicePort: 16686*/}}
+{{- end }}

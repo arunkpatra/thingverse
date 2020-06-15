@@ -1,0 +1,56 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  creationTimestamp: null
+  name: thingverse-api.thingverse.svc.cluster.local
+  namespace: thingverse
+spec:
+  routes:
+  - condition:
+      method: GET
+      pathRegex: /api/cluster/state
+    name: GET /api/cluster/state
+  - condition:
+      method: POST
+      pathRegex: /api/thing
+    name: POST /api/thing
+  - condition:
+      method: PUT
+      pathRegex: /api/thing/clear/[^/]*
+    name: PUT /api/thing/clear/{thingID}
+  - condition:
+      method: GET
+      pathRegex: /api/thing/ids
+    name: GET /api/thing/ids
+  - condition:
+      method: GET
+      pathRegex: /api/thing/metrics
+    name: GET /api/thing/metrics
+  - condition:
+      method: PUT
+      pathRegex: /api/thing/stop/[^/]*
+    name: PUT /api/thing/stop/{thingID}
+  - condition:
+      method: GET
+      pathRegex: /api/thing/[^/]*
+    name: GET /api/thing/{thingID}
+  - condition:
+      method: PUT
+      pathRegex: /api/thing/[^/]*
+    name: PUT /api/thing/{thingID}
+  - condition:
+      method: POST
+      pathRegex: /auth/login
+    name: POST /auth/login
+  - condition:
+      method: GET
+      pathRegex: /actuator/health
+    name: GET /actuator/health
+  - condition:
+      method: GET
+      pathRegex: /actuator/info
+    name: GET /actuator/info
+  - condition:
+      method: GET
+      pathRegex: /api/me
+    name: GET /api/me

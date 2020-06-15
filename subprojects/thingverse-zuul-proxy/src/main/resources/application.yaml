@@ -1,0 +1,53 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  port: 8762
+spring:
+  application:
+    name: zuul-proxy
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    consul:
+      host: localhost
+      port: 8500
+      retry:
+        initial-interval: 1000
+      discovery:
+        instance-id: ${spring.application.name}:${random.value}
+        catalog-services-watch-delay: 1000
+        catalog-services-watch-timeout: 2
+        prefer-ip-address: true
+        health-check-critical-timeout: 90s
+      enabled: true
+zuul:
+  host:
+    max-total-connections: 500
+    socket-timeout-millis: 20000
+  ignore-security-headers: false
+  semaphore:
+    max-semaphores: 80000
+  routes:
+    thingverse-api:
+      path: /thingverse-api/**
+      sensitive-headers: ''
+      service-id: thingverse-api
+  ribbon:
+    eager-load:
+      enabled: true
+  retryable: true
+  ribbon-isolation-strategy: semaphore
+
+thingverse-api:
+  ribbon:
+    MaxAutoRetries: 1
+    MaxAutoRetriesNextServer: 1
+    OkToRetryOnAllOperations: true
+    ServerListRefreshInterval: 10000
+    ConnectTimeout: 2000
+    ReadTimeout: 6000
+    retryableStatusCodes: 500,501,502

@@ -1,0 +1,37 @@
+[[production-deployment]]
+== Production Deployment
+
+For Thingverse production deployments, each component of the Thingverse platform must support high availability features like automated horizontal scaling, load balancing, multi-dc and multi-zone support and failover.
+The best way to start with, is probably to leverage public cloud services for platform services like Cassandra.
+For other services native to Thingverse you need to manage all the above features yourself.
+*Thingverse Enterprise Support* can help you with this.
+
+[[production-deployment-toplogy-typical]]
+=== Typical Production Deployment Topology
+
+TODO
+
+[[production-hardware-sizing]]
+=== Production Hardware Sizing
+
+TODO
+
+[[production-capacity-planning]]
+=== Production Capacity Planning
+
+TODO
+
+[[production-cassandra]]
+=== Production Cassandra
+
+TODO:
+
+[[production-consul]]
+=== Production Consul
+
+TODO
+
+[[production-zuul-proxy]]
+=== Production Zuul proxy
+
+TODO

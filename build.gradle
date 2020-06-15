@@ -1,0 +1,47 @@
+import com.thingverse.gradle.plugins.ThingversePlugin
+
+allprojects {
+    group = 'org.thingverse'
+    version = '0.0.1'
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    apply plugin: 'project-report'
+}
+apply plugin: ThingversePlugin
+
+thingverseSetting {
+    productName = "Thingverse Enterprise Edition"
+}
+
+// https://docs.gradle.org/current/userguide/publishing_maven.html
+subprojects {
+    apply plugin: 'maven-publish'
+    if (!(name.startsWith('thingverse-bom') ||
+            name.startsWith('thingverse-scripts') ||
+            name.startsWith('thingverse-docs') ||
+            name.startsWith('thingverse-stress-tests') ||
+            name.startsWith('thingverse-coverage-reporting'))) {
+        apply plugin: 'java'
+        apply plugin: 'jacoco'
+    }
+
+    if (project.plugins.hasPlugin('java') || project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('scala')) {
+        compileJava.options.encoding = "UTF-8"
+        compileTestJava.options.encoding = "UTF-8"
+        javadoc.options.encoding = 'UTF-8'
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    if ( project.plugins.hasPlugin('scala')) {
+        compileScala.options.encoding = "UTF-8"
+        compileTestScala.options.encoding = "UTF-8"
+    }
+
+//    if (project.plugins.hasPlugin('com.bmuschko.docker-remote-api') && getDockerRegistryUrl().length() != 0) {
+//        project.ext["docker.registry"] = getDockerRegistryUrl()
+//    }
+}

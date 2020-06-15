@@ -1,0 +1,35 @@
+# Default values for thingverse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  pullPolicy: Always
+
+thingverse:
+  env: "local-load-test"
+  monitoring:
+    enabled: true
+    grafana:
+      service:
+        type: "NodePort"
+  cassandra:
+    contactPoints: "cassandra.thingverse.svc.cluster.local\\\":\\\"9042"
+    needed: true
+    webUIAppNeeded: false
+    webUI:
+      service:
+        type: "NodePort"
+  apiApp:
+    service:
+      type: "NodePort"
+    http:
+      port: 9191
+    replicaCount: 2
+  backendApp:
+    readReplicaCount: 1
+    writeReplicaCount: 3
+  adminApp:
+    service:
+      type: "NodePort"
+    needed: true
+    serverurl: "http://thingverse-admin.thingverse.svc.cluster.local:9595"

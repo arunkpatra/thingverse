@@ -1,0 +1,83 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "com.lightbend.akka.grpc:akka-grpc-gradle-plugin:1.0.0-M1"
+    }
+}
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+apply plugin: "com.lightbend.akka.grpc.gradle"
+
+akkaGrpc {
+    serverPowerApis = true
+    language = "Java"
+    generateClient = true
+    generateServer = true
+}
+
+printProtocLogs.doFirst {
+    mkdir "$buildDir"
+    file("$buildDir/akka-grpc-gradle-plugin.log").text = "x"
+    mkdir "$project.rootDir/build"
+    file("$project.rootDir/build/akka-grpc-gradle-plugin.log").text = "x"
+}
+
+printProtocLogs.configure {
+    mkdir "$buildDir"
+    file("$buildDir/akka-grpc-gradle-plugin.log").text = "x"
+    mkdir "$project.rootDir/build"
+    file("$project.rootDir/build/akka-grpc-gradle-plugin.log").text = "x"
+}
+
+java {
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+
+//java {
+//    sourceSets.main.java.srcDirs = ['build/generated/source/proto/main/akkaGrpc','build/generated/source/proto/main/java','src/main/java']
+//}
+dependencies {
+    api platform(project(':thingverse-bom'))
+
+    implementation project(':thingverse-logging')
+    implementation project(':thingverse-tracing')
+    implementation("com.lightbend.akka.grpc:akka-grpc-runtime_2.12") {
+        exclude group: 'com.typesafe.akka', module: 'akka-stream_2.12'
+        exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'
+    }
+
+    implementation "com.typesafe.akka:akka-stream_2.12"
+    implementation "com.typesafe.akka:akka-discovery_2.12"
+    implementation "com.typesafe.akka:akka-serialization-jackson_2.12"
+    implementation "org.mortbay.jetty.alpn:jetty-alpn-agent"
+    implementation "org.slf4j:slf4j-api"
+    testImplementation 'junit:junit'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        thingverseGrpcCommon(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse gRPC Common'
+                description = 'Stubs and interfaces for gRPC'
+            }
+        }
+    }
+}

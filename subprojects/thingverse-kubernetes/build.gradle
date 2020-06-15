@@ -1,0 +1,71 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'scala'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+
+task scalaTest(dependsOn: ['testClasses'], type: JavaExec) {
+    main = 'org.scalatest.tools.Runner'
+    args = ['-R', 'build/classes/scala/test', '-o', '-v']
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+test.dependsOn scalaTest
+dependencies {
+    api enforcedPlatform(project(':thingverse-bom'))
+
+    implementation project(':thingverse-logging')
+    implementation project(':thingverse-common')
+    implementation 'io.kubernetes:client-java'
+    implementation 'org.springframework:spring-core'
+    implementation 'org.springframework.boot:spring-boot'
+
+    implementation "com.typesafe.akka:akka-actor_2.12"
+    implementation "com.typesafe.akka:akka-discovery_2.12"
+    implementation "com.typesafe.akka:akka-http-core_2.12"
+    implementation "com.typesafe.akka:akka-http-spray-json_2.12"
+    implementation "com.typesafe.akka:akka-http_2.12"
+    implementation "com.typesafe.akka:akka-parsing_2.12"
+    implementation "com.typesafe.akka:akka-protobuf_2.12"
+    implementation "com.typesafe.akka:akka-stream_2.12"
+    implementation "com.typesafe:config"
+    implementation "com.typesafe:ssl-config-core_2.12"
+    implementation "com.typesafe.akka:akka-http-spray-json_2.12"
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    testImplementation 'org.scalatest:scalatest_2.12:3.1.2'
+    testImplementation "junit:junit"
+    testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.12:1.2.0'
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+}
+configurations.all {
+    resolutionStrategy.force "org.scalatest:scalatest_2.12:3.1.2"
+}
+publishing {
+    publications {
+        thingverseKubernetes(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Kubernetes'
+                description = 'Thingverse Kubernetes Extensions'
+            }
+        }
+    }
+}

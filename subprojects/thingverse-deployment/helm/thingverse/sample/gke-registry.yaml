@@ -1,0 +1,10 @@
+thingverse:
+  apiApp:
+    image:
+      repository: "gcr.io/thingverse-prod/thingverse-api"
+  backendApp:
+    image:
+      repository: "gcr.io/thingverse-prod/thingverse-backend"
+  adminApp:
+    image:
+      repository: "gcr.io/thingverse-prod/thingverse-admin"

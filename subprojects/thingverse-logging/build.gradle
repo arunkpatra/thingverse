@@ -1,0 +1,34 @@
+plugins {
+    id 'java-library'
+}
+
+java {
+    withSourcesJar()
+}
+
+dependencies {
+    api platform(project(':thingverse-bom'))
+    api 'org.springframework.boot:spring-boot-starter-logging'
+    testImplementation 'org.springframework.boot:spring-boot'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        thingverseLogging(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Logging'
+                description = 'Thingverse Logging Infrastructure'
+            }
+        }
+    }
+}

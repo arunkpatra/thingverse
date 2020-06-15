@@ -1,0 +1,21 @@
+thingverse:
+  env: "dev"
+  apiApp:
+    replicaCount: 1
+    image:
+      repository: "localhost:5000/thingverse-api"
+  backendApp:
+    readReplicaCount: 1
+    writeReplicaCount: 1
+    image:
+      repository: "localhost:5000/thingverse-backend"
+  adminApp:
+    needed: true
+    image:
+      repository: "localhost:5000/thingverse-admin"
+  monitoring:
+    enabled: true
+  cassandra:
+    contactPoints: "cassandra-0.cassandra.thingverse.svc.cluster.local\\\":\\\"9042,cassandra-1.cassandra.thingverse.svc.cluster.local\\\":\\\"9042"
+    needed: false
+    webUIAppNeeded: false

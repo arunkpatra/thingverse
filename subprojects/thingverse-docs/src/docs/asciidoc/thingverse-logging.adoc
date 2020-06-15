@@ -1,0 +1,37 @@
+[[production-logging]]
+== Production Logging
+
+A production deployment requires careful evaluation of all aspects related to the availability goals of your services and the SLAs related to return to service following a failure.
+Access to system and application logs can help you quickly determine the root cause of a failure and in many cases can alert you (and take action) before a catastrophic failure occurs.
+
+Setting up log capture, shipping, real-time analysis and alerting is a non-trivial task and *Thingverse Enterprise Support* can help you with this.
+
+[[logging-architecture]]
+=== Logging Architecture
+
+TODO
+
+[[application-logging]]
+=== Application Logs
+
+TODO
+
+[[runtime-log-level-management]]
+=== Runtime Log Level Management
+
+TODO:
+
+[[log-shipping]]
+=== Log Shipping
+
+TODO
+
+[[log-analysis]]
+=== Log Analysis
+
+TODO:
+
+[[log-alerts]]
+=== Log Alerts
+
+TODO:

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thingverse-backend
+  name: thingverse-backend-write
+  namespace: thingverse
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: thingverse-backend
+      thingverse-backend-role: write-model
+  template:
+    metadata:
+      namespace: thingverse
+      labels:
+        app: thingverse-backend
+        thingverse-backend-role: write-model
+    spec:
+      serviceAccountName: thingverse-svc-account
+      containers:
+        - name: thingverse-backend
+          image: gcr.io/erudite-realm-266710/thingverse-backend:0.0.1
+          ports:
+            - name: remoting
+              containerPort: 2551
+              protocol: TCP
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: THINGVERSE_BACKEND_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: "off"
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "write-model"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "cassandra.thingverse.svc.cluster.local\":\"9042"

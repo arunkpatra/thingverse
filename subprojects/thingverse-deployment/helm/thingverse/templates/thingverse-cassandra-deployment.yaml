@@ -1,0 +1,33 @@
+{{- if .Values.thingverse.cassandra.needed -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cassandra-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra
+  template:
+    metadata:
+      labels:
+        app: cassandra
+    spec:
+      containers:
+        - name: cassandra
+          image: library/cassandra:3.11.6
+          ports:
+            - containerPort: 9042
+              protocol: TCP
+        {{- if .Values.thingverse.cassandra.webUIAppNeeded }}
+        - name: cassandra-web-ui
+          image: metavige/cassandra-web
+          env:
+            - name: CASSANDRA_HOST
+              value: "127.0.0.1"
+            - name: CASSANDRA_USER
+              value: "cassandra"
+            - name: CASSANDRA_PASSWORD
+              value: "cassandra"
+        {{- end }}
+{{- end }}

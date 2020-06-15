@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+    id 'scala'
+}
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+dependencies {
+    api platform(project(':thingverse-bom'))
+    implementation "com.typesafe.akka:akka-actor-typed_2.12"
+    implementation "com.typesafe.akka:akka-stream_2.12"
+    implementation "org.scala-lang:scala-library"
+    testImplementation "org.scalatest:scalatest_2.12"
+    testImplementation 'junit:junit'
+}
+publishing {
+    publications {
+        thingverseBackendApi(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Backend API'
+                description = 'Thingverse Backend API'
+            }
+        }
+    }
+}

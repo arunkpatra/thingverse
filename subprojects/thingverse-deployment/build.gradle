@@ -1,0 +1,73 @@
+plugins {
+    id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.2.0'
+    id 'org.asciidoctor.jvm.pdf' version '3.2.0'
+    id 'org.asciidoctor.jvm.gems' version '3.2.0'
+}
+
+repositories {
+    jcenter()
+    ruby.gems()
+}
+dependencies {
+    asciidoctorGems 'rubygems:rouge:3.18.0'
+}
+
+asciidoctorPdf {
+    dependsOn asciidoctorGemsPrepare
+    baseDirFollowsSourceFile()
+    sources {
+        include 'index.adoc'
+    }
+    asciidoctorj {
+        requires 'rouge'
+        attributes 'build-gradle': file('build.gradle'),
+                'project-version': project.version,
+                'sourcedir': '../../../k8s/deployments',
+                'endpoint-url': 'http://example.org',
+                'source-highlighter': 'rouge',
+                'imagesdir': './images',
+                'toc': 'left',
+                'icons': 'font',
+                'idprefix': '',
+                'idseparator': '-'
+    }
+}
+
+asciidoctor {
+    baseDirFollowsSourceFile()
+    sources {
+        include 'index.adoc'
+    }
+    attributes = [
+            'project-version'   : project.version,
+            'source-highlighter': 'coderay',
+            'build-gradle'      : file('build.gradle'),
+            'sourcedir'         : project.sourceSets.main.java.srcDirs[0],
+            'endpoint-url'      : 'http://example.org',
+            'imagesdir'         : 'images',
+            'toc'               : 'left',
+            'icons'             : 'font',
+            'setanchors'        : '',
+            'idprefix'          : '',
+            'idseparator'       : '-',
+            'docinfo'           : 'shared']
+
+}
+
+task copyDocs(type: Sync) {
+    from('build/docs/asciidoc') {
+        rename 'index.html', "${rootProject.name}-Deployment-${project.version}.html"
+    }
+    into 'build/thingverse-deployment/docs'
+    from('build/docs/asciidocPdf') {
+        rename 'index.pdf', "${rootProject.name}-Deployment-${project.version}.pdf"
+    }
+    into 'build/thingverse-deployment/docs'
+}
+
+task generateThingverseDeploymentDocs(type: DefaultTask) {
+    dependsOn 'asciidoctorPdf', 'asciidoctor', 'copyDocs'
+}
+//tasks.build.dependsOn tasks.generateThingverseDocs
+

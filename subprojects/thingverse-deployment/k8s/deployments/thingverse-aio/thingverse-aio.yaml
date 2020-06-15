@@ -1,0 +1,518 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: thingverse-aio
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: thingverse-aio
+  name: thingverse-aio-svc-account
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-admin
+  namespace: thingverse-aio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-admin
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: thingverse-admin
+    spec:
+      serviceAccountName: thingverse-aio-svc-account
+      containers:
+        - name: thingverse-admin
+          imagePullPolicy: Always
+          image: localhost:5000/thingverse-admin:0.0.1
+          env:
+            - name: THINGVERSE_OPERATION_MODE
+              value: cluster
+            - name: RUNTIME_ENVIRONMENT
+              value: kubernetes
+          ports:
+            - name: http
+              containerPort: 9595
+          livenessProbe:
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            httpGet:
+              port: 9595
+              scheme: HTTP
+              path: /actuator/info
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-admin
+  namespace: thingverse-aio
+spec:
+  type: NodePort
+  selector:
+    app: thingverse-admin
+  ports:
+    - port: 9595
+      targetPort: 9595
+      nodePort: 30095
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thingverse-api
+  namespace: thingverse-aio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-api
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: thingverse-api
+    spec:
+      serviceAccountName: thingverse-aio-svc-account
+      containers:
+        - name: thingverse-api
+          imagePullPolicy: Always
+          image: localhost:5000/thingverse-api:0.0.1
+          ports:
+            - containerPort: 9191
+              name: http
+          env:
+            - name: THINGVERSE_TRACING_ENDPOINT
+              value: "http://jaeger.thingverse-aio:14268/api/traces"
+            - name: THINGVERSE_TRACING_PROPAGATION
+              value: "jaeger,b3"
+            - name: THINGVERSE_TRACING_SAMPLER_TYPE
+              value: "const"
+            - name: THINGVERSE_TRACING_SAMPLER_PARAM
+              value: "1"
+            - name: THINGVERSE_TRACING_SERVICE_NAME
+              value: "thingverse-api"
+            - name: THINGVERSE_TRACING_TRANSMIT_SPAN
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_LOG_SPANS
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE
+              value: "100"
+            - name: THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL
+              value: "1000"
+            - name: THINGVERSE_TRACING_ENABLED
+              value: "true"
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: "INFO"
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-api-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_API_SECURED
+              value: "false"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_SERVICE_LOOKUP_NAMESPACE
+              value: thingverse-aio
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse-aio.svc.cluster.local:9595"
+          livenessProbe:
+            initialDelaySeconds: 300
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9191
+              scheme: HTTP
+              path: /actuator/info
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: thingverse-api
+  namespace: thingverse-aio
+spec:
+  type: NodePort
+  selector:
+    app: thingverse-api
+  ports:
+    - port: 9191
+      targetPort: 9191
+      nodePort: 30091
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: thingverse-backend-pod-reader
+  namespace: thingverse-aio
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - pods
+      - services
+      - resourcequotas
+      - replicationcontrollers
+      - limitranges
+      - persistentvolumeclaims
+      - persistentvolumes
+      - namespaces
+      - endpoints
+    verbs: ["get", "list", "watch"]
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-thingverse-backend-pods
+  namespace: thingverse-aio
+subjects:
+  - kind: ServiceAccount
+    name: thingverse-aio-svc-account
+    namespace: thingverse-aio
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: thingverse-backend-pod-reader
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thingverse-backend
+  name: thingverse-backend-read
+  namespace: thingverse-aio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-backend
+      thingverse-backend-role: read-model
+  template:
+    metadata:
+      annotations:
+        config.linkerd.io/proxy-log-level: INFO
+        config.linkerd.io/skip-inbound-ports: "8558,2551"
+        config.linkerd.io/skip-outbound-ports: "9042"
+        linkerd.io/inject: enabled
+      namespace: thingverse-aio
+      labels:
+        app: thingverse-backend
+        thingverse-backend-role: read-model
+    spec:
+      serviceAccountName: thingverse-aio-svc-account
+      containers:
+        - name: thingverse-backend
+          imagePullPolicy: Always
+          image: localhost:5000/thingverse-backend:0.0.1
+          ports:
+            - name: remoting
+              containerPort: 2551
+              protocol: TCP
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: actuator
+              containerPort: 9095
+              protocol: TCP
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          env:
+            - name: THINGVERSE_TRACING_ENDPOINT
+              value: "http://jaeger.thingverse-aio:14268/api/traces"
+            - name: THINGVERSE_TRACING_PROPAGATION
+              value: "jaeger,b3"
+            - name: THINGVERSE_TRACING_SAMPLER_TYPE
+              value: "const"
+            - name: THINGVERSE_TRACING_SAMPLER_PARAM
+              value: "1"
+            - name: THINGVERSE_TRACING_SERVICE_NAME
+              value: "thingverse-backend"
+            - name: THINGVERSE_TRACING_TRANSMIT_SPAN
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_LOG_SPANS
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE
+              value: "100"
+            - name: THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL
+              value: "2000"
+            - name: THINGVERSE_TRACING_ENABLED
+              value: "true"
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: ERROR
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-backend-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: 15m
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "read-model"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_NAMESPACE
+              value: thingverse-aio
+            - name: THINGVERSE_POD_LOOKUP_NAMESPACE
+              value: thingverse-aio
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "cassandra.thingverse-aio.svc.cluster.local\":\"9042"
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse-aio.svc.cluster.local:9595"
+          livenessProbe:
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/info
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: thingverse-backend
+  name: thingverse-backend-write
+  namespace: thingverse-aio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thingverse-backend
+      thingverse-backend-role: write-model
+  template:
+    metadata:
+      annotations:
+        config.linkerd.io/proxy-log-level: INFO
+        config.linkerd.io/skip-inbound-ports: "8558,2551"
+        config.linkerd.io/skip-outbound-ports: "9042"
+        linkerd.io/inject: enabled
+      namespace: thingverse-aio
+      labels:
+        app: thingverse-backend
+        thingverse-backend-role: write-model
+    spec:
+      serviceAccountName: thingverse-aio-svc-account
+      containers:
+        - name: thingverse-backend
+          imagePullPolicy: Always
+          image: localhost:5000/thingverse-backend:0.0.1
+          ports:
+            - name: remoting
+              containerPort: 2551
+              protocol: TCP
+            - name: management
+              containerPort: 8558
+              protocol: TCP
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: actuator
+              containerPort: 9095
+              protocol: TCP
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+          env:
+            - name: THINGVERSE_TRACING_ENDPOINT
+              value: "http://jaeger.thingverse-aio:14268/api/traces"
+            - name: THINGVERSE_TRACING_PROPAGATION
+              value: "jaeger,b3"
+            - name: THINGVERSE_TRACING_SAMPLER_TYPE
+              value: "const"
+            - name: THINGVERSE_TRACING_SAMPLER_PARAM
+              value: "1"
+            - name: THINGVERSE_TRACING_SERVICE_NAME
+              value: "thingverse-backend"
+            - name: THINGVERSE_TRACING_TRANSMIT_SPAN
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_LOG_SPANS
+              value: "true"
+            - name: THINGVERSE_TRACING_REPORTER_MAX_QUEUE_SIZE
+              value: "100"
+            - name: THINGVERSE_TRACING_REPORTER_FLUSH_INTERVAL
+              value: "2000"
+            - name: THINGVERSE_TRACING_ENABLED
+              value: "true"
+            - name: THINGVERSE_ENV
+              value: dev
+            - name: THINGVERSE_ROOT_LOGGER_LEVEL
+              value: ERROR
+            - name: THINGVERSE_LOG_TO_CONTAINER_CONSOLE
+              value: "true"
+            - name: THINGVERSE_LOG_PATH
+              value: "/var/log/thingverse"
+            - name: THINGVERSE_LOG_FILE
+              value: "/var/log/thingverse/thingverse-backend-dev.log"
+            - name: THINGVERSE_OPERATION_MODE
+              value: "cluster"
+            - name: THINGVERSE_REMOTE_THING_TIMEOUT_DURATION
+              value: 15m
+            - name: THINGVERSE_BACKEND_ROLES
+              value: "write-model"
+            - name: RUNTIME_ENVIRONMENT
+              value: "kubernetes"
+            - name: THINGVERSE_NAMESPACE
+              value: thingverse-aio
+            - name: THINGVERSE_POD_LOOKUP_NAMESPACE
+              value: thingverse-aio
+            - name: THINGVERSE_CASSANDRA_CONTACT_POINTS
+              value: "cassandra.thingverse-aio.svc.cluster.local\":\"9042"
+            - name: ADMIN_SERVER_ENABLED
+              value: "true"
+            - name: ADMIN_SERVER_URL
+              value: "http://thingverse-admin.thingverse-aio.svc.cluster.local:9595"
+          livenessProbe:
+            initialDelaySeconds: 240
+            periodSeconds: 20
+            timeoutSeconds: 15
+            failureThreshold: 3
+            httpGet:
+              port: 9095
+              scheme: HTTP
+              path: /actuator/info
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: thingverse-aio
+  name: thingverse-backend
+  labels:
+    app: thingverse-backend
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: thingverse-backend
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: thingverse-aio
+  name: cassandra-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cassandra
+  template:
+    metadata:
+      namespace: thingverse-aio
+      labels:
+        app: cassandra
+    spec:
+      containers:
+        - name: cassandra
+          image: library/cassandra:3.11.6
+          ports:
+            - containerPort: 9042
+              protocol: TCP
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra
+  namespace: thingverse-aio
+spec:
+  selector:
+    app: cassandra
+  type: ClusterIP
+  ports:
+    - port: 9042
+      targetPort: 9042
+      protocol: TCP
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: jaeger
+  namespace: thingverse-aio
+  labels:
+    app: jaeger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: jaeger
+    spec:
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: jaeger
+          image: jaegertracing/all-in-one:1.18.0
+          ports:
+            - name: collection
+              containerPort: 14268
+            - name: ui
+              containerPort: 16686
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger
+  namespace: thingverse-aio
+  labels:
+    app: jaeger
+spec:
+  selector:
+    app: jaeger
+  ports:
+    - name: collection
+      port: 14268
+    - name: ui
+      port: 16686
+

@@ -1,0 +1,47 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+test {
+    useJUnitPlatform()
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+dependencies {
+    api platform(project(':thingverse-bom'))
+    api 'javax.annotation:javax.annotation-api'
+    implementation project(':thingverse-logging')
+    implementation 'io.grpc:grpc-api'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+publishing {
+    publications {
+        thingverseCommon(MavenPublication) {
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            from components.java
+            pom {
+                name = 'Thingverse Common'
+                description = 'Thingverse Common Shared Infrastructure'
+            }
+        }
+    }
+}

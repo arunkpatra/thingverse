@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cassandra-webui
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: cassandra-webui
+  ports:
+    - port: 3000
+      targetPort: 3000
+      {{- if (eq "NodePort" .Values.service.type ) }}
+      nodePort: 30030
+      {{- end }}
