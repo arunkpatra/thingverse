@@ -1,7 +1,3 @@
-# Thingverse
-
-[![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://git-dse.southindia.cloudapp.azure.com/M1020513/thingverse/badges/master/pipeline.svg)](https://git-dse.southindia.cloudapp.azure.com/M1020513/thingverse/pipelines?target=_parent) [![Coverage](https://git-dse.southindia.cloudapp.azure.com/M1020513/thingverse/badges/master/coverage.svg)](https://git-dse.southindia.cloudapp.azure.com/M1020513/thingverse/pipelines)
-
 <img src="thingverse.png" width="350px" alt="Thingverse Logo" />
 
 Thingverse is a platform that allows virtualizing physical things. This allows 
