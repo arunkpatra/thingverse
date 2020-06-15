@@ -4,7 +4,9 @@ The Thingverse platform allows virtualizing physical things. It allows you
 to interact with real things via their virtual counterparts and build higher
 level functions as per your business needs. Thingverse is business domain agnostic. 
 It works at extreme levels of concurrency, is self-healing, resilient and scales to
-billions of things while using the minimum possible resources.
+billions of things while using the minimum possible resources. Whether on-prem or the largest
+Kubernetes Cluster in the cloud, its the same for Thingverse.
+
 ## Documentation
 
 ## Goals
@@ -13,7 +15,7 @@ billions of things while using the minimum possible resources.
    things.
 *  Spawn a large number of virtual things and interact with them.
 *  Ability to observe events associated with things and perform user specified
-   activities.
+   actions.
 
 ## Getting Started
 
