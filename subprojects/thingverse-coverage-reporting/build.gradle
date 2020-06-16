@@ -14,7 +14,7 @@ def jacocoProjects = rootProject.subprojects.stream().filter {p -> p.plugins.has
 check.dependsOn jacocoTestCoverageVerification
 
 jacocoTestCoverageVerification {
-    dependsOn 'generateThingverseCoverageReport'
+    dependsOn 'jacocoRootReport'
     violationRules {
         rule {
             limit {
@@ -42,14 +42,19 @@ jacocoTestCoverageVerification {
     }
 }
 
-coveralls {
-    jacocoReportPath 'build/reports/jacoco/generateThingverseCoverageReport/generateThingverseCoverageReport.xml'
+task jacocoMerge(type: JacocoMerge) {
+    jacocoProjects.each { subproject ->
+        executionData subproject.tasks.withType(Test)
+    }
+    doFirst {
+        executionData = files(executionData.findAll { it.exists() })
+    }
 }
 
-task generateThingverseCoverageReport(type: JacocoReport) {
-    dependsOn = jacocoProjects.test
+task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
+    description = 'Generates an aggregate report from all subprojects'
 
-    executionData.from = files(jacocoProjects.jacocoTestReport.executionData).filter { f -> f.exists() }
+    dependsOn jacocoProjects.test, jacocoMerge
     additionalSourceDirs.from = files(jacocoProjects.sourceSets.main.allSource.srcDirs).filter { f -> f.exists() }
     sourceDirectories.from = files(jacocoProjects.sourceSets.main.allSource.srcDirs).filter { f -> f.exists() }
     classDirectories.from = files(jacocoProjects.sourceSets.main.output).filter { f -> f.exists() }.files.collect {
@@ -80,6 +85,8 @@ task generateThingverseCoverageReport(type: JacocoReport) {
                 ]
         )
     }
+    executionData jacocoMerge.destinationFile
+    //executionData.from = files(jacocoProjects.jacocoTestReport.executionData).filter { f -> f.exists() }
     reports {
         xml.enabled true
         csv.enabled false
@@ -87,7 +94,15 @@ task generateThingverseCoverageReport(type: JacocoReport) {
     }
 }
 
+coveralls {
+    sourceDirs = jacocoProjects.sourceSets.main.allSource.srcDirs.flatten()
+    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
+}
+
 tasks.coveralls {
-    dependsOn 'generateThingverseCoverageReport'
+    group = 'Coverage reports'
+    description = 'Uploads the aggregated coverage report to Coveralls'
+
+    dependsOn jacocoRootReport
 }
 //tasks.build.dependsOn(tasks.generateThingverseCoverageReport)

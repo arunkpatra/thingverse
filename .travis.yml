@@ -26,4 +26,4 @@ before_install:
   - chmod +x gradlew
 
 after_success:
-  - ./gradlew generateThingverseCoverageReport coveralls --console=plain --info
+  - ./gradlew coveralls --console=plain --info
