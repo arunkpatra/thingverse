@@ -4,6 +4,9 @@ os: linux
 dist: bionic
 jdk: openjdk11
 
+install:
+  - ./gradlew assemble --console=plain --info
+
 script:
   - ./gradlew check --console=plain --info
   - ./gradlew generateThingverseCoverageReport --console=plain --info
