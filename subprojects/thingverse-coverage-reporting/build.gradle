@@ -6,6 +6,7 @@ plugins {
     id 'base'
     id 'java'
     id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.10.1'
 }
 
 def jacocoProjects = rootProject.subprojects.stream().filter {p -> p.plugins.hasPlugin('jacoco')}.collect(Collectors.toSet())
@@ -41,20 +42,12 @@ jacocoTestCoverageVerification {
     }
 }
 
-//def printProjectDetails = { Project p ->
-//    println 'Details for Project: ' + p.name
-//    println '----------------------------------------------------------'
-//    p.plugins.collect().forEach { plg ->
-//        println '             Plugin: ' + plg.toString()
-//    }
-//}
+coveralls {
+    jacocoReportPath 'build/reports/jacoco/generateThingverseCoverageReport/generateThingverseCoverageReport.xml'
+}
+
 task generateThingverseCoverageReport(type: JacocoReport) {
     dependsOn = jacocoProjects.test
-
-//    println 'Printing All Sub-Projects'
-//    println '-------------------------'
-//    jacocoProjects.forEach {p -> printProjectDetails(p)}
-//    jacocoProjects.forEach {p -> println p.name }
 
     executionData.from = files(jacocoProjects.jacocoTestReport.executionData).filter { f -> f.exists() }
     additionalSourceDirs.from = files(jacocoProjects.sourceSets.main.allSource.srcDirs).filter { f -> f.exists() }

@@ -9,7 +9,6 @@ install:
 
 script:
   - ./gradlew check --console=plain --info
-  - ./gradlew generateThingverseCoverageReport --console=plain --info
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -25,3 +24,6 @@ cache:
 
 before_install:
   - chmod +x gradlew
+
+after_success:
+  - ./gradlew generateThingverseCoverageReport coveralls --console=plain --info
