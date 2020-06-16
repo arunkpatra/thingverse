@@ -2,7 +2,7 @@ import com.thingverse.gradle.plugins.ThingversePlugin
 
 allprojects {
     group = 'org.thingverse'
-    version = '0.0.1'
+    version = '1.0.0'
     repositories {
         mavenLocal()
         jcenter()

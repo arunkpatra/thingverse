@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: thingverse-backend
-          image: thingverse-backend:0.0.1
+          image: thingverse-backend:1.0.0
           env:
             - name: THINGVERSE_BACKEND_OPERATION_MODE
               value: "cluster"

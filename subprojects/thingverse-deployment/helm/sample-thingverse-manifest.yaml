@@ -94,7 +94,7 @@ spec:
       containers:
         - name: thingverse-admin
           imagePullPolicy: "Always"
-          image: "localhost:5000/thingverse-admin:0.0.1"
+          image: "localhost:5000/thingverse-admin:1.0.0"
           env:
             - name: THINGVERSE_OPERATION_MODE
               value: "cluster"
@@ -145,7 +145,7 @@ spec:
       containers:
         - name: thingverse-api
           imagePullPolicy: "Always"
-          image: "localhost:5000/thingverse-api:0.0.1"
+          image: "localhost:5000/thingverse-api:1.0.0"
           ports:
             - containerPort: 9191
               name: http
@@ -217,7 +217,7 @@ spec:
       containers:
         - name: thingverse-backend
           imagePullPolicy: "Always"
-          image: "localhost:5000/thingverse-backend:0.0.1"
+          image: "localhost:5000/thingverse-backend:1.0.0"
           ports:
             - name: remoting
               containerPort: 2551
@@ -305,7 +305,7 @@ spec:
       containers:
         - name: thingverse-backend
           imagePullPolicy: "Always"
-          image: "localhost:5000/thingverse-backend:0.0.1"
+          image: "localhost:5000/thingverse-backend:1.0.0"
           ports:
             - name: remoting
               containerPort: 2551

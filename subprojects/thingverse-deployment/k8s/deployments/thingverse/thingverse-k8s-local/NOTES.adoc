@@ -19,14 +19,14 @@ There's an issue with Docker Desktop's RBAC. https://github.com/docker/for-mac/i
 ----
 $ cd subprojects/thingverse-api
 $ gradle assemble
-$ docker build --tag thingverse-api:0.0.1 .
+$ docker build --tag thingverse-api:1.0.0 .
 ----
 
 ==== Backend
 ----
 $ cd subprojects/thingverse-backend
 $ gradle assemble
-$ docker build --tag thingverse-backend:0.0.1 .
+$ docker build --tag thingverse-backend:1.0.0 .
 ----
 
 === Deploy Resources

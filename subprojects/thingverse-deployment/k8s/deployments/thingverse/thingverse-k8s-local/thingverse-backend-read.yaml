@@ -21,7 +21,7 @@ spec:
       serviceAccountName: thingverse-svc-account
       containers:
         - name: thingverse-backend
-          image: thingverse-backend:0.0.1
+          image: thingverse-backend:1.0.0
           ports:
             - name: remoting
               containerPort: 2551

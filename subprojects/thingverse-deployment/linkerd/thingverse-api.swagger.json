@@ -2,7 +2,7 @@
    "swagger":"2.0",
    "info":{
       "description":"REST APIs for Thingverse. These APIs expose capability to interact with things in Thingverse.",
-      "version":"0.0.1",
+      "version":"1.0.0",
       "title":"Thingverse REST API Documentation",
       "termsOfService":"Terms of service",
       "contact":{

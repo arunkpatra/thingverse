@@ -96,13 +96,13 @@ include::{sourcedir}/thingverse/thingverse-dev-cluster/thingverse-dev-cluster-ba
     # ---------------
     $ cd {PROJECT_ROOT}/subprojects/thingverse-api
     $ gradle assemble
-    $ docker build --tag thingverse-api:0.0.1 .
+    $ docker build --tag thingverse-api:1.0.0 .
     #
     # Build Backend image
     # -------------------
     $ cd {PROJECT_ROOT}/subprojects/thingverse-backend
     $ gradle assemble
-    $ docker build --tag thingverse-backend:0.0.1 .
+    $ docker build --tag thingverse-backend:1.0.0 .
 
 3. Run Deployment.
 

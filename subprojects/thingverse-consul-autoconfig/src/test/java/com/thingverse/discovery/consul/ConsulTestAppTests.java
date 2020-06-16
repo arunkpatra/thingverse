@@ -72,7 +72,7 @@ public class ConsulTestAppTests extends AbstractTest {
         ConsulRegistrationProperties props = consulRegistrar.getProperties();
         Map<String, String> metaData = new HashMap<>();
         metaData.put("app_name", "Thingverse");
-        metaData.put("version", "0.0.1");
+        metaData.put("version", "1.0.0");
 
         ConsulRegistrar.ServiceCheckSettings checkSettings = ConsulRegistrar.ServiceCheckSettings
                 .create()

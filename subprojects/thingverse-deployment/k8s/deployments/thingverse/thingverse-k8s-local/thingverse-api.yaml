@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: thingverse-api
-          image: thingverse-api:0.0.1
+          image: thingverse-api:1.0.0
           ports:
             - containerPort: 9191
               name: http

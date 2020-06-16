@@ -8,20 +8,20 @@ Reference: https://cloud.google.com/container-registry/docs/pushing-and-pulling
 ----
 $ cd subprojects/thingverse-api
 $ gradle assemble
-$ docker build --tag thingverse-api:0.0.1 .
+$ docker build --tag thingverse-api:1.0.0 .
 
-$ docker tag thingverse-api:0.0.1 gcr.io/erudite-realm-266710/thingverse-api:0.0.1
-$ docker push gcr.io/erudite-realm-266710/thingverse-api:0.0.1
+$ docker tag thingverse-api:1.0.0 gcr.io/erudite-realm-266710/thingverse-api:1.0.0
+$ docker push gcr.io/erudite-realm-266710/thingverse-api:1.0.0
 ----
 
 ==== Backend
 ----
 $ cd subprojects/thingverse-backend
 $ gradle assemble
-$ docker build --tag thingverse-backend:0.0.1 .
+$ docker build --tag thingverse-backend:1.0.0 .
 
-$ docker tag thingverse-backend:0.0.1 gcr.io/erudite-realm-266710/thingverse-backend:0.0.1
-$ docker push gcr.io/erudite-realm-266710/thingverse-backend:0.0.1
+$ docker tag thingverse-backend:1.0.0 gcr.io/erudite-realm-266710/thingverse-backend:1.0.0
+$ docker push gcr.io/erudite-realm-266710/thingverse-backend:1.0.0
 ----
 
 === Deploy Resources

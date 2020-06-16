@@ -48,10 +48,10 @@ include::{sourcedir}/thingverse/thingverse-standalone/thingverse-standalone.yaml
 
    $ cd {PROJECT_ROOT}/subprojects/thingverse-api
    $ gradle assemble
-   $ docker build --tag thingverse-api:0.0.1 .
+   $ docker build --tag thingverse-api:1.0.0 .
    $ cd {PROJECT_ROOT}/subprojects/thingverse-backend
    $ gradle assemble
-   $ docker build --tag thingverse-backend:0.0.1 .
+   $ docker build --tag thingverse-backend:1.0.0 .
 
 
 

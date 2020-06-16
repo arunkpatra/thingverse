@@ -8,22 +8,22 @@ You need to build a local image and push it to a docker registry first.
 # List local images known to local Docker daemon
 $ docker image ls
 REPOSITORY                           TAG                     IMAGE ID            CREATED             SIZE
-thingverse-api                       0.0.1                   1887dd62636d        4 hours ago         380MB
-localhost:5000/thingverse-api        0.0.1                   1887dd62636d        4 hours ago         380MB
-thingverse-backend                   0.0.1                   18546b963805        4 hours ago         393MB
-localhost:5000/thingverse-backend    0.0.1                   18546b963805        4 hours ago         393MB
+thingverse-api                       1.0.0                   1887dd62636d        4 hours ago         380MB
+localhost:5000/thingverse-api        1.0.0                   1887dd62636d        4 hours ago         380MB
+thingverse-backend                   1.0.0                   18546b963805        4 hours ago         393MB
+localhost:5000/thingverse-backend    1.0.0                   18546b963805        4 hours ago         393MB
 
 # Tag images
-docker tag 1887dd62636d localhost:5000/thingverse-api:0.0.1
-docker tag 18546b963805 localhost:5000/thingverse-backend:0.0.1
+docker tag 1887dd62636d localhost:5000/thingverse-api:1.0.0
+docker tag 18546b963805 localhost:5000/thingverse-backend:1.0.0
 
 # Push images to local docker registry
-docker push localhost:5000/thingverse-api:0.0.1
-docker push localhost:5000/thingverse-backend:0.0.1
+docker push localhost:5000/thingverse-api:1.0.0
+docker push localhost:5000/thingverse-backend:1.0.0
 
 # Verify that images got pushed
-$ curl http://localhost:5000/v2/thingverse-api/manifests/0.0.1 -o thingverse-api.txt
-$ curl http://localhost:5000/v2/thingverse-backend/manifests/0.0.1 -o thingverse-backend.txt
+$ curl http://localhost:5000/v2/thingverse-api/manifests/1.0.0 -o thingverse-api.txt
+$ curl http://localhost:5000/v2/thingverse-backend/manifests/1.0.0 -o thingverse-backend.txt
 
 ```
 
@@ -31,7 +31,7 @@ If the `curl` command writes the following text in the output file, it means ima
 registry.
 
 ``` 
-{"errors":[{"code":"MANIFEST_UNKNOWN","message":"manifest unknown","detail":{"Tag":"0.0.1"}}]} 
+{"errors":[{"code":"MANIFEST_UNKNOWN","message":"manifest unknown","detail":{"Tag":"1.0.0"}}]} 
 ```
 
 The output should contain among other things, the following data:
@@ -40,7 +40,7 @@ The output should contain among other things, the following data:
 {
     "schemaVersion": 1,
     "name": "thingverse-api",
-    "tag": "0.0.1",
+    "tag": "1.0.0",
     "architecture": "amd64",
     "fsLayers": [
         ...
@@ -122,7 +122,7 @@ helm upgrade -f winlocalregistry.yaml --install thingverse-local-k8s ./thingvers
 ``` 
 $ helm ls --namespace thingverse
 NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-thingverse-local-k8s    thingverse      2               2020-05-04 21:14:38.7371735 +0530 IST   deployed        thingverse-0.1.0        0.0.1
+thingverse-local-k8s    thingverse      2               2020-05-04 21:14:38.7371735 +0530 IST   deployed        thingverse-0.1.0        1.0.0
 ```
 
 #### Show Release History
@@ -130,8 +130,8 @@ thingverse-local-k8s    thingverse      2               2020-05-04 21:14:38.7371
 $ helm history thingverse-local-k8s --namespace thingverse
 
 REVISION        UPDATED                         STATUS          CHART                   APP VERSION     DESCRIPTION
-1               Mon May  4 21:10:33 2020        superseded      thingverse-0.1.0        0.0.1           Install complete
-2               Mon May  4 21:14:38 2020        deployed        thingverse-0.1.0        0.0.1           Upgrade complete
+1               Mon May  4 21:10:33 2020        superseded      thingverse-0.1.0        1.0.0           Install complete
+2               Mon May  4 21:14:38 2020        deployed        thingverse-0.1.0        1.0.0           Upgrade complete
 ```
 
 #### Rollback a Release

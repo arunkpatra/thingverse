@@ -19,9 +19,9 @@ spec:
         - name: cassandra
           image: library/cassandra:3.11.6
         - name: thingverse-api
-          image: thingverse-api:0.0.1
+          image: thingverse-api:1.0.0
         - name: thingverse-backend
-          image: thingverse-backend:0.0.1
+          image: thingverse-backend:1.0.0
 ---
 apiVersion: v1
 kind: Service

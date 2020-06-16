@@ -2,7 +2,7 @@ after_script:
   - date
 
 variables:
-  THINGVERSE_VERSION: "0.0.1"
+  THINGVERSE_VERSION: "1.0.0"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"

@@ -49,7 +49,7 @@ goto error
 set APP_INSTALLATION_DIR=C:\Users\M1020513\.m2\repository
 set APP_NAME=thingverse-zuul-proxy
 set APP_DIRECTORY=com\thingverse
-set APP_VERSION=0.0.1
+set APP_VERSION=1.0.0
 set APP_PACKAGING=jar
 
 @rem echo Starting application `%APP_NAME%` ...
