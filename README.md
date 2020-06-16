@@ -34,7 +34,7 @@ Kubernetes Cluster in the cloud, its the same for Thingverse.
 ## Getting Started
 
 ### Build
-- To run Thingscape components, you would need to ensure that a locally running Docker Registry is listening at port 5000. 
+- To run Thingverse components, you would need to ensure that a locally running Docker Registry is listening at port 5000. 
 - Set an environment variable named **DOCKER_REGISTRY** to `localhost:5000`. 
 - Start Docker, and your local Kubernetes cluster. You can install Docker Desktop if you like, Minikube and Microk8s are also ok.
 - Now issue the following commands in a terminal window to build the docker images.
@@ -55,7 +55,7 @@ Kubernetes Cluster in the cloud, its the same for Thingverse.
 - Verify using `docker ps` and `kubectl version`.
 - Install Kubernetes Dashboard on to your cluster if you like (optional).
 - Install Linkerd - Follow steps here: https://linkerd.io/2/getting-started/
-- Issue following commands at the `thingverse` root directory to install all Thingscape components to your local Kubernetes cluster.
+- Issue following commands at the `thingverse` root directory to install all Thingverse components to your local Kubernetes cluster.
 
 #### Install
     ``` 
@@ -94,6 +94,14 @@ thingverse-backend-write-58577d89f4-bwfnj   2/2     Running   2          2m25s
 - Access Linkerd Dashboard: First issue `linkerd dashboard &` on a terminal window. Now access http://localhost:50750/namespaces/thingverse-aio. You should be able to see your meshed deployments and live traffic.
 - Access Jaeger UI for distributed Tracing: First issue `kubectl -n thingverse-aio port-forward svc/jaeger 16686 &` on a terminal window. Now access http://localhost:16686. You should be able to see distributed traces that spans process boundaries.
 - Access Kubernetes Dashboard: First issue `kubectl proxy &` on a terminal window. Then access http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=thingverse-aio. You should be able to see Kubernetes resources in the `thingverse-aio` namespace.
+
+#### Cleanup
+
+To delete everything you just installed to your local Kubernetes cluster, issue the following commands in a terminal window from the root of the `thingverse` directory.
+``` 
+$ cd subprojects/thingverse-deployment/k8s/deployments/thingverse-aio
+$ kubectl delete -f thingverse-aio.yaml 
+```
 
 ## Getting Help
 Head over to Gitter [![Join the chat at https://gitter.im/thingverse/community](https://badges.gitter.im/thingverse/community.svg)](https://gitter.im/thingverse/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge). If you run into problems, feel free to raise an issue.
