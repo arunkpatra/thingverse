@@ -58,10 +58,10 @@ Kubernetes Cluster in the cloud, its the same for Thingverse.
 - Issue following commands at the `thingverse` root directory to install all Thingverse components to your local Kubernetes cluster.
 
 #### Install
-    ``` 
-    $ cd subprojects/thingverse-deployment/k8s/deployments/thingverse-aio
-    $ kubectl apply -f thingverse-aio.yaml
-    ```
+``` 
+$ cd subprojects/thingverse-deployment/k8s/deployments/thingverse-aio
+$ kubectl apply -f thingverse-aio.yaml
+```
 #### Verify
 Verify if all went well, with the following commands(might take a while depending on the resources available to your Kubernetes cluster)
 ``` 
