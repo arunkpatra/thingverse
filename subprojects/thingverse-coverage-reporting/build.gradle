@@ -86,4 +86,8 @@ task generateThingverseCoverageReport(type: JacocoReport) {
         html.enabled true
     }
 }
+
+tasks.coveralls {
+    dependsOn 'generateThingverseCoverageReport'
+}
 //tasks.build.dependsOn(tasks.generateThingverseCoverageReport)
