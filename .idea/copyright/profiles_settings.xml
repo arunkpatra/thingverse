@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+  <settings default="Apache_2.0_Copyright_Notice">
+    <module2copyright>
+      <element module="Java_Scala_Sources" copyright="Apache_2.0_Copyright_Notice" />
+    </module2copyright>
+  </settings>
+</component>

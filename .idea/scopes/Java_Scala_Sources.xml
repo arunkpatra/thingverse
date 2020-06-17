@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Java_Scala_Sources" pattern="src[thingverse*]:*..*||test:*..*" />
+</component>
