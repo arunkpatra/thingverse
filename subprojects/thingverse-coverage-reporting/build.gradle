@@ -64,6 +64,7 @@ task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
                         '**/com/thingverse/zuul/**/*',
                         '**/com/thingverse/admin/**/*',
                         '**/com/thingverse/api/security/config/**/*',
+                        '**/com/thingverse/security/utils/**/*',
                         '**/com/thingverse/ribbon/**/*',
                         '**/com/thingverse/wrapper/**/*',
                         '**/thingverse/discovery/kubernetes/svc/**/*',
