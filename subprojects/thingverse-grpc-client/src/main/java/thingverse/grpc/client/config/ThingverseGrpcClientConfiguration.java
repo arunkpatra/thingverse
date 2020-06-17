@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package thingverse.grpc.client.config;
 
 import akka.actor.typed.ActorSystem;
@@ -23,7 +38,6 @@ import thingverse.kubernetes.annotation.EnableKubernetesLookup;
 import thingverse.kubernetes.config.KubernetesLookupProperties;
 import thingverse.tracing.annotation.EnableThingverseTracing;
 import thingverse.tracing.config.ThingverseTracer;
-
 
 import static com.thingverse.common.utils.ConsoleColors.thanos;
 
@@ -54,7 +68,7 @@ public class ThingverseGrpcClientConfiguration {
     public ActorSystem<Void> clientActorSystem() {
         LOGGER.info("Creating the client ActorSystem.");
         return ActorSystem.create(Behaviors.empty(), properties.getClientName().concat("-actor-system"),
-                        getClientActorSystemConfig(properties));
+                getClientActorSystemConfig(properties));
     }
 
     private Config getClientActorSystemConfig(ThingverseGrpcClientProperties properties) {
@@ -80,7 +94,7 @@ public class ThingverseGrpcClientConfiguration {
                 break;
             case KUBERNETES_SERVICE:
                 discoveryMethodDetails = "akka.discovery.method = " + "kubernetes-service" + "\n" +
-                "akka.discovery.kubernetes-service.service-namespace = " +
+                        "akka.discovery.kubernetes-service.service-namespace = " +
                         kubernetesLookupProperties.getServiceLookupNamespace() + "\n";
                 break;
             default:
@@ -141,6 +155,7 @@ public class ThingverseGrpcClientConfiguration {
 
         return settings;
     }
+
     @Bean
     @ConditionalOnMissingBean({EnhancedThingverseGrpcServiceClient.class})
     public EnhancedThingverseGrpcServiceClient thingverseGrpcServiceClient(ActorSystem<Void> actorSystem) {
@@ -158,7 +173,7 @@ public class ThingverseGrpcClientConfiguration {
     @ConditionalOnMissingBean({HealthClient.class})
     public HealthClient thingverseBackendHealthCheckClient(ActorSystem<Void> actorSystem) {
         Materializer materializer = Materializer.matFromSystem(actorSystem.classicSystem());
-        GrpcClientSettings settings =getGrpcClientSettings(actorSystem);
+        GrpcClientSettings settings = getGrpcClientSettings(actorSystem);
         return HealthClient.create(settings, materializer, actorSystem.classicSystem().dispatcher());
     }
 }

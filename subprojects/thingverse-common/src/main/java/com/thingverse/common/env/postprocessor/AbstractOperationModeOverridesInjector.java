@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.common.env.postprocessor;
 
 import org.springframework.boot.SpringApplication;
@@ -17,10 +32,10 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
 
     protected static final DeferredLog logger = new DeferredLog();
     protected static final String THINGVERSE_ENV_KEY = "thingverse-env";
-    private static final String OPERATION_MODE_KEY = "operation-mode";
     protected static final String RUNTIME_ENVIRONMENT_KEY = "runtime-env";
     protected static final String RUNTIME_ENVIRONMENT_LOCAL = "local";
     protected static final String RUNTIME_ENVIRONMENT_K8S = "kubernetes";
+    private static final String OPERATION_MODE_KEY = "operation-mode";
     private static final String OPERATION_MODE_STANDALONE = "standalone";
     private static final String OPERATION_MODE_CLUSTER = "cluster";
     private final List<String> allowedModes = Arrays.asList(OPERATION_MODE_STANDALONE, OPERATION_MODE_CLUSTER);
@@ -105,10 +120,10 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
         Map<String, Object> tagInfoProperties = new LinkedHashMap<>();
         try (InputStream gitPropsIs = application.getClassLoader().getResourceAsStream("git.properties")) {
             if (null != gitPropsIs) {
-                Properties  gitProps = new Properties();
+                Properties gitProps = new Properties();
                 gitProps.load(gitPropsIs);
                 tagInfoProperties.put("spring.boot.admin.client.instance.metadata.tags.commit",
-                        gitProps.getProperty("git.commit.id.abbrev","-----"));
+                        gitProps.getProperty("git.commit.id.abbrev", "-----"));
             }
         } catch (IOException e) {
             // Ignore
@@ -117,7 +132,7 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
         try (InputStream buildPropsIs =
                      application.getClassLoader().getResourceAsStream("META-INF/build-info.properties")) {
             if (null != buildPropsIs) {
-                Properties  buildProps = new Properties();
+                Properties buildProps = new Properties();
                 buildProps.load(buildPropsIs);
                 tagInfoProperties.put("spring.boot.admin.client.instance.metadata.tags.version",
                         buildProps.getProperty("build.version", "0.0.0"));

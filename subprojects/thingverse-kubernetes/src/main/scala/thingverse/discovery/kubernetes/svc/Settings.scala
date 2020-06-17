@@ -1,5 +1,16 @@
 /*
- * Copyright (C) 2017-2020 Lightbend Inc. <https://www.lightbend.com>
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 
 package thingverse.discovery.kubernetes.svc
@@ -17,17 +28,16 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
    * Copied from AkkaManagementSettings, which we don't depend on.
    */
   private implicit class HasDefined(val config: Config) {
-    def hasDefined(key: String): Boolean =
-      config.hasPath(key) &&
-      config.getString(key).trim.nonEmpty &&
-      config.getString(key) != s"<$key>"
-
     def optDefinedValue(key: String): Option[String] =
       if (hasDefined(key)) Some(config.getString(key)) else None
+
+    def hasDefined(key: String): Boolean =
+      config.hasPath(key) &&
+        config.getString(key).trim.nonEmpty &&
+        config.getString(key) != s"<$key>"
   }
 
-  private val thingverseKubernetesApi = system.settings.config.getConfig("akka.discovery.kubernetes-service")
-
+  lazy val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
   val apiCaPath: String =
     thingverseKubernetesApi.getString("api-ca-path")
 
@@ -45,18 +55,15 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
 
   val serviceNamespace: Option[String] =
     thingverseKubernetesApi.optDefinedValue("service-namespace")
+  val serviceDomain: String =
+    thingverseKubernetesApi.getString("service-domain")
+  private val thingverseKubernetesApi = system.settings.config.getConfig("akka.discovery.kubernetes-service")
 
   /** Java API */
   def getServiceNamespace: Optional[String] = serviceNamespace.asJava
 
-
-  val serviceDomain: String =
-    thingverseKubernetesApi.getString("service-domain")
-
   def serviceLabelSelector(name: String): String =
     thingverseKubernetesApi.getString("service-label-selector").format(name)
-
-  lazy val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
 
   override def toString =
     s"Settings($serviceNamespace, $serviceNamespace, $serviceDomain)"

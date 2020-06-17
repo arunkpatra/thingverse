@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.backend.services.impl;
 
 import akka.NotUsed;
@@ -9,13 +24,13 @@ import akka.cluster.sharding.typed.javadsl.EntityRef;
 import akka.cluster.typed.Cluster;
 import akka.grpc.javadsl.Metadata;
 import akka.stream.javadsl.Source;
+import com.thingverse.api.command.ThingverseCommand;
 import com.thingverse.api.storage.ThingverseAkkaStorageBackend;
 import com.thingverse.backend.actors.MetricsCollector;
 import com.thingverse.backend.actors.RemoteThing;
 import com.thingverse.backend.config.ThingverseBackendProperties;
 import com.thingverse.backend.models.*;
 import com.thingverse.backend.services.ActorService;
-import com.thingverse.api.command.ThingverseCommand;
 import com.thingverse.backend.services.ThingverseGrpcServiceOperations;
 import com.thingverse.backend.v1.*;
 import org.slf4j.Logger;
@@ -152,8 +167,8 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
         List<Member> memberList = new ArrayList<>();
         Iterable<Member> members = Cluster.get(actorSystem).state().getMembers();
         members.forEach(memberList::add);
-        boolean allMembersUp = memberList.stream().allMatch( m -> MemberStatus.up().equals(m.status())
-                        || MemberStatus.weaklyUp().equals(m.status()));
+        boolean allMembersUp = memberList.stream().allMatch(m -> MemberStatus.up().equals(m.status())
+                || MemberStatus.weaklyUp().equals(m.status()));
         int totalMembers = memberList.size();
         long readNodeCount = memberList.stream().filter(m -> m.hasRole("read-model")).count();
         long writeNodeCount = memberList.stream().filter(m -> m.hasRole("write-model")).count();
@@ -272,7 +287,9 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     } else {
                         return CreateThingGrpcResponse.newBuilder().setErrormessage(t.getMessage()).build();
                     }
-                });    }
+                });
+    }
+
     @Override
     public CompletionStage<GetThingGrpcResponse> getThing(GetThingGrpcRequest in) {
         return getThing(in.getThingID())
@@ -286,12 +303,14 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     }
                 }));
     }
+
     @Override
     public Source<StreamAllThingIDsGrpcResponse, akka.NotUsed> streamAllThingIDs(StreamAllThingIDsGrpcRequest in) {
         return streamAllThingIDs(in.getMaxidstoreturn())
                 .map(s -> StreamAllThingIDsGrpcResponse.newBuilder().setThingID(s)
                         .build());
     }
+
     @Override
     public CompletionStage<StopThingGrpcResponse> stopThing(StopThingGrpcRequest in) {
         return stopThing(in.getThingID())
@@ -304,6 +323,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<ClearThingGrpcResponse> clearThing(ClearThingGrpcRequest in) {
         return clearThing(in.getThingID())
@@ -316,6 +336,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<UpdateThingGrpcResponse> updateThing(UpdateThingGrpcRequest in) {
         return updateThing(new UpdateThing(in.getThingID(),
@@ -334,6 +355,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     }
                 });
     }
+
     @Override
     public CompletionStage<GetMetricsGrpcResponse> getMetrics(GetMetricsGrpcRequest in) {
         return getActorMetrics()
@@ -350,6 +372,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<GetBackendClusterStatusGrpcResponse> getBackendClusterStatus(GetBackendClusterStatusGrpcRequest in) {
         return getBackendClusterState()

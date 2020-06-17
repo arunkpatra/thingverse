@@ -1,3 +1,18 @@
+<!--
+  ~ Copyright (C) 2020 the original author or authors.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+  ~ this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed
+  ~ under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  ~ CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
+  -->
+
 <included>
     <property name="LOG_PATH" value="${THINGVERSE_LOG_PATH}"/>
     <property name="LOG_FILE" value="${THINGVERSE_LOG_FILE}"/>
@@ -6,9 +21,9 @@
     <property name="LOG_FILE_MAX_HISTORY" value="5"/>
     <property name="LOG_FILE_TOTAL_SIZE_CAP" value="10MB"/>
     <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd HH:mm:ss.SSS zzz"/>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender" additivity="false">
         <appender-ref ref="FILE"/>
@@ -17,9 +32,9 @@
     <root level="${THINGVERSE_ROOT_LOGGER_LEVEL}">
         <if condition='isDefined("THINGVERSE_LOG_TO_CONTAINER_CONSOLE")'>
             <then>
-                <appender-ref ref="CONSOLE" />
+                <appender-ref ref="CONSOLE"/>
             </then>
         </if>
-        <appender-ref ref="ASYNC" />
+        <appender-ref ref="ASYNC"/>
     </root>
 </included>

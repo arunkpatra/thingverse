@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.kubernetes.env.health;
 
 import com.thingverse.common.env.health.HealthChecker;
@@ -21,10 +36,10 @@ import java.util.Map;
  */
 public class KubernetesHealthChecker implements HealthChecker {
 
-    private final static int K8S_POD_READ_CHECK_TIMEOUT_SECONDS = 20;
-    private final static String K8S_THINGVERSE_DEFAULT_NAMESPACE = "default";
     public final static String K8S_THINGVERSE_NAMESPACE_KEY = "thingverse.kubernetes.namespace";
     public final static String K8S_THINGVERSE_CHECK_POD_READ_ACCESS_KEY = "thingverse.kubernetes.check.pod.read.access";
+    private final static int K8S_POD_READ_CHECK_TIMEOUT_SECONDS = 20;
+    private final static String K8S_THINGVERSE_DEFAULT_NAMESPACE = "default";
 
     @Override
     public CheckResult checkHealth(ConfigurableEnvironment env, Map<String, Object> properties, DeferredLog logger) {

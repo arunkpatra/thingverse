@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.tracing;
 
 import akka.grpc.internal.GrpcMetadataImpl;
@@ -61,7 +76,7 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
     }
 
     @Test
-    public void someParentMethodFutureTest() throws Exception{
+    public void someParentMethodFutureTest() throws Exception {
         String res = dummyParentService.someParentMethodFuture().handle((r, t) -> r).toCompletableFuture().get();
         Assert.assertEquals(res, "Hello World from future parent");
     }
@@ -71,15 +86,18 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
         dummyParentService.someParentMethodWithMetadataWithException(metadata);
     }
+
     @Test
     public void someParentMethodFutureException() {
         dummyParentService.someParentMethodFutureException();
     }
+
     @Test(expected = ExecutionException.class)
     public void someParentMethodWithMetadata2Test() throws Exception {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
         dummyParentService.someParentMethodWithMetadata2(metadata);
     }
+
     @Test
     public void testPropagatedNestedSpansWithInvalidMetadataTest() {
         LOGGER.info(RUNNING_CHAR + "Starting testPropagatedNestedSpansWithInvalidMetadataTest.");

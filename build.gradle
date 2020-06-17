@@ -1,7 +1,7 @@
 import com.thingverse.gradle.plugins.ThingversePlugin
 
 allprojects {
-    group = 'org.thingverse'
+    group = 'com.thingverse'
     version = '1.0.0'
     repositories {
         mavenLocal()

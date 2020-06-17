@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.api.config;
 
 import akka.actor.typed.ActorSystem;
@@ -11,8 +26,8 @@ import com.thingverse.api.services.ThingService;
 import com.thingverse.api.services.UserService;
 import com.thingverse.api.services.impl.ThingServiceImpl;
 import com.thingverse.api.services.impl.UserServiceImpl;
-import com.thingverse.common.env.health.ResourcesHealthyCondition;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
+import com.thingverse.common.env.health.ResourcesHealthyCondition;
 import grpc.health.v1.HealthClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +86,7 @@ public class ThingverseApiConfiguration {
 
     /**
      * This is an Opt-in, one needs to set thingverse.api.backend-health-check-enabled=true to activate.
+     *
      * @param healthClient The health client.
      * @param thingService Thing service.
      * @return The ThingverseBackendHealthIndicator.

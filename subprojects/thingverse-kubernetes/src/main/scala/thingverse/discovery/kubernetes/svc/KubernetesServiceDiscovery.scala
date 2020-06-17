@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package thingverse.discovery.kubernetes.svc
 
 import java.nio.file.{Files, Paths}
@@ -32,11 +47,11 @@ object KubernetesServiceDiscovery {
    */
   @InternalApi
   private def targets(
-      serviceList: ServiceList,
-      portName: Option[String],
-      serviceNamespace: String,
-      serviceDomain: String,
-      rawIp: Boolean): Seq[ResolvedTarget] =
+                       serviceList: ServiceList,
+                       portName: Option[String],
+                       serviceNamespace: String,
+                       serviceDomain: String,
+                       rawIp: Boolean): Seq[ResolvedTarget] =
 
     for {
       item <- serviceList.items
@@ -56,16 +71,17 @@ object KubernetesServiceDiscovery {
       val serviceName = item.metadata.get.name
       //val hostOrIp = if (rawIp) ip else s"${ip.replace('.', '-')}.$serviceNamespace.svc.$serviceDomain"
       val hostOrIp = if (rawIp) ip else s"$serviceName.$serviceNamespace.svc.$serviceDomain"
-      val target =  ResolvedTarget(
-              host = hostOrIp,
-              port = maybePort,
-              address = None
-//              address = Some(InetAddress.getByName(ip))
-            )
+      val target = ResolvedTarget(
+        host = hostOrIp,
+        port = maybePort,
+        address = None
+        //              address = Some(InetAddress.getByName(ip))
+      )
       target
     }
 
   class KubernetesApiException(msg: String) extends RuntimeException(msg) with NoStackTrace
+
 }
 
 /**
@@ -95,6 +111,10 @@ class KubernetesServiceDiscovery(system: ActorSystem) extends ServiceDiscovery {
   private val httpsContext = http.createClientHttpsContext(httpsConfig)
 
   log.debug("Settings {}", settings)
+  private val apiToken = readConfigVarFromFilesystem(settings.apiTokenPath, "api-token").getOrElse("")
+  private val serviceNamespace = settings.serviceNamespace
+    .orElse(readConfigVarFromFilesystem(settings.serviceNamespacePath, "service-namespace"))
+    .getOrElse("default")
 
   override def lookup(query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
     val labelSelector = settings.serviceLabelSelector(query.serviceName)
@@ -172,11 +192,21 @@ class KubernetesServiceDiscovery(system: ActorSystem) extends ServiceDiscovery {
     }
   }
 
-  private val apiToken = readConfigVarFromFilesystem(settings.apiTokenPath, "api-token").getOrElse("")
+  private def optionToFuture[T](option: Option[T], failMsg: String): Future[T] =
+    option.fold(Future.failed[T](new NoSuchElementException(failMsg)))(Future.successful)
 
-  private val serviceNamespace = settings.serviceNamespace
-    .orElse(readConfigVarFromFilesystem(settings.serviceNamespacePath, "service-namespace"))
-    .getOrElse("default")
+  private def serviceRequest(token: String, namespace: String, labelSelector: String) =
+    for {
+      host <- sys.env.get(settings.apiServiceHostEnvName)
+      portStr <- sys.env.get(settings.apiServicePortEnvName)
+      port <- Try(portStr.toInt).toOption
+    } yield {
+      val path = Uri.Path.Empty / "api" / "v1" / "namespaces" / namespace / "services"
+      val query = Uri.Query("labelSelector" -> labelSelector)
+      val uri = Uri.from(scheme = "https", host = host, port = port).withPath(path).withQuery(query)
+
+      HttpRequest(uri = uri, headers = Seq(Authorization(OAuth2BearerToken(token))))
+    }
 
   /**
    * This uses blocking IO, and so should only be used to read configuration at startup.
@@ -196,21 +226,4 @@ class KubernetesServiceDiscovery(system: ActorSystem) extends ServiceDiscovery {
       None
     }
   }
-
-  private def optionToFuture[T](option: Option[T], failMsg: String): Future[T] =
-    option.fold(Future.failed[T](new NoSuchElementException(failMsg)))(Future.successful)
-
-
-  private def serviceRequest(token: String, namespace: String, labelSelector: String) =
-    for {
-      host <- sys.env.get(settings.apiServiceHostEnvName)
-      portStr <- sys.env.get(settings.apiServicePortEnvName)
-      port <- Try(portStr.toInt).toOption
-    } yield {
-      val path = Uri.Path.Empty / "api" / "v1" / "namespaces" / namespace / "services"
-      val query = Uri.Query("labelSelector" -> labelSelector)
-      val uri = Uri.from(scheme = "https", host = host, port = port).withPath(path).withQuery(query)
-
-      HttpRequest(uri = uri, headers = Seq(Authorization(OAuth2BearerToken(token))))
-    }
 }

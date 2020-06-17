@@ -21,6 +21,9 @@ build-cache/
 !/.idea/inspectionProfiles
 !/.idea/icon.png
 !/.idea/icon_dark.png
+!/.idea/copyright/Apache_2_0_Copyright_Notice.xml
+!/.idea/copyright/profiles_settings.xml
+!/.idea/scopes/Java_Scala_Sources.xml
 */**/.idea
 *.iws
 *.iml

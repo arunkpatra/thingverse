@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package com.thingverse.backend.services.impl;
 
 import akka.actor.typed.ActorSystem;
@@ -13,27 +28,29 @@ import akka.stream.Materializer;
 import com.thingverse.backend.config.ThingverseBackendProperties;
 import com.thingverse.backend.services.GrpcServerBindingService;
 import com.thingverse.security.utils.TlsUtils;
-import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import static akka.http.javadsl.ConnectHttp.toHostHttps;
 
 public class GrpcServerBindingServiceImpl implements GrpcServerBindingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcServerBindingServiceImpl.class);
     private final ThingverseBackendProperties properties;
+
     public GrpcServerBindingServiceImpl(ThingverseBackendProperties properties) {
         this.properties = properties;
     }
 
     @Override
     public GrpcServerBindingStatuses bindAndServe(ActorSystem<Void> sys,
-                                                Function<HttpRequest, CompletionStage<HttpResponse>>[] handlers) {
+                                                  Function<HttpRequest, CompletionStage<HttpResponse>>[] handlers) {
         GrpcServerBindingStatuses statuses = new GrpcServerBindingStatuses();
         // Serve on HTTP also
         GrpcServerBindingStatuses s1 = bindAndServeInternalHttp(sys, handlers);
@@ -41,12 +58,12 @@ public class GrpcServerBindingServiceImpl implements GrpcServerBindingService {
 
         // Now serve HTTPS
         if (properties.httpsServerEnabled) {
-            SSLContext sslContext = TlsUtils.getSslContext(properties.getKeyStoreFileName(),properties.getKeyStorePassword(), properties.isInsecureMode());
+            SSLContext sslContext = TlsUtils.getSslContext(properties.getKeyStoreFileName(), properties.getKeyStorePassword(), properties.isInsecureMode());
             HttpsConnectionContext https = ConnectionContext.https(sslContext);
             Materializer mat = Materializer.matFromSystem(sys.classicSystem());
             Function<HttpRequest, CompletionStage<HttpResponse>> serviceHandlers = ServiceHandler.concatOrNotFound(handlers);
             try {
-                GrpcServerBindingStatus status =  Http.get(sys.classicSystem())
+                GrpcServerBindingStatus status = Http.get(sys.classicSystem())
                         .bindAndHandleAsync(serviceHandlers, toHostHttps(this.properties.getGrpcServerHost(),
                                 this.properties.getGrpcServerPortHttps()).withCustomHttpsContext(https), mat)
                         .handleAsync((b, t) -> new GrpcServerBindingStatus(b.localAddress().toString(),
@@ -62,12 +79,12 @@ public class GrpcServerBindingServiceImpl implements GrpcServerBindingService {
     }
 
     private GrpcServerBindingStatuses bindAndServeInternalHttp(ActorSystem<Void> sys,
-                                                  Function<HttpRequest, CompletionStage<HttpResponse>>[] handlers) {
+                                                               Function<HttpRequest, CompletionStage<HttpResponse>>[] handlers) {
         GrpcServerBindingStatuses statuses = new GrpcServerBindingStatuses();
         Materializer mat = Materializer.matFromSystem(sys.classicSystem());
         Function<HttpRequest, CompletionStage<HttpResponse>> serviceHandlers = ServiceHandler.concatOrNotFound(handlers);
         try {
-            GrpcServerBindingStatus status =  Http.get(sys.classicSystem())
+            GrpcServerBindingStatus status = Http.get(sys.classicSystem())
                     .bindAndHandleAsync(serviceHandlers, ConnectHttp.toHost(this.properties.getGrpcServerHost(),
                             this.properties.getGrpcServerPort()), mat)
                     .handleAsync((b, t) -> new GrpcServerBindingStatus(b.localAddress().toString(),

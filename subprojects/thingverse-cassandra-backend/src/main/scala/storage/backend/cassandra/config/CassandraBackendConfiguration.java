@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package storage.backend.cassandra.config;
 
 import akka.actor.typed.ActorSystem;
@@ -39,7 +54,7 @@ public class CassandraBackendConfiguration {
     @Bean
     @ConditionalOnMissingBean(ThingverseAkkaStorageBackend.class)
     public ThingverseAkkaStorageBackend thingverseAkkaStorageBackend() {
-        ThingverseAkkaStorageBackend sb =  (new CassandraStorageBackend(properties)).start();
+        ThingverseAkkaStorageBackend sb = (new CassandraStorageBackend(properties)).start();
         // We pre-create this for embedded cassandra db. When its not an embedded db, then,
         // the tables need to be created as part of the startup cycle of the backend.
         // TODO: Use a property driven approach to create the table and keyspace. In PROD, disable this and
