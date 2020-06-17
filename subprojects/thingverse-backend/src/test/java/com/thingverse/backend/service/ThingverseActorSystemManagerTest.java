@@ -1,7 +1,6 @@
 package com.thingverse.backend.service;
 
 import com.thingverse.backend.AbstractTest;
-
 import com.thingverse.backend.models.ActorSystemInfo;
 import com.thingverse.backend.models.ActorSystemInfoFormatted;
 import com.thingverse.backend.services.ThingverseActorSystemManager;

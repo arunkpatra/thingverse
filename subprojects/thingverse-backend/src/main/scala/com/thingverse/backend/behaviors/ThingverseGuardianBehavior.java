@@ -8,14 +8,14 @@ import akka.actor.typed.javadsl.Behaviors;
 import akka.cluster.sharding.typed.ShardingEnvelope;
 import akka.cluster.typed.Cluster;
 import akka.japi.Creator;
+import com.thingverse.api.command.ThingverseCommand;
+import com.thingverse.api.event.ThingverseEvent;
+import com.thingverse.api.event.ThingverseEventProcessorStream;
 import com.thingverse.backend.actors.MetricsCollector;
 import com.thingverse.backend.actors.RemoteThing;
 import com.thingverse.backend.events.EventProcessor;
 import com.thingverse.backend.events.EventProcessorSettings;
 import com.thingverse.backend.metrics.listener.ThingverseClusterNodeMetricsListener;
-import com.thingverse.api.command.ThingverseCommand;
-import com.thingverse.api.event.ThingverseEvent;
-import com.thingverse.api.event.ThingverseEventProcessorStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

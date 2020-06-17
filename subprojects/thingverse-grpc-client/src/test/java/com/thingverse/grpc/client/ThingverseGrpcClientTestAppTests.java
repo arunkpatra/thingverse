@@ -1,13 +1,13 @@
 package com.thingverse.grpc.client;
 
 import akka.actor.typed.ActorSystem;
+import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
 
 import java.util.Arrays;
 

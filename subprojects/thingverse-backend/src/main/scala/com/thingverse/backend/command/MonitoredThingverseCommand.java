@@ -2,8 +2,8 @@ package com.thingverse.backend.command;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.thingverse.backend.actors.RemoteThing;
 import com.thingverse.api.command.ThingverseCommand;
+import com.thingverse.backend.actors.RemoteThing;
 
 import java.time.Duration;
 import java.time.Instant;

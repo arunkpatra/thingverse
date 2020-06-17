@@ -1,8 +1,8 @@
 package com.thingverse.api.controllers;
 
+import com.thingverse.api.models.ErrorResponse;
 import com.thingverse.common.exception.ThingverseBackendException;
 import com.thingverse.common.exception.ThingverseBadRequestException;
-import com.thingverse.api.models.ErrorResponse;
 import com.thingverse.common.grpc.GrpcStatus;
 import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;

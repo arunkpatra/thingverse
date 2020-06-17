@@ -2,8 +2,8 @@ package com.thingverse.api.environment.postprocessor;
 
 import com.thingverse.common.env.health.HealthChecker;
 import com.thingverse.common.env.health.HealthStatus;
-import com.thingverse.kubernetes.env.health.KubernetesHealthChecker;
 import com.thingverse.common.env.postprocessor.AbstractThingverseEnvChecker;
+import com.thingverse.kubernetes.env.health.KubernetesHealthChecker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

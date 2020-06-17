@@ -1,9 +1,9 @@
 package thingverse.discovery.kubernetes.svc
 
 import akka.annotation.InternalApi
-import thingverse.discovery.kubernetes.svc.ServiceList._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json._
+import thingverse.discovery.kubernetes.svc.ServiceList._
 
 /**
  * INTERNAL API

@@ -1,8 +1,8 @@
 package thingverse.tracing.annotation;
 
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import thingverse.tracing.config.ThingverseTracingImportSelector;
 import org.springframework.context.annotation.Import;
+import thingverse.tracing.config.ThingverseTracingImportSelector;
 
 import java.lang.annotation.*;
 

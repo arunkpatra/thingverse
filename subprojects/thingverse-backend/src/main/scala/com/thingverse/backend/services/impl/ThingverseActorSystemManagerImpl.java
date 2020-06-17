@@ -32,7 +32,6 @@ import thingverse.kubernetes.config.KubernetesLookupProperties;
 import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-
 import java.util.*;
 
 import static com.thingverse.common.utils.ConsoleColors.thanos;

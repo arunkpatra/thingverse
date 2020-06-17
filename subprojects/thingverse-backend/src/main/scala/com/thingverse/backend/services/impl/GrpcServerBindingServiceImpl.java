@@ -13,14 +13,15 @@ import akka.stream.Materializer;
 import com.thingverse.backend.config.ThingverseBackendProperties;
 import com.thingverse.backend.services.GrpcServerBindingService;
 import com.thingverse.security.utils.TlsUtils;
-import javax.net.ssl.SSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import static akka.http.javadsl.ConnectHttp.toHostHttps;
 
 public class GrpcServerBindingServiceImpl implements GrpcServerBindingService {

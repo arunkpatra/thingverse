@@ -24,7 +24,6 @@ import thingverse.kubernetes.config.KubernetesLookupProperties;
 import thingverse.tracing.annotation.EnableThingverseTracing;
 import thingverse.tracing.config.ThingverseTracer;
 
-
 import static com.thingverse.common.utils.ConsoleColors.thanos;
 
 @Configuration

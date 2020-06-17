@@ -5,8 +5,11 @@ plugins {
     id 'com.bmuschko.docker-remote-api' version '6.4.0'
     id 'com.gorylenko.gradle-git-properties' version '2.2.2'
 }
-import com.bmuschko.gradle.docker.tasks.image.*
-import com.bmuschko.gradle.docker.tasks.*
+
+import com.bmuschko.gradle.docker.tasks.DockerVersion
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
 java {
     withJavadocJar()
     withSourcesJar()

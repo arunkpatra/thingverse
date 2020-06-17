@@ -1,7 +1,5 @@
 package com.thingverse.api.controllers;
 
-import com.thingverse.common.exception.ThingverseBackendException;
-import com.thingverse.common.exception.ThingverseException;
 import com.thingverse.api.models.*;
 import com.thingverse.api.security.config.JwtTokenUtil;
 import com.thingverse.api.security.config.JwtUserDetailsService;
@@ -10,6 +8,8 @@ import com.thingverse.api.security.model.AuthenticationResponse;
 import com.thingverse.api.security.model.UserInfoResponse;
 import com.thingverse.api.services.ThingService;
 import com.thingverse.common.env.health.ResourcesHealthyCondition;
+import com.thingverse.common.exception.ThingverseBackendException;
+import com.thingverse.common.exception.ThingverseException;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.annotation.TimedSet;
 import io.swagger.annotations.*;

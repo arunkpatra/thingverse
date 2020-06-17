@@ -1,8 +1,8 @@
 package com.thingverse.api.transformers;
 
-import com.thingverse.common.exception.ThingverseBackendException;
 import com.thingverse.api.models.*;
 import com.thingverse.backend.v1.*;
+import com.thingverse.common.exception.ThingverseBackendException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;

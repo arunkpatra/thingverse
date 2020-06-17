@@ -1,7 +1,7 @@
 package com.thingverse.api.controllers;
 
-import com.thingverse.common.exception.ThingverseException;
 import com.thingverse.api.models.*;
+import com.thingverse.common.exception.ThingverseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 

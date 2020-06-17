@@ -2,8 +2,8 @@ package com.thingverse.api.services;
 
 import com.thingverse.api.AbstractTest;
 import com.thingverse.api.models.CreateThingResponse;
-import com.thingverse.backend.v1.CreateThingGrpcResponse;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
+import com.thingverse.backend.v1.CreateThingGrpcResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;

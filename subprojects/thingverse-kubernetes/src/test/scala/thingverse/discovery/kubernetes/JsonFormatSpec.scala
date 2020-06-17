@@ -3,8 +3,8 @@ package thingverse.discovery.kubernetes
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json._
-import thingverse.discovery.kubernetes.svc.{JsonFormat, ServiceList}
 import thingverse.discovery.kubernetes.svc.ServiceList.{Metadata, Service, ServicePort, ServiceSpec}
+import thingverse.discovery.kubernetes.svc.{JsonFormat, ServiceList}
 
 import scala.io.Source
 

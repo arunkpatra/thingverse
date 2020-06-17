@@ -1,12 +1,12 @@
 package com.thingverse.backend;
 
 import akka.actor.typed.ActorSystem;
-import com.thingverse.backend.services.ActorService;
 import com.thingverse.api.storage.ThingverseAkkaStorageBackend;
+import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
+import com.thingverse.backend.services.ActorService;
 import com.thingverse.backend.v1.ThingverseGrpcService;
 import com.thingverse.common.env.health.EnvironmentHealthListener;
 import com.thingverse.common.log.DeferredLogActivator;
-import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
