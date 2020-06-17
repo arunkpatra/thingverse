@@ -39,6 +39,7 @@ public class ApiOperationModeConfigurer extends AbstractOperationModeOverridesIn
 
         return thingverseOverrides;
     }
+
     @Override
     public Map<String, Object> getClusterModeOverrides(ConfigurableEnvironment environment) {
         Map<String, Object> thingverseOverrides = new LinkedHashMap<>();

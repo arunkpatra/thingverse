@@ -53,7 +53,7 @@ public class ThingverseGrpcClientConfiguration {
     public ActorSystem<Void> clientActorSystem() {
         LOGGER.info("Creating the client ActorSystem.");
         return ActorSystem.create(Behaviors.empty(), properties.getClientName().concat("-actor-system"),
-                        getClientActorSystemConfig(properties));
+                getClientActorSystemConfig(properties));
     }
 
     private Config getClientActorSystemConfig(ThingverseGrpcClientProperties properties) {
@@ -79,7 +79,7 @@ public class ThingverseGrpcClientConfiguration {
                 break;
             case KUBERNETES_SERVICE:
                 discoveryMethodDetails = "akka.discovery.method = " + "kubernetes-service" + "\n" +
-                "akka.discovery.kubernetes-service.service-namespace = " +
+                        "akka.discovery.kubernetes-service.service-namespace = " +
                         kubernetesLookupProperties.getServiceLookupNamespace() + "\n";
                 break;
             default:
@@ -140,6 +140,7 @@ public class ThingverseGrpcClientConfiguration {
 
         return settings;
     }
+
     @Bean
     @ConditionalOnMissingBean({EnhancedThingverseGrpcServiceClient.class})
     public EnhancedThingverseGrpcServiceClient thingverseGrpcServiceClient(ActorSystem<Void> actorSystem) {
@@ -157,7 +158,7 @@ public class ThingverseGrpcClientConfiguration {
     @ConditionalOnMissingBean({HealthClient.class})
     public HealthClient thingverseBackendHealthCheckClient(ActorSystem<Void> actorSystem) {
         Materializer materializer = Materializer.matFromSystem(actorSystem.classicSystem());
-        GrpcClientSettings settings =getGrpcClientSettings(actorSystem);
+        GrpcClientSettings settings = getGrpcClientSettings(actorSystem);
         return HealthClient.create(settings, materializer, actorSystem.classicSystem().dispatcher());
     }
 }

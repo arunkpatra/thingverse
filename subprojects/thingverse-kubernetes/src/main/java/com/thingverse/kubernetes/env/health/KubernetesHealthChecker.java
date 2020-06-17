@@ -21,10 +21,10 @@ import java.util.Map;
  */
 public class KubernetesHealthChecker implements HealthChecker {
 
-    private final static int K8S_POD_READ_CHECK_TIMEOUT_SECONDS = 20;
-    private final static String K8S_THINGVERSE_DEFAULT_NAMESPACE = "default";
     public final static String K8S_THINGVERSE_NAMESPACE_KEY = "thingverse.kubernetes.namespace";
     public final static String K8S_THINGVERSE_CHECK_POD_READ_ACCESS_KEY = "thingverse.kubernetes.check.pod.read.access";
+    private final static int K8S_POD_READ_CHECK_TIMEOUT_SECONDS = 20;
+    private final static String K8S_THINGVERSE_DEFAULT_NAMESPACE = "default";
 
     @Override
     public CheckResult checkHealth(ConfigurableEnvironment env, Map<String, Object> properties, DeferredLog logger) {

@@ -8,7 +8,7 @@ import thingverse.discovery.kubernetes.svc.{JsonFormat, ServiceList}
 
 import scala.io.Source
 
-class JsonFormatSpec extends AnyWordSpec  with Matchers {
+class JsonFormatSpec extends AnyWordSpec with Matchers {
   "JsonFormat" should {
     val data = resourceAsString("services.json")
 

@@ -20,8 +20,8 @@ import static java.util.Map.Entry.comparingByKey;
  */
 public class DeferredLogActivatorImpl implements DeferredLogActivator {
 
-    public final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 1;
     private static final Logger LOGGER = LoggerFactory.getLogger(DeferredLogActivatorImpl.class);
+    public final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 1;
     Map<Integer, DeferredLogSourceEnvironmentPostProcessor> beanMap = new HashMap<>();
 
     public DeferredLogActivatorImpl(ApplicationContext context) {

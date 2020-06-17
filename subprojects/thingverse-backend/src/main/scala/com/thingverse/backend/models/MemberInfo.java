@@ -4,12 +4,12 @@ import akka.cluster.Member;
 
 public class MemberInfo {
 
-    private final String  address;
-    private final String  dataCenter;
-    private final String  roles;
-    private final String  uniqueAddress;
-    private final int  upNumber;
-    private final String  status;
+    private final String address;
+    private final String dataCenter;
+    private final String roles;
+    private final String uniqueAddress;
+    private final int upNumber;
+    private final String status;
 
     public MemberInfo(Member m) {
         this.address = m.address().toString();

@@ -152,8 +152,8 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
         List<Member> memberList = new ArrayList<>();
         Iterable<Member> members = Cluster.get(actorSystem).state().getMembers();
         members.forEach(memberList::add);
-        boolean allMembersUp = memberList.stream().allMatch( m -> MemberStatus.up().equals(m.status())
-                        || MemberStatus.weaklyUp().equals(m.status()));
+        boolean allMembersUp = memberList.stream().allMatch(m -> MemberStatus.up().equals(m.status())
+                || MemberStatus.weaklyUp().equals(m.status()));
         int totalMembers = memberList.size();
         long readNodeCount = memberList.stream().filter(m -> m.hasRole("read-model")).count();
         long writeNodeCount = memberList.stream().filter(m -> m.hasRole("write-model")).count();
@@ -272,7 +272,9 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     } else {
                         return CreateThingGrpcResponse.newBuilder().setErrormessage(t.getMessage()).build();
                     }
-                });    }
+                });
+    }
+
     @Override
     public CompletionStage<GetThingGrpcResponse> getThing(GetThingGrpcRequest in) {
         return getThing(in.getThingID())
@@ -286,12 +288,14 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     }
                 }));
     }
+
     @Override
     public Source<StreamAllThingIDsGrpcResponse, akka.NotUsed> streamAllThingIDs(StreamAllThingIDsGrpcRequest in) {
         return streamAllThingIDs(in.getMaxidstoreturn())
                 .map(s -> StreamAllThingIDsGrpcResponse.newBuilder().setThingID(s)
                         .build());
     }
+
     @Override
     public CompletionStage<StopThingGrpcResponse> stopThing(StopThingGrpcRequest in) {
         return stopThing(in.getThingID())
@@ -304,6 +308,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<ClearThingGrpcResponse> clearThing(ClearThingGrpcRequest in) {
         return clearThing(in.getThingID())
@@ -316,6 +321,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<UpdateThingGrpcResponse> updateThing(UpdateThingGrpcRequest in) {
         return updateThing(new UpdateThing(in.getThingID(),
@@ -334,6 +340,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                     }
                 });
     }
+
     @Override
     public CompletionStage<GetMetricsGrpcResponse> getMetrics(GetMetricsGrpcRequest in) {
         return getActorMetrics()
@@ -350,6 +357,7 @@ public class ActorServiceImpl implements ActorService, ThingverseGrpcServicePowe
                         }
                 );
     }
+
     @Override
     public CompletionStage<GetBackendClusterStatusGrpcResponse> getBackendClusterStatus(GetBackendClusterStatusGrpcRequest in) {
         return getBackendClusterState()

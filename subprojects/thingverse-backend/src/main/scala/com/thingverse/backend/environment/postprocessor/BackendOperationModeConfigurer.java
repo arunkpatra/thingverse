@@ -25,8 +25,9 @@ import static org.springframework.core.env.StandardEnvironment.SYSTEM_PROPERTIES
 @Order(Ordered.HIGHEST_PRECEDENCE + 10)
 public class BackendOperationModeConfigurer extends AbstractOperationModeOverridesInjector {
 
-    private static final AtomicInteger counter = new AtomicInteger(0);
     public static final String BACKEND_ROLE_KEY = "thingverse.backend.roles";
+    private static final AtomicInteger counter = new AtomicInteger(0);
+
     @Override
     public AtomicInteger executionCount() {
         return counter;

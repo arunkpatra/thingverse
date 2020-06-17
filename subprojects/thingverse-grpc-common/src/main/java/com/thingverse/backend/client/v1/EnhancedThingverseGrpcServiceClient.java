@@ -14,11 +14,18 @@ import java.util.concurrent.CompletionStage;
  */
 public interface EnhancedThingverseGrpcServiceClient extends ThingverseGrpcService {
     CompletionStage<CreateThingGrpcResponse> createThing(CreateThingGrpcRequest in, Map<String, String> metadataMap);
+
     CompletionStage<GetThingGrpcResponse> getThing(GetThingGrpcRequest in, Map<String, String> metadataMap);
+
     Source<StreamAllThingIDsGrpcResponse, NotUsed> streamAllThingIDs(StreamAllThingIDsGrpcRequest in, Map<String, String> metadataMap);
-    CompletionStage<StopThingGrpcResponse> stopThing(StopThingGrpcRequest in, Map<String, String> metadataMap) ;
-    CompletionStage<ClearThingGrpcResponse> clearThing(ClearThingGrpcRequest in, Map<String, String> metadataMap) ;
-    CompletionStage<UpdateThingGrpcResponse> updateThing(UpdateThingGrpcRequest in, Map<String, String> metadataMap) ;
-    CompletionStage<GetMetricsGrpcResponse> getMetrics(GetMetricsGrpcRequest in, Map<String, String> metadataMap) ;
-    CompletionStage<GetBackendClusterStatusGrpcResponse> getBackendClusterStatus(GetBackendClusterStatusGrpcRequest in, Map<String, String> metadataMap) ;
+
+    CompletionStage<StopThingGrpcResponse> stopThing(StopThingGrpcRequest in, Map<String, String> metadataMap);
+
+    CompletionStage<ClearThingGrpcResponse> clearThing(ClearThingGrpcRequest in, Map<String, String> metadataMap);
+
+    CompletionStage<UpdateThingGrpcResponse> updateThing(UpdateThingGrpcRequest in, Map<String, String> metadataMap);
+
+    CompletionStage<GetMetricsGrpcResponse> getMetrics(GetMetricsGrpcRequest in, Map<String, String> metadataMap);
+
+    CompletionStage<GetBackendClusterStatusGrpcResponse> getBackendClusterStatus(GetBackendClusterStatusGrpcRequest in, Map<String, String> metadataMap);
 }

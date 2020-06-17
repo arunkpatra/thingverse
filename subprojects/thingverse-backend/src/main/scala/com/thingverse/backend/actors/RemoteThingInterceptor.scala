@@ -27,7 +27,7 @@ class RemoteThingInterceptor extends InterceptionHandler[ThingverseCommand] {
     log.debug(s"@@@ Actor ${ctx.asScala.self.path} received new message: $msg")
     // We calculate metrics from only those messages which are meant to be monitored
     msg match {
-      case m: MonitoredThingverseCommand  =>
+      case m: MonitoredThingverseCommand =>
         m.setDeliveredToActorAt(Instant.now)
         log.debug(s"Message age of message $msg is ${m.getMessageAge} micro seconds.")
         ClusterSharding.get(ctx.asScala.system)

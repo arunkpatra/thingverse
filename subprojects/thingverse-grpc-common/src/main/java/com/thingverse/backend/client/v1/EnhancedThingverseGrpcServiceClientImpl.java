@@ -68,6 +68,7 @@ public class EnhancedThingverseGrpcServiceClientImpl implements EnhancedThingver
     public CompletionStage<GetBackendClusterStatusGrpcResponse> getBackendClusterStatus(GetBackendClusterStatusGrpcRequest in) {
         return getBackendClusterStatus(in, thingverseTracer.extractGrpcMetadataFromExistingSpan());
     }
+
     @Override
     public CompletionStage<GetThingGrpcResponse> getThing(GetThingGrpcRequest in) {
         return getThing(in, thingverseTracer.extractGrpcMetadataFromExistingSpan());
@@ -113,14 +114,14 @@ public class EnhancedThingverseGrpcServiceClientImpl implements EnhancedThingver
         return addHeaders(wrappedClient.getBackendClusterStatus(), metadataMap).invoke(in);
     }
 
-    private <U,V> SingleResponseRequestBuilder<U, V> addHeaders(SingleResponseRequestBuilder<U, V> builder, Map<String, String> metadataMap) {
+    private <U, V> SingleResponseRequestBuilder<U, V> addHeaders(SingleResponseRequestBuilder<U, V> builder, Map<String, String> metadataMap) {
         for (Map.Entry<String, String> e : metadataMap.entrySet()) {
             builder = builder.addHeader(e.getKey(), e.getValue());
         }
         return enhancedRequestBuilder(builder);
     }
 
-    private <U,V> StreamResponseRequestBuilder<U, V> addHeaders(StreamResponseRequestBuilder<U, V> builder, Map<String, String> metadataMap) {
+    private <U, V> StreamResponseRequestBuilder<U, V> addHeaders(StreamResponseRequestBuilder<U, V> builder, Map<String, String> metadataMap) {
         for (Map.Entry<String, String> e : metadataMap.entrySet()) {
             builder = builder.addHeader(e.getKey(), e.getValue());
         }

@@ -29,9 +29,11 @@ public interface HealthChecker {
 
     /**
      * A friendly name that identifies the resource type, e.g. CASSANDRA, CONSUL, KUBERNETES etc.
+     *
      * @return The resource type.
      */
     String getResourceType();
+
     /**
      * Result of a health check operation.
      */

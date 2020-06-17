@@ -49,6 +49,10 @@ public class ThingverseGrpcClientProperties {
         return clientName;
     }
 
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
     public ServiceDiscoveryMechanism getDiscoveryMechanism() {
         return discoveryMechanism;
     }
@@ -63,9 +67,5 @@ public class ThingverseGrpcClientProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
     }
 }

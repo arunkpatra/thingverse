@@ -17,7 +17,7 @@ public class TracingCandidateExceptionExtractor {
                 if ((null != t.getCause()) && (t.getCause() instanceof ExecutionException)) {
                     Throwable t1 = t.getCause();
                     if ((null != t1.getCause()) && (t1.getCause() instanceof StatusRuntimeException)) {
-                       return t1.getCause();
+                        return t1.getCause();
                     }
                 }
             }

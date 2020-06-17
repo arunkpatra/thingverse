@@ -61,7 +61,7 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
     }
 
     @Test
-    public void someParentMethodFutureTest() throws Exception{
+    public void someParentMethodFutureTest() throws Exception {
         String res = dummyParentService.someParentMethodFuture().handle((r, t) -> r).toCompletableFuture().get();
         Assert.assertEquals(res, "Hello World from future parent");
     }
@@ -71,15 +71,18 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
         dummyParentService.someParentMethodWithMetadataWithException(metadata);
     }
+
     @Test
     public void someParentMethodFutureException() {
         dummyParentService.someParentMethodFutureException();
     }
+
     @Test(expected = ExecutionException.class)
     public void someParentMethodWithMetadata2Test() throws Exception {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
         dummyParentService.someParentMethodWithMetadata2(metadata);
     }
+
     @Test
     public void testPropagatedNestedSpansWithInvalidMetadataTest() {
         LOGGER.info(RUNNING_CHAR + "Starting testPropagatedNestedSpansWithInvalidMetadataTest.");

@@ -108,7 +108,7 @@ public class ThingServiceImpl implements ThingService {
         return toStopThingResponse(
                 client.stopThing(StopThingGrpcRequest.newBuilder().setThingID(thingID).build())
                         .toCompletableFuture().get(properties.getCallTimeoutMillis(), TimeUnit.MILLISECONDS)
-                );
+        );
     }
 
     @Override

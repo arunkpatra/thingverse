@@ -39,7 +39,7 @@ public class CassandraBackendConfiguration {
     @Bean
     @ConditionalOnMissingBean(ThingverseAkkaStorageBackend.class)
     public ThingverseAkkaStorageBackend thingverseAkkaStorageBackend() {
-        ThingverseAkkaStorageBackend sb =  (new CassandraStorageBackend(properties)).start();
+        ThingverseAkkaStorageBackend sb = (new CassandraStorageBackend(properties)).start();
         // We pre-create this for embedded cassandra db. When its not an embedded db, then,
         // the tables need to be created as part of the startup cycle of the backend.
         // TODO: Use a property driven approach to create the table and keyspace. In PROD, disable this and

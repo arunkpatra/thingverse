@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles({"intg-test","embedded-consul"})
+@ActiveProfiles({"intg-test", "embedded-consul"})
 public abstract class AbstractTest {
     protected static final String BACKEND_UNAVAILABLE = "Backend Unavailable";
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);

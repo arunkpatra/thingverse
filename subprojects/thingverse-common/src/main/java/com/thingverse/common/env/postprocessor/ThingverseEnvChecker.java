@@ -15,7 +15,6 @@ public interface ThingverseEnvChecker extends DeferredLogSourceEnvironmentPostPr
      * @param environment Environment.
      * @param application Application.
      * @return A HealthStatus map.
-     *
      */
     Map<String, HealthChecker.CheckResult> runEnvironmentValidationChecks(ConfigurableEnvironment environment, SpringApplication application);
 }

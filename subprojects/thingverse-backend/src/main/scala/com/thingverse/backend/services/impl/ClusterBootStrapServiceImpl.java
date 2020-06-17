@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * ClusterBootstrap process is not required if seed nodes have already been configured via configuration. In that case,
  * this routine will exit without performing any action.
- *
  */
 public class ClusterBootStrapServiceImpl implements ClusterBootStrapService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClusterBootStrapServiceImpl.class);

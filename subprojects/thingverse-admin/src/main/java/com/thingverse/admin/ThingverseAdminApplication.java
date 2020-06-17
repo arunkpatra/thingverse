@@ -23,6 +23,10 @@ public class ThingverseAdminApplication {
     private static final String dateFormat = "yyyy-MM-dd";
     private static final String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
+    public static void main(String[] args) {
+        SpringApplication.run(ThingverseAdminApplication.class, args);
+    }
+
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         return builder -> {
@@ -33,10 +37,6 @@ public class ThingverseAdminApplication {
             builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)));
             builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)));
         };
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(ThingverseAdminApplication.class, args);
     }
 
     @Bean

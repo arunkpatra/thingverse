@@ -5,6 +5,7 @@ package com.thingverse.common.exception;
  */
 public class ThingverseBackendException extends ThingverseException {
     private static final String defaultMessage = "Backend Unavailable";
+
     public ThingverseBackendException() {
         super(defaultMessage);
     }

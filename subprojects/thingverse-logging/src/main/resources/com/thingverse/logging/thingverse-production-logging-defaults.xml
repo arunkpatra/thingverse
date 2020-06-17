@@ -6,9 +6,9 @@
     <property name="LOG_FILE_MAX_HISTORY" value="5"/>
     <property name="LOG_FILE_TOTAL_SIZE_CAP" value="10MB"/>
     <property name="LOG_DATEFORMAT_PATTERN" value="yyyy-MM-dd HH:mm:ss.SSS zzz"/>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender" additivity="false">
         <appender-ref ref="FILE"/>
@@ -17,9 +17,9 @@
     <root level="${THINGVERSE_ROOT_LOGGER_LEVEL}">
         <if condition='isDefined("THINGVERSE_LOG_TO_CONTAINER_CONSOLE")'>
             <then>
-                <appender-ref ref="CONSOLE" />
+                <appender-ref ref="CONSOLE"/>
             </then>
         </if>
-        <appender-ref ref="ASYNC" />
+        <appender-ref ref="ASYNC"/>
     </root>
 </included>

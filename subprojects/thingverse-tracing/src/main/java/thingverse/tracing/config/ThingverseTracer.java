@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * Wraps a {@link io.opentracing.Tracer} implementation. Currently we use a Jaeger implementation
  * of the tracer.
- *
  */
 public class ThingverseTracer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ThingverseTracer.class);

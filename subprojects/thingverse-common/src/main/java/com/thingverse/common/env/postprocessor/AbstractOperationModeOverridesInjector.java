@@ -17,10 +17,10 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
 
     protected static final DeferredLog logger = new DeferredLog();
     protected static final String THINGVERSE_ENV_KEY = "thingverse-env";
-    private static final String OPERATION_MODE_KEY = "operation-mode";
     protected static final String RUNTIME_ENVIRONMENT_KEY = "runtime-env";
     protected static final String RUNTIME_ENVIRONMENT_LOCAL = "local";
     protected static final String RUNTIME_ENVIRONMENT_K8S = "kubernetes";
+    private static final String OPERATION_MODE_KEY = "operation-mode";
     private static final String OPERATION_MODE_STANDALONE = "standalone";
     private static final String OPERATION_MODE_CLUSTER = "cluster";
     private final List<String> allowedModes = Arrays.asList(OPERATION_MODE_STANDALONE, OPERATION_MODE_CLUSTER);
@@ -105,10 +105,10 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
         Map<String, Object> tagInfoProperties = new LinkedHashMap<>();
         try (InputStream gitPropsIs = application.getClassLoader().getResourceAsStream("git.properties")) {
             if (null != gitPropsIs) {
-                Properties  gitProps = new Properties();
+                Properties gitProps = new Properties();
                 gitProps.load(gitPropsIs);
                 tagInfoProperties.put("spring.boot.admin.client.instance.metadata.tags.commit",
-                        gitProps.getProperty("git.commit.id.abbrev","-----"));
+                        gitProps.getProperty("git.commit.id.abbrev", "-----"));
             }
         } catch (IOException e) {
             // Ignore
@@ -117,7 +117,7 @@ public abstract class AbstractOperationModeOverridesInjector implements Operatio
         try (InputStream buildPropsIs =
                      application.getClassLoader().getResourceAsStream("META-INF/build-info.properties")) {
             if (null != buildPropsIs) {
-                Properties  buildProps = new Properties();
+                Properties buildProps = new Properties();
                 buildProps.load(buildPropsIs);
                 tagInfoProperties.put("spring.boot.admin.client.instance.metadata.tags.version",
                         buildProps.getProperty("build.version", "0.0.0"));

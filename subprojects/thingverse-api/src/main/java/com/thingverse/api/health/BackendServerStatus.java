@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 public class BackendServerStatus {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackendServerStatus.class);
+
     public HealthCheckResponse.ServingStatus getServerStatus(HealthClient healthClient) {
         try {
             HealthCheckRequest request = HealthCheckRequest.newBuilder().setService("thingverse-backend").build();

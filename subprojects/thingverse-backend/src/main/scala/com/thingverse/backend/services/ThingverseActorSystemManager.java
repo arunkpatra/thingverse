@@ -21,6 +21,7 @@ public interface ThingverseActorSystemManager {
 
     /**
      * Terminates the Thingverse Backend ActorSystem managed by this bean
+     *
      * @return ActorSystemInfoFormatted
      */
     ActorSystemInfoFormatted terminateActorSystem();

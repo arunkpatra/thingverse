@@ -37,11 +37,10 @@ import java.util.*;
 import static com.thingverse.common.utils.ConsoleColors.thanos;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-@ManagedResource(objectName="thingverse:name=ThingverseActorSystemManager", description="Thingverse Akka ActorSystem Manager Managed Bean")
+@ManagedResource(objectName = "thingverse:name=ThingverseActorSystemManager", description = "Thingverse Akka ActorSystem Manager Managed Bean")
 public class ThingverseActorSystemManagerImpl implements ThingverseActorSystemManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThingverseActorSystemManagerImpl.class);
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss zzz");
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final InetUtils inetUtils;
     private final ThingverseBackendProperties properties;
@@ -49,6 +48,7 @@ public class ThingverseActorSystemManagerImpl implements ThingverseActorSystemMa
     private final ThingverseAkkaStorageBackend storageBackend;
     private final Config actorSystemConfig;
     private final ActorSystemInfo actorSystemInfo;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss zzz");
 
     public ThingverseActorSystemManagerImpl(ThingverseBackendProperties properties,
                                             KubernetesLookupProperties kubernetesLookupProperties,
@@ -95,7 +95,7 @@ public class ThingverseActorSystemManagerImpl implements ThingverseActorSystemMa
     }
 
     @Override
-    @ManagedOperation(description="Create a new Akka ActorSystem")
+    @ManagedOperation(description = "Create a new Akka ActorSystem")
     public ActorSystemInfo createActorSystem() {
         if (ActorSystemStatus.STARTING.equals(this.actorSystemInfo.getStatus()) ||
                 ActorSystemStatus.STARTED.equals(this.actorSystemInfo.getStatus())) {
@@ -158,13 +158,14 @@ public class ThingverseActorSystemManagerImpl implements ThingverseActorSystemMa
             upTime = Duration.of(a.getActorSystem().get().uptime(), SECONDS).toString();
         }
         return new ActorSystemInfoFormatted(
-                        (a.getActorSystem().isPresent() ? a.getActorSystem().get().name() : "UNAVAILABLE"),
-                        a.getRoles().isPresent() ? a.getRoles().get().toString() : "UNAVAILABLE",
-                        a.getAddress().isPresent() ? a.getAddress().get() : "UNAVAILABLE",
-                        a.getStatus(), upTime, startTime);
+                (a.getActorSystem().isPresent() ? a.getActorSystem().get().name() : "UNAVAILABLE"),
+                a.getRoles().isPresent() ? a.getRoles().get().toString() : "UNAVAILABLE",
+                a.getAddress().isPresent() ? a.getAddress().get() : "UNAVAILABLE",
+                a.getStatus(), upTime, startTime);
     }
+
     @Override
-    @ManagedOperation(description="Terminate the Akka ActorSystem managed by this MBean")
+    @ManagedOperation(description = "Terminate the Akka ActorSystem managed by this MBean")
     public ActorSystemInfoFormatted terminateActorSystem() {
         this.actorSystemInfo.setStatus(ActorSystemStatus.TERMINATING);
         this.actorSystemInfo.getActorSystem().ifPresent(ActorSystem::terminate);
@@ -250,7 +251,7 @@ public class ThingverseActorSystemManagerImpl implements ThingverseActorSystemMa
                 "datastax-java-driver.basic.load-balancing-policy.local-datacenter = " + props.getCassandraLocalDatacenter() + "\n";
 
         return ConfigFactory.parseString(
-                akkaRemoteHostname +  cassandraContactPoints + cassandraLocalDatacenter + akkaDiscoveryMethod + consulHostInfo +
+                akkaRemoteHostname + cassandraContactPoints + cassandraLocalDatacenter + akkaDiscoveryMethod + consulHostInfo +
                         consulPortInfo + kubernetesPodLookupNamespace +
                         "akka.cluster.roles = " + Arrays.toString(props.getRoles()) + "\n" +
                         "akka.management.http.port = " + akkaMgmtHttpPort + "\n" +

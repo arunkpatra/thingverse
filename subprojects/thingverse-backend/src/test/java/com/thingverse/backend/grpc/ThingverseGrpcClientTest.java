@@ -186,10 +186,11 @@ public class ThingverseGrpcClientTest extends AbstractTest {
 
         GetBackendClusterStatusGrpcResponse response =
                 client.getBackendClusterStatus(GetBackendClusterStatusGrpcRequest.newBuilder().build(), metadataMap)
-                .toCompletableFuture().get();
+                        .toCompletableFuture().get();
 
 
     }
+
     @Test
     public void getMetricsViaGrpcTest() throws Exception {
         Map<String, String> metadataMap = new HashMap<>();
@@ -199,7 +200,7 @@ public class ThingverseGrpcClientTest extends AbstractTest {
         // Get current metrics
         GetMetricsGrpcResponse currentMetrics =
                 client.getMetrics(GetMetricsGrpcRequest.newBuilder().build(), metadataMap)
-                .toCompletableFuture().get();
+                        .toCompletableFuture().get();
 
         // Create two new things
         Map<String, Object> attributes = new HashMap<>();

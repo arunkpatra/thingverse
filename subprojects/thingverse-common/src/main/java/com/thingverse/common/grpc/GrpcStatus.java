@@ -11,6 +11,17 @@ public class GrpcStatus {
     private String description = "OK";
     private String errorCauseDescription = "";
 
+    public static GrpcStatus from(StatusRuntimeException sre) {
+        GrpcStatus gs = new GrpcStatus();
+        gs.setStatusCode(sre.getStatus().getCode());
+        gs.setStatusCodeValue(sre.getStatus().getCode().value());
+        gs.setDescription(sre.getStatus().getDescription());
+        if (null != sre.getCause()) {
+            gs.setErrorCauseDescription(sre.getCause().getMessage());
+        }
+        return gs;
+    }
+
     public Status.Code getStatusCode() {
         return statusCode;
     }
@@ -43,16 +54,6 @@ public class GrpcStatus {
         this.errorCauseDescription = errorCauseDescription;
     }
 
-    public static GrpcStatus from(StatusRuntimeException sre) {
-        GrpcStatus gs = new GrpcStatus();
-        gs.setStatusCode(sre.getStatus().getCode());
-        gs.setStatusCodeValue(sre.getStatus().getCode().value());
-        gs.setDescription(sre.getStatus().getDescription());
-        if (null != sre.getCause()) {
-            gs.setErrorCauseDescription(sre.getCause().getMessage());
-        }
-        return gs;
-    }
     @Override
     public String toString() {
         return "GrpcStatus{" +

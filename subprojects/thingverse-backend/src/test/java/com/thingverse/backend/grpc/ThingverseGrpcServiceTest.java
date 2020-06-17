@@ -27,11 +27,9 @@ import static org.mockito.Mockito.doReturn;
 
 public class ThingverseGrpcServiceTest extends AbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ThingverseGrpcServiceTest.class);
-
+    private final ActorService mockedActorService = Mockito.mock(ActorService.class);
     @Autowired
     private ActorService actorService;
-
-    private final ActorService mockedActorService = Mockito.mock(ActorService.class);
 
     @Test
     public void healthEndpointViaServiceTest() throws Exception {

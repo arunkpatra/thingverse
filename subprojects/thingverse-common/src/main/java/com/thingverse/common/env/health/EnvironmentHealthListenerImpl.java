@@ -20,8 +20,8 @@ import static com.thingverse.common.utils.ConsoleColors.*;
 
 public class EnvironmentHealthListenerImpl implements EnvironmentHealthListener, Ordered {
 
-    public final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 2;
     private static final Logger LOGGER = LoggerFactory.getLogger(EnvironmentHealthListenerImpl.class);
+    public final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 2;
     private final ApplicationContext context;
     private final ThingverseBaseProperties thingverseBaseProperties;
 

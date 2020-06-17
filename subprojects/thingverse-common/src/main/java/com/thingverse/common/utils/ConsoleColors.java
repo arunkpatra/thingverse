@@ -85,12 +85,15 @@ public interface ConsoleColors {
             return data;
         }
     }
+
     static String thanos(String data) {
         return format(BLUE_BOLD, data);
     }
+
     static String hulk(String data) {
         return format(GREEN_BOLD, data);
     }
+
     static String ironman(String data) {
         return format(RED_BOLD, data);
     }

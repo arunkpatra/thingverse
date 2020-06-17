@@ -11,7 +11,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import java.util.ArrayList;
 import java.util.List;
 
-@ManagedResource(objectName="thingverse:name=ThingverseAkkaClusterManager", description="Thingverse Akka Cluster members")
+@ManagedResource(objectName = "thingverse:name=ThingverseAkkaClusterManager", description = "Thingverse Akka Cluster members")
 public class ThingverseAkkaClusterManagerImpl implements ThingverseAkkaClusterManager {
 
     private final ActorSystem<Void> actorSystem;

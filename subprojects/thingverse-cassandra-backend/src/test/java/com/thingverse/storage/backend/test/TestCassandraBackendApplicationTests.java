@@ -25,16 +25,12 @@ import java.util.Map;
 public class TestCassandraBackendApplicationTests extends AbstractTest {
 
     private static Logger LOGGER = LoggerFactory.getLogger(TestCassandraBackendApplicationTests.class);
-
-    @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    private CassandraBackendProperties properties;
-
     @Autowired
     ThingverseAkkaStorageBackend storageBackend;
-
+    @Autowired
+    private ApplicationContext context;
+    @Autowired
+    private CassandraBackendProperties properties;
     @Autowired
     private ConfigurableEnvironment configurableEnvironment;
 

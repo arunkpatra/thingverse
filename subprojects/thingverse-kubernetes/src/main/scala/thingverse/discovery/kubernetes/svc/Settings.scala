@@ -17,17 +17,16 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
    * Copied from AkkaManagementSettings, which we don't depend on.
    */
   private implicit class HasDefined(val config: Config) {
-    def hasDefined(key: String): Boolean =
-      config.hasPath(key) &&
-      config.getString(key).trim.nonEmpty &&
-      config.getString(key) != s"<$key>"
-
     def optDefinedValue(key: String): Option[String] =
       if (hasDefined(key)) Some(config.getString(key)) else None
+
+    def hasDefined(key: String): Boolean =
+      config.hasPath(key) &&
+        config.getString(key).trim.nonEmpty &&
+        config.getString(key) != s"<$key>"
   }
 
-  private val thingverseKubernetesApi = system.settings.config.getConfig("akka.discovery.kubernetes-service")
-
+  lazy val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
   val apiCaPath: String =
     thingverseKubernetesApi.getString("api-ca-path")
 
@@ -45,18 +44,15 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
 
   val serviceNamespace: Option[String] =
     thingverseKubernetesApi.optDefinedValue("service-namespace")
+  val serviceDomain: String =
+    thingverseKubernetesApi.getString("service-domain")
+  private val thingverseKubernetesApi = system.settings.config.getConfig("akka.discovery.kubernetes-service")
 
   /** Java API */
   def getServiceNamespace: Optional[String] = serviceNamespace.asJava
 
-
-  val serviceDomain: String =
-    thingverseKubernetesApi.getString("service-domain")
-
   def serviceLabelSelector(name: String): String =
     thingverseKubernetesApi.getString("service-label-selector").format(name)
-
-  lazy val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
 
   override def toString =
     s"Settings($serviceNamespace, $serviceNamespace, $serviceDomain)"

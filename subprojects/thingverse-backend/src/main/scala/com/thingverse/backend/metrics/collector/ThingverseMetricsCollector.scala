@@ -34,7 +34,6 @@ object ThingverseStandardMetrics {
         deadLtrMsgCt.value.longValue())
     }
   }
-
 }
 
 class ThingverseMetricsCollector(system: ActorSystem, address: Address, decayFactor: Double)
@@ -62,7 +61,6 @@ class ThingverseMetricsCollector(system: ActorSystem, address: Address, decayFac
   metrics()
 
   def deadLetterMsgCount: Option[Metric] = {
-
     Metric.create(name = DeadLetterMsgCount, value = system.mailboxes.deadLetterMailbox.numberOfMessages,
       decayFactor = None)
   }

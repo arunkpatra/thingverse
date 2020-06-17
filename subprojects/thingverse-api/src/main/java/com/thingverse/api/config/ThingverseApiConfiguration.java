@@ -71,6 +71,7 @@ public class ThingverseApiConfiguration {
 
     /**
      * This is an Opt-in, one needs to set thingverse.api.backend-health-check-enabled=true to activate.
+     *
      * @param healthClient The health client.
      * @param thingService Thing service.
      * @return The ThingverseBackendHealthIndicator.

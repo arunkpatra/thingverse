@@ -32,7 +32,7 @@ public class DummyParentServiceImpl implements DummyParentService {
     @Override
     @Traced(operationName = "some-parent-method-future")
     public CompletionStage<String> someParentMethodFuture() {
-        return CompletableFuture.supplyAsync( () -> "Hello World from future parent");
+        return CompletableFuture.supplyAsync(() -> "Hello World from future parent");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DummyParentServiceImpl implements DummyParentService {
 
     @Override
     @Traced(operationName = "some-parent-method-with-metadata-exception", spanType = Traced.SpanType.NEW)
-    public String someParentMethodWithMetadataWithException(Metadata metadata) throws ExecutionException{
+    public String someParentMethodWithMetadataWithException(Metadata metadata) throws ExecutionException {
         StatusRuntimeException sre = new StatusRuntimeException(Status.NOT_FOUND);
         throw new ExecutionException("Dummy Exception", sre);
     }
