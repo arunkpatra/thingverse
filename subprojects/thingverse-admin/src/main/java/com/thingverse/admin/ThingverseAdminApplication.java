@@ -58,5 +58,4 @@ public class ThingverseAdminApplication {
     public ConversionService conversionService() {
         return new DefaultConversionService();
     }
-
 }

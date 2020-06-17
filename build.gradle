@@ -17,7 +17,6 @@ thingverseSetting {
     productName = "Thingverse Enterprise Edition"
 }
 
-// https://docs.gradle.org/current/userguide/publishing_maven.html
 subprojects {
     apply plugin: 'maven-publish'
     if (!(name.startsWith('thingverse-bom') ||
@@ -40,8 +39,4 @@ subprojects {
         compileScala.options.encoding = "UTF-8"
         compileTestScala.options.encoding = "UTF-8"
     }
-
-//    if (project.plugins.hasPlugin('com.bmuschko.docker-remote-api') && getDockerRegistryUrl().length() != 0) {
-//        project.ext["docker.registry"] = getDockerRegistryUrl()
-//    }
 }

@@ -34,6 +34,5 @@ include 'thingverse-resilience'
 include 'thingverse-security'
 include 'thingverse-tracing'
 
-
 rootProject.children.forEach { p -> p.projectDir = file("subprojects/$p.name")}
 
