@@ -83,7 +83,7 @@ thingverse-backend-write-58577d89f4-bwfnj   2/2     Running   2          2m25s
 
 - Access Spring Boot Admin: http://localhost:30095
 - Access Swagger UI for APIs: http://localhost:30091
-- Make a few API calls: Either use Swagger UI or use `curl`. Example API call using `curl:
+- Make a few API calls: Either use Swagger UI or use `curl`. Example API call using `curl`:
     ``` 
     $ curl -X GET "http://localhost:30091/api/cluster/state" -H "accept: */*"
     
