@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+docker push thingverse/thingverse-admin:latest
+docker push thingverse/thingverse-admin:"$TRAVIS_COMMIT"
+docker push thingverse/thingverse-admin:"$TRAVIS_JDK_VERSION"
+docker push thingverse/thingverse-admin:"$APP_VERSION"
+
+docker push thingverse/thingverse-api:latest
+docker push thingverse/thingverse-api:"$TRAVIS_COMMIT"
+docker push thingverse/thingverse-api:"$TRAVIS_JDK_VERSION"
+docker push thingverse/thingverse-api:"$APP_VERSION"
+
+docker push thingverse/thingverse-backend:latest
+docker push thingverse/thingverse-backend:"$TRAVIS_COMMIT"
+docker push thingverse/thingverse-backend:"$TRAVIS_JDK_VERSION"
+docker push thingverse/thingverse-backend:"$APP_VERSION"

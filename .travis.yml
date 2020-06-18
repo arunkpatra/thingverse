@@ -4,11 +4,21 @@ os: linux
 dist: bionic
 jdk: openjdk11
 
+env:
+  - APP_VERSION="1.0.0.M1"
+
+services:
+  - docker
+
 install:
   - ./gradlew assemble --console=plain --info
 
 script:
   - ./gradlew check --console=plain --info
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build --tag thingverse/thingverse-admin:latest --tag thingverse/thingverse-admin:${TRAVIS_COMMIT} --tag thingverse/thingverse-admin:${APP_VERSION} ./subprojects/thingverse-admin
+  - docker build --tag thingverse/thingverse-api:latest --tag thingverse/thingverse-api:${TRAVIS_COMMIT} --tag thingverse/thingverse-api:${APP_VERSION} ./subprojects/thingverse-api
+  - docker build --tag thingverse/thingverse-backend:latest --tag thingverse/thingverse-backend:${TRAVIS_COMMIT} --tag thingverse/thingverse-backend:${APP_VERSION} ./subprojects/thingverse-backend
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -24,6 +34,13 @@ cache:
 
 before_install:
   - chmod +x gradlew
+  - chmod +x docker_push
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
 
 after_success:
   - ./gradlew coveralls --console=plain --info
