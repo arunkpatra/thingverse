@@ -143,7 +143,8 @@ public class EnhancedThingverseGrpcServiceClientImpl implements EnhancedThingver
         return enhancedRequestBuilderStream(builder);
     }
 
-    private StreamResponseRequestBuilder enhancedRequestBuilderStream(StreamResponseRequestBuilder builder) {
+    @SuppressWarnings("rawtypes")
+    private <U, V> StreamResponseRequestBuilder<U, V> enhancedRequestBuilderStream(StreamResponseRequestBuilder<U, V> builder) {
         if (builder instanceof JavaServerStreamingRequestBuilder) {
             JavaServerStreamingRequestBuilder javaServerStreamingRequestBuilder =
                     (JavaServerStreamingRequestBuilder) builder;
@@ -166,7 +167,8 @@ public class EnhancedThingverseGrpcServiceClientImpl implements EnhancedThingver
         return builder;
     }
 
-    private SingleResponseRequestBuilder enhancedRequestBuilder(SingleResponseRequestBuilder builder) {
+    @SuppressWarnings("rawtypes")
+    private <U, V> SingleResponseRequestBuilder<U, V> enhancedRequestBuilder(SingleResponseRequestBuilder<U, V> builder) {
         if (builder instanceof JavaUnaryRequestBuilder) {
             JavaUnaryRequestBuilder javaUnaryRequestBuilder = (JavaUnaryRequestBuilder) builder;
             try {
