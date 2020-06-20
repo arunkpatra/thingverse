@@ -4,7 +4,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <jmxConfigurator/>
 
-    <logger name="com.thingverse.common.env.postprocessor" level="DEBUG" additivity="false">
+    <logger name="com.thingverse.common.env.postprocessor" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
@@ -24,7 +24,7 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="thingverse.tracing" level="TRACE" additivity="false">
+    <logger name="thingverse.tracing" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 

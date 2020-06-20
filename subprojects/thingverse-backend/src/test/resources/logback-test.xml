@@ -4,6 +4,10 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <jmxConfigurator/>
 
+    <logger name="akka.persistence.cassandra.journal" level="ERROR" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
     <logger name="com.thingverse.backend" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
@@ -11,14 +15,15 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="akka.grpc" level="INFO" additivity="false">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-    <logger name="akka.http" level="INFO" additivity="false">
+    <logger name="akka.grpc" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="akka.http.impl.engine.http2" level="DEBUG" additivity="false">
+    <logger name="akka.http" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="akka.http.impl.engine.http2" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
@@ -30,36 +35,39 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="akka.persistence" level="WARN" additivity="false">
+    <logger name="akka.persistence" level="ERROR" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="akka.cluster" level="WARN" additivity="false">
+    <logger name="akka.cluster" level="ERROR" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="akka.cluster.sharding.DDataShard" level="WARN" additivity="false">
+    <logger name="akka.cluster.sharding.DDataShard" level="ERROR" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
     <logger name="org.springframework.boot" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
+
     <logger name="org.springframework.test" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
+
     <logger name="akka.stream.alpakka.cassandra" level="INFO" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="com.datastax" level="INFO" additivity="false">
+
+    <logger name="com.datastax" level="ERROR" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="thingverse.tracing" level="TRACE" additivity="false">
+    <logger name="thingverse.tracing" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <root level="INFO">
+    <root level="ERROR">
         <appender-ref ref="CONSOLE"/>
     </root>
 
