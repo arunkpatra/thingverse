@@ -42,7 +42,7 @@ management efforts by 80-90%.
 To install, Thingverse, start a terminal window and issue the following command:
 
 ``` 
-$ kubectl apply -f https://github.com/arunkpatra/thingverse/blob/master/subprojects/thingverse-deployment/k8s/deployments/thingverse/thingverse.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/arunkpatra/thingverse/master/subprojects/thingverse-deployment/k8s/deployments/thingverse/thingverse.yaml
 ```
 Depending on the resources you have allocated to your Kubernetes cluster, it may take a while for all 
 components to be deployed and start accepting traffic. You could issue the following command to check 
