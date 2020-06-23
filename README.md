@@ -25,8 +25,8 @@ To install Thingverse:
 
 ### System Requirements (for running Thingverse)
 
-- Memory: 4 GB minimum, 8 GB recommended
-- CPU Cores: 2 Cores, 4 Cores recommended
+- Memory: 4 GB minimum, 8 GB recommended.
+- CPU Cores: 2 Cores, 4 Cores recommended.
 - Kubernetes: Version 1.16+, A functional Kubernetes Cluster and `kubectl`. For local installations, you can use 
 [Docker Desktop](https://www.docker.com/products/docker-desktop) which ships with a built-in single 
 node Kubernetes Cluster.
@@ -36,7 +36,7 @@ node Kubernetes Cluster.
 
 Pre-built docker images of Thingverse components are hosted in [Docker Hub](https://hub.docker.com/). 
 While, its possible to run Thingverse components outside a Kubernetes cluster, the recommended approach 
-is to run Thingverse in a Kubernetes cluster. This typically reduces development, installation and 
+is to run Thingverse in a Kubernetes cluster. This may reduce your installation and 
 management efforts by 80-90%.
 
 To install, Thingverse, start a terminal window and issue the following command:

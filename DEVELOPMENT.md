@@ -1,4 +1,4 @@
-# Thingverse Development - Quick Start
+# Thingverse Development
 
 If you want to build Thingverse from the source code, follow the steps mentioned here.
 The objective of the below steps are to build docker images from source, publish the images to
