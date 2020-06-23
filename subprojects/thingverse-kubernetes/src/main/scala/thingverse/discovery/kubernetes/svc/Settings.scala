@@ -37,7 +37,10 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
         config.getString(key) != s"<$key>"
   }
 
-  lazy val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
+  val thingverseKubernetesApi: Config = system.settings.config.getConfig("akka.discovery.kubernetes-service")
+
+  val rawIp: Boolean = thingverseKubernetesApi.getBoolean("use-raw-ip")
+
   val apiCaPath: String =
     thingverseKubernetesApi.getString("api-ca-path")
 
@@ -57,7 +60,6 @@ final class Settings(system: ExtendedActorSystem) extends Extension {
     thingverseKubernetesApi.optDefinedValue("service-namespace")
   val serviceDomain: String =
     thingverseKubernetesApi.getString("service-domain")
-  private val thingverseKubernetesApi = system.settings.config.getConfig("akka.discovery.kubernetes-service")
 
   /** Java API */
   def getServiceNamespace: Optional[String] = serviceNamespace.asJava
