@@ -12,7 +12,7 @@ working Thingverse environment and are familiar with the technology stack that T
 - CPU Cores: 2 Cores, 4 Cores recommended
 - Kubernetes: Version 1.16+
 - Docker: Version 19+
-- Java: 1.8 compatible, 11 recommended
+- Java: JDK 11
 - Gradle: Bundled via wrapper, but locally installed Gradle v1.65 helps.
 
 ## Build
