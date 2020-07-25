@@ -17,7 +17,7 @@ or on large Kubernetes Clusters in the cloud, Thingverse handles the load withou
 - Virtualize physical things and provide connectivity mechanisms with real things.
 - Spawn a large number of virtual things and interact with them via APIs.
 - Ability to observe events associated with things and perform user specified actions.
-- Build business applications on to of the Thingverse Platform.
+- Build business applications on top of the Thingverse Platform.
 
 ## Getting Started
 
