@@ -103,7 +103,7 @@ public class ControllerConfiguration {
     public class UserinfoController extends AbstractThingverseRestController {
 
         @ApiOperation(value = "Get user information",
-                notes = "Get information of the currently logged on user", response = GetAllThingIDsResponse.class,
+                notes = "Get information of the currently logged on user", response = UserInfoResponse.class,
                 consumes = "application/json", produces = "application/json", authorizations = {
                 @Authorization(value = "Access Token", scopes = {
                         @AuthorizationScope(scope = "global", description = "accessEverything")})})
