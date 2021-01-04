@@ -39,7 +39,7 @@ dependencies {
     implementation "com.typesafe:ssl-config-core_2.12"
     implementation "com.typesafe.akka:akka-http-spray-json_2.12"
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.4.1'
     testImplementation 'org.scalatest:scalatest_2.12:3.1.2'
     testImplementation "junit:junit"
     testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.12:1.2.0'

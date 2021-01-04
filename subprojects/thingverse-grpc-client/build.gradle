@@ -42,7 +42,7 @@ dependencies {
         exclude group: 'com.typesafe.akka', module: 'akka-actor_2.12'
         exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'
     }
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.4.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation project(':thingverse-consul-autoconfig')
 }

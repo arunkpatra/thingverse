@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'jacoco'
-    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
 }
 java {
     withJavadocJar()

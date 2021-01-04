@@ -17,8 +17,8 @@ package com.thingverse.grpc.client;
 
 import akka.actor.typed.ActorSystem;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ThingverseGrpcClientTestAppTests extends AbstractTest {
     private void validateBeanExistence(Class<?>... types) {
         Arrays.stream(types).forEach(t -> {
             if (context.getBeanNamesForType(t).length == 0) {
-                Assert.fail(String.format("Bean of type %s was not found", t.getSimpleName()));
+                fail(String.format("Bean of type %s was not found", t.getSimpleName()));
             }
         });
     }

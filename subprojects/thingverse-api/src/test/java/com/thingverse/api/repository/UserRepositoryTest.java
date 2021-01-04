@@ -17,14 +17,13 @@ package com.thingverse.api.repository;
 
 import com.thingverse.api.AbstractTest;
 import com.thingverse.api.entity.UserEntity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserRepositoryTest extends AbstractTest {
 

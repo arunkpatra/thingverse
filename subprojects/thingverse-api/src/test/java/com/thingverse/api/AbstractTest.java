@@ -18,8 +18,8 @@ package com.thingverse.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thingverse.api.models.ErrorResponse;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
-import org.junit.Assert;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles({"intg-test", "embedded-consul"})
@@ -86,8 +86,7 @@ public abstract class AbstractTest {
         T response = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), type);
         expectedErrorMessage.ifPresent(m -> {
             if (response instanceof ErrorResponse) {
-                Assert.assertEquals(FAILURE_CHAR + "Did not get expected error description",
-                        m, ((ErrorResponse) response).getErrorDescription());
+                Assertions.assertEquals(m, ((ErrorResponse) response).getErrorDescription(), FAILURE_CHAR + "Did not get expected error description");
                 LOGGER.info(SUCCESS_CHAR + "Receive expected error message: {}", expectedErrorMessage.get());
             }
         });

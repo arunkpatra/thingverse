@@ -64,7 +64,7 @@ public class ThingverseTracingConfiguration {
                         .withAgentHost(properties.getJaegerAgentHost())
                         .withAgentPort(properties.getJaegerAgentPort());
 
-        if (!StringUtils.isEmpty(properties.getJaegerEndpoint())) {
+        if (!StringUtils.hasText(properties.getJaegerEndpoint())) {
             senderConfiguration = senderConfiguration.withEndpoint(properties.getJaegerEndpoint());
         }
 

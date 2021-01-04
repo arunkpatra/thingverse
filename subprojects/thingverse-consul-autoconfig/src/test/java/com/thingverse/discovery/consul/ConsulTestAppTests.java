@@ -21,8 +21,8 @@ import com.ecwid.consul.v1.health.HealthServicesRequest;
 import com.ecwid.consul.v1.health.model.HealthService;
 import com.thingverse.common.env.health.HealthChecker;
 import com.thingverse.common.env.health.HealthStatus;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class ConsulTestAppTests extends AbstractTest {
         params.put("consul-host", properties.getHost());
         params.put("consul-port", properties.getPort());
         HealthChecker.CheckResult result = healthChecker.checkHealth(configurableEnvironment, params, logger);
-        Assert.assertEquals(FAILURE_CHAR + "Was expecting UP status", HealthStatus.UP, result.status);
+        Assertions.assertEquals(HealthStatus.UP, result.status, FAILURE_CHAR + "Was expecting UP status");
         LOGGER.info(SUCCESS_CHAR + "Consul health checker reported UP status.");
     }
 

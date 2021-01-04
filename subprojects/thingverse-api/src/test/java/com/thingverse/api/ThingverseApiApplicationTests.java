@@ -17,8 +17,8 @@ package com.thingverse.api;
 
 import akka.actor.typed.ActorSystem;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -40,16 +40,16 @@ public class ThingverseApiApplicationTests extends AbstractTest {
 
     @Test
     public void checkInfoPropTest() {
-        Assert.assertTrue(FAILURE_CHAR + " Tag spring.boot.admin.client.instance.metadata.tags.commit not found",
-                environment.containsProperty("spring.boot.admin.client.instance.metadata.tags.commit"));
-        Assert.assertTrue(FAILURE_CHAR + " Build property spring.boot.admin.client.instance.metadata.tags.version not found",
-                environment.containsProperty("spring.boot.admin.client.instance.metadata.tags.version"));
+        Assertions.assertTrue(environment.containsProperty("spring.boot.admin.client.instance.metadata.tags.commit"),
+                () ->  FAILURE_CHAR + " Tag spring.boot.admin.client.instance.metadata.tags.commit not found");
+        Assertions.assertTrue(environment.containsProperty("spring.boot.admin.client.instance.metadata.tags.version"),
+                () -> FAILURE_CHAR + " Build property spring.boot.admin.client.instance.metadata.tags.version not found");
     }
 
     private void validateBeanExistence(Class<?>... types) {
         for (Class<?> type : types) {
             if (context.getBeanNamesForType(type).length == 0) {
-                Assert.fail(String.format("Bean of type %s was not found", type.getSimpleName()));
+                Assertions.fail(String.format("Bean of type %s was not found", type.getSimpleName()));
             }
         }
     }

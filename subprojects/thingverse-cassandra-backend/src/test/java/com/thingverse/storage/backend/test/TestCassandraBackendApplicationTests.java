@@ -23,8 +23,8 @@ import com.thingverse.api.storage.ThingverseAkkaStorageBackend;
 import com.thingverse.common.env.health.HealthChecker;
 import com.thingverse.common.env.health.HealthStatus;
 import com.typesafe.config.ConfigFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,7 @@ public class TestCassandraBackendApplicationTests extends AbstractTest {
         String[] contactPoints = {"localhost:".concat(Integer.toString(properties.getPort()))};
         params.put("cassandra-contact-points", contactPoints);
         HealthChecker.CheckResult result = healthChecker.checkHealth(configurableEnvironment, params, logger);
-        Assert.assertEquals(FAILURE_CHAR + "Was expecting UP status", HealthStatus.UP, result.status);
+        Assertions.assertEquals(HealthStatus.UP, result.status, FAILURE_CHAR + "Was expecting UP status");
         LOGGER.info(SUCCESS_CHAR + "Cassandra health checker reported UP status.");
     }
 

@@ -16,8 +16,8 @@
 package com.thingverse.api.controllers;
 
 import com.thingverse.api.AbstractTest;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -50,8 +50,8 @@ public class UserInfoControllerTest extends AbstractTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
         Map retMap = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Map.class);
-        Assert.assertTrue(FAILURE_CHAR + "Map did to contain user", retMap.containsKey("username"));
-        Assert.assertTrue(FAILURE_CHAR + "Map did to contain roles", retMap.containsKey("roles"));
+        assertTrue(retMap.containsKey("username"), FAILURE_CHAR + "Map did to contain user");
+        assertTrue(retMap.containsKey("roles"), FAILURE_CHAR + "Map did to contain roles");
         LOGGER.info(SUCCESS_CHAR + "Got user info for dummy_user");
     }
 }

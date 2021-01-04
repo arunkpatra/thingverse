@@ -15,10 +15,9 @@
 
 package com.thingverse.common;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @DirtiesContext
 @TestPropertySource(locations = {"classpath:application-test.properties"})
@@ -39,7 +39,7 @@ public class SampleAppClusterModeTests implements IAbstractTest {
     @Autowired
     private ApplicationContext context;
 
-    @BeforeClass
+    @BeforeAll
     // This appears to be the only way to pass a JVM startup property to a Spring test.
     public static void setUp() {
         System.setProperty("operation-mode", "cluster");
@@ -48,8 +48,8 @@ public class SampleAppClusterModeTests implements IAbstractTest {
     @Test
     public void operationModePropertyAvailabilityTest() {
         // Is property available?
-        Assert.assertTrue(FAILURE_CHAR + "Expected operation-mode to be available in the environment.",
-                context.getEnvironment().containsProperty("operation-mode"));
+        Assertions.assertTrue(context.getEnvironment().containsProperty("operation-mode"),
+                FAILURE_CHAR + "Expected operation-mode to be available in the environment.");
         LOGGER.info(SUCCESS_CHAR + "Property operation-mode was found in environment.");
     }
 
@@ -57,8 +57,8 @@ public class SampleAppClusterModeTests implements IAbstractTest {
     public void operationModeMatchTest() {
         // Does property value match?
         String opsMode = context.getEnvironment().getProperty("operation-mode", String.class, "not-found");
-        Assert.assertEquals(FAILURE_CHAR + "Was expecting operation-mode to have a value of cluster",
-                "cluster", opsMode);
+        Assertions.assertEquals("cluster", opsMode,
+                FAILURE_CHAR + "Was expecting operation-mode to have a value of cluster");
         LOGGER.info(SUCCESS_CHAR + "Property operation-mode had expected value of cluster.");
     }
 
@@ -67,14 +67,13 @@ public class SampleAppClusterModeTests implements IAbstractTest {
         // Do we have injected props?
         boolean foo = context.getEnvironment().getProperty("sample.app.cluster.mode.prop.foo", Boolean.class,
                 false);
-        Assert.assertTrue(FAILURE_CHAR + "Was expecting true for property 'sample.app.cluster.mode.prop.foo'",
-                foo);
+        Assertions.assertTrue(foo, FAILURE_CHAR + "Was expecting true for property 'sample.app.cluster.mode.prop.foo'");
         LOGGER.info(SUCCESS_CHAR + "Property sample.app.cluster.mode.prop.foo had expected value of true");
 
         String bar = context.getEnvironment().getProperty("sample.app.cluster.mode.prop.bar", String.class,
                 "baaz");
-        Assert.assertEquals(FAILURE_CHAR + "Was expecting bar for property 'sample.app.cluster.mode.prop.bar'",
-                "bar", bar);
+        Assertions.assertEquals("bar", bar,
+                FAILURE_CHAR + "Was expecting bar for property 'sample.app.cluster.mode.prop.bar'");
         LOGGER.info(SUCCESS_CHAR + "Property sample.app.cluster.mode.prop.bar had expected value of bar");
     }
 }

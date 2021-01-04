@@ -16,13 +16,13 @@
 package com.thingverse.api.encoder;
 
 import com.thingverse.api.AbstractTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordEncoderTest extends AbstractTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PasswordEncoderTest.class);
@@ -32,7 +32,7 @@ public class PasswordEncoderTest extends AbstractTest {
 
     @Test
     public void testGoodPassword() {
-        assertNotNull("Encoder can not be null.", encoder);
+        assertNotNull(encoder, "Encoder can not be null.");
         String result = encoder.encode("thingverse");
         assertFalse(result.equals("thingverse"));
         assertTrue(encoder.matches("thingverse", result));

@@ -19,8 +19,8 @@ import akka.grpc.internal.GrpcMetadataImpl;
 import akka.grpc.internal.JavaMetadataImpl;
 import akka.grpc.javadsl.Metadata;
 import com.thingverse.tracing.service.DummyParentService;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +48,9 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         validateBeanExistence(ThingverseTracer.class);
         ThingverseTracer tracerWrapper = context.getBean(ThingverseTracer.class);
         if (thingverseTracer.enabled) {
-            Assert.assertNotNull(FAILURE_CHAR + "Was expecting non null tracer", tracerWrapper.tracer);
+            Assertions.assertNotNull(tracerWrapper.tracer, FAILURE_CHAR + "Was expecting non null tracer");
         } else {
-            Assert.assertNull(FAILURE_CHAR + "Was not expecting non null tracer", tracerWrapper.tracer);
+            Assertions.assertNull(tracerWrapper.tracer, FAILURE_CHAR + "Was not expecting non null tracer");
         }
         LOGGER.info(SUCCESS_CHAR + "Found Tracer.");
     }
@@ -60,8 +60,8 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         LOGGER.info(RUNNING_CHAR + "Starting testLocalNestedSpansTest.");
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(new io.grpc.Metadata())));
         String tracedResult = dummyParentService.someParentMethod();
-        Assert.assertEquals(FAILURE_CHAR + "Did not receive expected result",
-                "Hello World from Parent -> Hello World from Child", tracedResult);
+        Assertions.assertEquals("Hello World from Parent -> Hello World from Child", tracedResult,
+                FAILURE_CHAR + "Did not receive expected result");
         LOGGER.info(SUCCESS_CHAR + "Result was traced");
     }
 
@@ -70,21 +70,22 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         LOGGER.info(RUNNING_CHAR + "Starting testPropagatedNestedSpansTest.");
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
         String tracedResult = dummyParentService.someParentMethodWithMetadata(metadata);
-        Assert.assertEquals(FAILURE_CHAR + "Did not receive expected result",
-                "Hello World from Parent -> Hello World from Child", tracedResult);
+        Assertions.assertEquals("Hello World from Parent -> Hello World from Child", tracedResult,
+                FAILURE_CHAR + "Did not receive expected result");
         LOGGER.info(SUCCESS_CHAR + "Result was traced");
     }
 
     @Test
     public void someParentMethodFutureTest() throws Exception {
         String res = dummyParentService.someParentMethodFuture().handle((r, t) -> r).toCompletableFuture().get();
-        Assert.assertEquals(res, "Hello World from future parent");
+        Assertions.assertEquals(res, "Hello World from future parent");
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test
     public void someParentMethodWithMetadataWithExceptionTest() throws Exception {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
-        dummyParentService.someParentMethodWithMetadataWithException(metadata);
+        Assertions.assertThrows(ExecutionException.class,
+                () -> dummyParentService.someParentMethodWithMetadataWithException(metadata));
     }
 
     @Test
@@ -92,10 +93,12 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         dummyParentService.someParentMethodFutureException();
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test
     public void someParentMethodWithMetadata2Test() throws Exception {
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getPropagatedTestMetaData())));
-        dummyParentService.someParentMethodWithMetadata2(metadata);
+
+        Assertions.assertThrows(ExecutionException.class,
+                () -> dummyParentService.someParentMethodWithMetadata2(metadata));
     }
 
     @Test
@@ -103,7 +106,7 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
         LOGGER.info(RUNNING_CHAR + "Starting testPropagatedNestedSpansWithInvalidMetadataTest.");
         Metadata metadata = (new JavaMetadataImpl(new GrpcMetadataImpl(getInvalidPropagatedTestMetaData())));
         String tracedResult = dummyParentService.someParentMethodWithMetadata(metadata);
-        Assert.assertEquals(FAILURE_CHAR + "Did not receive expected result",
+        Assertions.assertEquals(FAILURE_CHAR + "Did not receive expected result",
                 "Hello World from Parent -> Hello World from Child", tracedResult);
         LOGGER.info(SUCCESS_CHAR + "Result was traced");
     }
@@ -111,7 +114,7 @@ public class ThingverseTracingTestAppTests extends AbstractTest {
     private void validateBeanExistence(Class<?>... types) {
         Arrays.stream(types).forEach(t -> {
             if (context.getBeanNamesForType(t).length == 0) {
-                Assert.fail(String.format("Bean of type %s was not found", t.getSimpleName()));
+                Assertions.fail(String.format("Bean of type %s was not found", t.getSimpleName()));
             }
         });
     }

@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'jacoco'
-    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
     id 'com.bmuschko.docker-remote-api' version '6.4.0'
     id 'com.gorylenko.gradle-git-properties' version '2.2.2'
 }
@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.4.1'
     implementation "io.jsonwebtoken:jjwt"
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

@@ -120,4 +120,7 @@ subprojects {
     tasks.withType(Test) {
         jvmArgs = jvmOpenModulesArgs
     }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += ["-Xlint:deprecation"]
+    }
 }

@@ -12,7 +12,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.3.0.RELEASE'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.4.1'
     implementation("com.lightbend.akka.grpc:akka-grpc-runtime_2.12") {
         exclude group: 'com.typesafe.akka', module: 'akka-stream_2.12'
         exclude group: 'com.typesafe.akka', module: 'akka-discovery_2.12'

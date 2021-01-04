@@ -19,8 +19,8 @@ import com.thingverse.api.AbstractTest;
 import com.thingverse.api.models.CreateThingResponse;
 import com.thingverse.backend.client.v1.EnhancedThingverseGrpcServiceClient;
 import com.thingverse.backend.v1.CreateThingGrpcResponse;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class ThingServiceTest extends AbstractTest {
         Mockito.when(client.createThing(any())).thenReturn(mockResponse);
 
         CreateThingResponse response = thingService.createThing(testInputAttributes);
-        Assert.assertNotNull(FAILURE_CHAR + "Response object can not be null.", response.getThingID());
+        assertNotNull(response.getThingID(), FAILURE_CHAR + "Response object can not be null.");
 
         LOGGER.info(SUCCESS_CHAR + "Thing created with ID {}", response.getThingID());
     }

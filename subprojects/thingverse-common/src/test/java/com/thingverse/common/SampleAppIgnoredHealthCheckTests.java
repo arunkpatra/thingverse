@@ -16,9 +16,9 @@
 package com.thingverse.common;
 
 import com.thingverse.common.env.health.EnvironmentHealth;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @DirtiesContext
 @TestPropertySource(locations = {"classpath:application-test.properties"}, properties = {"thingverse.health-check-enabled=false"})
@@ -45,7 +45,7 @@ public class SampleAppIgnoredHealthCheckTests implements IAbstractTest {
     @Test
     public void checkIgnoredHealthCheckTest() {
         // Is app healthy?
-        Assert.assertTrue(FAILURE_CHAR + "Expected application to be healthy", appIsHealthy);
+        Assertions.assertTrue(appIsHealthy, FAILURE_CHAR + "Expected application to be healthy");
         LOGGER.info(SUCCESS_CHAR + "Application is healthy.");
     }
 }

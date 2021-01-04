@@ -20,8 +20,8 @@ import akka.stream.javadsl.Source;
 import com.thingverse.api.AbstractTest;
 import com.thingverse.api.models.*;
 import com.thingverse.backend.v1.*;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -61,26 +61,24 @@ public class ThingControllerImplTest extends AbstractTest {
     public void parseCreateThingRequest() throws Exception {
         String data = "{ \"attributes\" : { \"temp\" : 42 , \"vibration\" : 1200 } }";
         CreateThingRequest request = objectMapper.readValue(data, CreateThingRequest.class);
-        Assert.assertTrue(FAILURE_CHAR + "Did not contain temp attribute", request.getAttributes().containsKey("temp"));
-        Assert.assertEquals(FAILURE_CHAR + "Did not get expected value", 42, (int) request.getAttributes().get("temp"));
+        assertTrue(request.getAttributes().containsKey("temp"), FAILURE_CHAR + "Did not contain temp attribute");
+        assertEquals(42, (int) request.getAttributes().get("temp"), FAILURE_CHAR + "Did not get expected value");
 
         String dataString = objectMapper.writer().forType(CreateThingRequest.class).writeValueAsString(request);
-        Assert.assertEquals(FAILURE_CHAR + "Data did not match",
-                "{\"attributes\":{\"temp\":42,\"vibration\":1200}}",
-                dataString);
+        assertEquals("{\"attributes\":{\"temp\":42,\"vibration\":1200}}",
+                dataString, FAILURE_CHAR + "Data did not match");
     }
 
     @Test
     public void parseUpdateThingRequest() throws Exception {
         String data = "{ \"attributes\" : { \"temp\" : 42 , \"vibration\" : 1200 } }";
         UpdateThingRequest request = objectMapper.readValue(data, UpdateThingRequest.class);
-        Assert.assertTrue(FAILURE_CHAR + "Did not contain temp attribute", request.getAttributes().containsKey("temp"));
-        Assert.assertEquals(FAILURE_CHAR + "Did not get expected value", 42, (int) request.getAttributes().get("temp"));
+        assertTrue(request.getAttributes().containsKey("temp"), FAILURE_CHAR + "Did not contain temp attribute");
+        assertEquals(42, (int) request.getAttributes().get("temp"), FAILURE_CHAR + "Did not get expected value");
 
         String dataString = objectMapper.writer().forType(UpdateThingRequest.class).writeValueAsString(request);
-        Assert.assertEquals(FAILURE_CHAR + "Data did not match",
-                "{\"attributes\":{\"temp\":42,\"vibration\":1200}}",
-                dataString);
+        assertEquals("{\"attributes\":{\"temp\":42,\"vibration\":1200}}",
+                dataString, FAILURE_CHAR + "Data did not match");
     }
 
 
@@ -96,10 +94,9 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.of(new CreateThingRequest(testInputAttributes)),
                 Optional.empty(),
                 CreateThingResponse.class);
-        Assert.assertNotNull(FAILURE_CHAR + "Response was null", createThingResponse);
-        Assert.assertNotNull(FAILURE_CHAR + "thingID was null", createThingResponse.getThingID());
-        Assert.assertEquals(FAILURE_CHAR + " thingID don't match up", testThingId,
-                createThingResponse.getThingID());
+        assertNotNull(createThingResponse, FAILURE_CHAR + "Response was null");
+        assertNotNull(createThingResponse.getThingID(), FAILURE_CHAR + "thingID was null");
+        assertEquals(testThingId, createThingResponse.getThingID(), FAILURE_CHAR + " thingID don't match up");
 
         // no backend test
         CompletionStage<CreateThingGrpcResponse> mockResponseBad = CompletableFuture.supplyAsync(() ->
@@ -169,13 +166,12 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 GetThingResponse.class);
 
-        Assert.assertNotNull(FAILURE_CHAR + "GetThingResponse was null", getThingResponse);
-        Assert.assertTrue(FAILURE_CHAR + "ThingIDs don't match", createThingResponse.getThingID()
-                .contentEquals(getThingResponse.getThingID()));
-        Assert.assertTrue(FAILURE_CHAR + "Attribute not found",
-                getThingResponse.getAttributes().containsKey(thingNameKey));
-        Assert.assertTrue(FAILURE_CHAR + "Attribute name does not match",
-                thingName.contentEquals((String) getThingResponse.getAttributes().get(thingNameKey)));
+        assertNotNull(getThingResponse, FAILURE_CHAR + "GetThingResponse was null");
+        assertTrue(createThingResponse.getThingID().contentEquals(getThingResponse.getThingID()),
+                FAILURE_CHAR + "ThingIDs don't match");
+        assertTrue(getThingResponse.getAttributes().containsKey(thingNameKey), FAILURE_CHAR + "Attribute not found");
+        assertTrue(thingName.contentEquals((String) getThingResponse.getAttributes().get(thingNameKey)),
+                FAILURE_CHAR + "Attribute name does not match");
 
         // bad request test
         CompletionStage<GetThingGrpcResponse> mockGetResponseBad = CompletableFuture.supplyAsync(() ->
@@ -232,9 +228,8 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 UpdateThingResponse.class);
 
-        Assert.assertNotNull(FAILURE_CHAR + "UpdateThingResponse was null", updateThingResponse);
-        Assert.assertTrue(FAILURE_CHAR + "Thing was not updated",
-                "Thing was updated".contentEquals(updateThingResponse.getMessage()));
+        assertNotNull(updateThingResponse, FAILURE_CHAR + "UpdateThingResponse was null");
+        assertTrue("Thing was updated".contentEquals(updateThingResponse.getMessage()), FAILURE_CHAR + "Thing was not updated");
 
         // Get back
         CompletionStage<GetThingGrpcResponse> mockGetResponse = CompletableFuture.supplyAsync(() ->
@@ -249,10 +244,9 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 GetThingResponse.class);
 
-        Assert.assertTrue(FAILURE_CHAR + "Thing was not updated correctly. " +
-                        "Newly added attribute was not reflected.",
-                getThingResponse.getAttributes().containsKey("temp")
-                        && (42D == (Double) getThingResponse.getAttributes().get("temp")));
+        assertTrue(getThingResponse.getAttributes().containsKey("temp")
+                        && (42D == (Double) getThingResponse.getAttributes().get("temp")),
+                FAILURE_CHAR + "Thing was not updated correctly. Newly added attribute was not reflected.");
 
         // bad request test
         CompletionStage<UpdateThingGrpcResponse> mockUpdateResponseBad = CompletableFuture.supplyAsync(() ->
@@ -310,12 +304,12 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 Optional.empty(),
                 GetActorMetricsResponse.class);
-        Assert.assertEquals(FAILURE_CHAR + "Actor count did not match up", 42L,
-                (long) getActorMetricsResponse.getActiveThingCount());
-        Assert.assertEquals(FAILURE_CHAR + "Actor average message age did not match up", 4L,
-                (long) getActorMetricsResponse.getAverageMessageAge());
-        Assert.assertEquals(FAILURE_CHAR + "Total messages received did not match up", 100L,
-                (long) getActorMetricsResponse.getTotalMessagesReceived());
+        assertEquals(42L, (long) getActorMetricsResponse.getActiveThingCount(),
+                FAILURE_CHAR + "Actor count did not match up");
+        assertEquals(4L, (long) getActorMetricsResponse.getAverageMessageAge(),
+                FAILURE_CHAR + "Actor average message age did not match up");
+        assertEquals(100L, (long) getActorMetricsResponse.getTotalMessagesReceived(),
+                FAILURE_CHAR + "Total messages received did not match up");
 
         // Metrics
         CompletionStage<GetMetricsGrpcResponse> mockGetMetricsGrpcResponseBad =
@@ -369,8 +363,8 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 Optional.empty(),
                 ClearThingResponse.class);
-        Assert.assertTrue(FAILURE_CHAR + "Thing was not cleared",
-                clearThingResponse.getMessage().contentEquals("Thing was cleared"));
+        assertTrue(clearThingResponse.getMessage().contentEquals("Thing was cleared"),
+                FAILURE_CHAR + "Thing was not cleared");
         LOGGER.info(SUCCESS_CHAR + "Cleared thing : {}", createThingResponse.getThingID());
 
         // bad request test
@@ -423,8 +417,7 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 Optional.empty(),
                 StopThingResponse.class);
-        Assert.assertTrue(FAILURE_CHAR + "Thing was not stopped",
-                stopThingResponse.getMessage().contentEquals("Thing was passivated"));
+        assertTrue(stopThingResponse.getMessage().contentEquals("Thing was passivated"), FAILURE_CHAR + "Thing was not stopped");
 
         // bad request
         CompletionStage<StopThingGrpcResponse> mockStopThingResponseBad = CompletableFuture.supplyAsync(() ->
@@ -487,14 +480,10 @@ public class ThingControllerImplTest extends AbstractTest {
                 Optional.empty(),
                 GetAllThingIDsResponse.class);
 
-        Assert.assertEquals(FAILURE_CHAR + "Thing list was obtained",
-                3, getAllThingIDsResponse.getThingIDs().size());
-        Assert.assertTrue(FAILURE_CHAR + "Expected thing in list was not found",
-                getAllThingIDsResponse.getThingIDs().contains("a"));
-        Assert.assertTrue(FAILURE_CHAR + "Expected thing in list was not found",
-                getAllThingIDsResponse.getThingIDs().contains("b"));
-        Assert.assertTrue(FAILURE_CHAR + "Expected thing in list was not found",
-                getAllThingIDsResponse.getThingIDs().contains("c"));
+        assertEquals(3, getAllThingIDsResponse.getThingIDs().size(), FAILURE_CHAR + "Thing list size is not correct");
+        assertTrue(getAllThingIDsResponse.getThingIDs().contains("a"), FAILURE_CHAR + "Expected thing in list was not found");
+        assertTrue(getAllThingIDsResponse.getThingIDs().contains("b"), FAILURE_CHAR + "Expected thing in list was not found");
+        assertTrue(getAllThingIDsResponse.getThingIDs().contains("c"), FAILURE_CHAR + "Expected thing in list was not found");
 
         // bad request
         List<StreamAllThingIDsGrpcResponse> l = new ArrayList<>();
