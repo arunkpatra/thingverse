@@ -31,7 +31,7 @@ ext {
     set('scalaVersion', "2.12.10")
     set('scaltestVersion', "3.1.1")
     set('springfoxSwaggerVersion', "3.0.0")
-    set('springBootVersion', "2.4.1")
+    set('springBootVersion', "2.4.2")
     set('springCloudVersion', "2020.0.0")
     set('typesafeConfigVersion', "1.4.0")
 }

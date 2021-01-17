@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'jacoco'
-    id 'org.springframework.boot' version '2.4.1'
+    id 'org.springframework.boot' version '2.4.2'
     id 'com.bmuschko.docker-remote-api' version '6.4.0'
     id 'com.gorylenko.gradle-git-properties' version '2.2.2'
 }
